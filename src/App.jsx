@@ -1,7 +1,11 @@
+import { Toaster } from "react-hot-toast";
+import Login from "./pages/Login";
+
 function App() {
   return (
     <>
-      <h1 className="text-3xl font-bold underline text-center">Hello world!</h1>
+      <Toaster position="top-right" />
+      <Login />
     </>
   );
 }
