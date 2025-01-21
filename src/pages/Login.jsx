@@ -35,8 +35,8 @@ const Login = () => {
     setIsLoading(true);
     try {
       console.log("Submitting values:", values); // Debugging
-      let { data } = await axios.post(
-        `${BASE_URL}api/auth/login`,
+      let { data, status } = await axios.post(
+        `${BASE_URL}auth/login`,
         {
           email: values.email,
           password: values.password,
@@ -48,9 +48,11 @@ const Login = () => {
         }
       );
 
-      if (data.message === "Login successful") {
+      if (status === 200) {
         saveUserData(data.data);
-        toast.success("Login successful");
+        toast.success(
+          "Login successful, you will navigate to the dashboard page after 2 seconds!"
+        );
 
         // Redirect logic
         const roleRedirects = {
@@ -58,7 +60,10 @@ const Login = () => {
           professor: "/professor/dashboard",
           user: "/student/dashboard",
         };
-        window.location.href = roleRedirects[data.data.role] || "/login";
+
+        setTimeout(() => {
+          window.location.href = roleRedirects[data.data.role] || "/login";
+        }, 2000);
       } else {
         toast.error("Unexpected server response. Please try again.");
       }
