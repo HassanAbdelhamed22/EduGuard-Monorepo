@@ -3,6 +3,7 @@ import { Routes } from "react-router-dom";
 import { Route } from "react-router-dom";
 import ProfessorLayout from "../layouts/ProfessorLayout";
 import Dashboard from "./../pages/professor/Dashboard";
+import SecureRoute from "./SecureRoute";
 
 const ProfessorRoutes = () => {
   return (
