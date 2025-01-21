@@ -34,7 +34,7 @@ export default function Modal({
                 {title && (
                   <DialogTitle
                     as="h3"
-                    className="text-lg font-bold text-gray-900 dark:text-white"
+                    className="text-lg font-bold text-darkGray dark:text-white"
                   >
                     {title}
                   </DialogTitle>
@@ -43,7 +43,7 @@ export default function Modal({
                 {/* Description */}
                 {description && (
                   <div className="mt-2">
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                    <p className="text-sm text-mediumGray dark:text-gray-400">
                       {description}
                     </p>
                   </div>
@@ -54,7 +54,7 @@ export default function Modal({
 
                 {/* Close Button */}
                 <button
-                  className="absolute top-3 right-3 text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-500"
+                  className="absolute top-3 right-3 text-mediumGray dark:text-gray-400 hover:text-red-600 dark:hover:text-red-500"
                   onClick={closeModal}
                 >
                   <svg

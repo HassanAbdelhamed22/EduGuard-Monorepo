@@ -4,10 +4,11 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: "#4D46B4",
-        primaryHover: "#3e3890",
+        primary: "#4f46e5",
+        primaryHover: "#4338ca",
         background: "#ffffff",
-        darkGray: "#3A3E45",
+        darkGray: "#111827",
+        mediumGray: "#4b5563",
         lightGray: "#E9ECEF",
         borderLight: "#e5e7eb",
       },
