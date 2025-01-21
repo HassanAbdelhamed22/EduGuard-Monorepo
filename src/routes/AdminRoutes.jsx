@@ -9,7 +9,7 @@ const AdminRoutes = () => {
     <Routes>
       <Route element={<SecureRoute allowedRoles={["admin"]} />}>
         <Route element={<AdminLayout />}>
-          <Route path="/admin/dashboard" element={<Dashboard />} />
+          <Route path="dashboard" element={<Dashboard />} />
           {/* Add more admin-specific routes */}
         </Route>
       </Route>

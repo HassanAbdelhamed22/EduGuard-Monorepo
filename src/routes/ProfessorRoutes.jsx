@@ -10,7 +10,7 @@ const ProfessorRoutes = () => {
     <Routes>
       <Route element={<SecureRoute allowedRoles={["professor"]} />}>
         <Route element={<ProfessorLayout />}>
-          <Route path="/professor/dashboard" element={<Dashboard />} />
+          <Route path="dashboard" element={<Dashboard />} />
           {/* Add more professor-specific routes */}
         </Route>
       </Route>

@@ -4,11 +4,11 @@ import { token, userRole } from "../constants";
 
 const SecureRoute = ({ allowedRoles }) => {
   if (!token) {
-    return <Navigate to="/login" />;
+    return <Navigate to="/login" replace />;
   }
 
   if (!allowedRoles.includes(userRole)) {
-    return <Navigate to="/unauthorized" />;
+    return <Navigate to="/unauthorized" replace />;
   }
 
   return <Outlet />;

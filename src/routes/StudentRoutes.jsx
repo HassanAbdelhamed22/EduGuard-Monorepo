@@ -10,7 +10,7 @@ const StudentRoutes = () => {
     <Routes>
       <Route element={<SecureRoute allowedRoles={["user"]} />}>
         <Route element={<StudentLayout />}>
-          <Route path="/student/dashboard" element={<Dashboard />} />
+          <Route path="dashboard" element={<Dashboard />} />
           {/* Add more student-specific routes */}
         </Route>
       </Route>
