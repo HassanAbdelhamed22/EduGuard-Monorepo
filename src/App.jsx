@@ -4,7 +4,7 @@ import AuthRoutes from "./routes/AuthRoutes";
 import AdminRoutes from "./routes/AdminRoutes";
 import ProfessorRoutes from "./routes/ProfessorRoutes";
 import StudentRoutes from "./routes/StudentRoutes";
-import UnauthorizedPage from "./pages/unauthorized";
+import UnauthorizedPage from "./pages/auth/unauthorized";
 
 
 function App() {
