@@ -10,18 +10,7 @@ import Logo from "../../components/Logo";
 import img from "../../assets/auth/loginImg.svg";
 import Button from "../../components/ui/Button";
 import LoginForm from "../../components/auth/LoginForm";
-
-const validationSchema = Yup.object().shape({
-  email: Yup.string().email("Invalid email").required("Email is required"),
-  password: Yup.string()
-    .required("Password is required")
-    .min(6, "Password must be at least 6 characters")
-    .max(20, "Password must not exceed 20 characters")
-    .matches(
-      /^[A-Z][a-zA-Z0-9]{5,}$/,
-      "Password must start with an uppercase letter and contain at least 6 characters"
-    ),
-});
+import { loginValidationSchema } from "../../utils/validation";
 
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -100,7 +89,7 @@ const Login = () => {
 
             <LoginForm
               initialValues={initialValues}
-              //validationSchema={loginValidationSchema}
+              validationSchema={loginValidationSchema}
               onSubmit={handleSubmit}
               isLoading={isLoading}
               showPassword={showPassword}
