@@ -70,6 +70,16 @@ const Login = () => {
       {/* Main Content */}
       <main className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8">
         <div className="max-w-5xl w-full grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+          {/* Illustration */}
+          <div className="hidden md:block">
+            <img
+              src={img}
+              alt="Education Illustration"
+              className="w-full h-auto"
+              loading="lazy"
+            />
+          </div>
+
           {/* Login Form */}
           <div className="space-y-8">
             <div className="text-center md:text-left">
@@ -118,16 +128,6 @@ const Login = () => {
               />
               Login with Google
             </Button>
-          </div>
-
-          {/* Illustration */}
-          <div className="hidden md:block">
-            <img
-              src={img}
-              alt="Education Illustration"
-              className="w-full h-auto"
-              loading="lazy"
-            />
           </div>
         </div>
       </main>
