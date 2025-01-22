@@ -1,9 +1,115 @@
-import React from 'react'
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { register } from "../../services/authService";
+import { saveUserData } from "../../utils/functions";
+import toast from "react-hot-toast";
+import img from "../../assets/auth/registerImg.svg";
+import { registerValidationSchema } from "../../utils/validation";
+import Logo from "../../components/Logo";
+import Button from "../../components/ui/Button";
+import RegisterForm from "../../components/auth/RegisterForm";
 
 const Register = () => {
-  return (
-    <div>Register</div>
-  )
-}
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
-export default Register
+  const initialValues = {
+    name: "",
+    email: "",
+    password: "",
+    password_confirmation: "",
+    phone: "",
+    address: "",
+  };
+
+  async function handleSubmit(values) {
+    setIsLoading(true);
+    try {
+      const { data, status } = await register(values);
+
+      if (status === 200) {
+        saveUserData(data.data);
+        toast.success(
+          "Login successful, you will navigate to the login page after 2 seconds!"
+        );
+
+        setTimeout(() => {
+          window.location.href = "/login";
+        }, 2000);
+      } else {
+        toast.error("Unexpected server response. Please try again.");
+      }
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message ||
+        "Something went wrong. Please try again.";
+      toast.error(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50 flex flex-col mb-5">
+      {/* Header */}
+      <header className="p-4 flex justify-between items-center max-w-7xl mx-auto w-full">
+        <Logo />
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => navigate("/login")}
+        >
+          Login
+        </Button>
+      </header>
+
+      {/* Main Content */}
+      <main className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8">
+        <div className="max-w-5xl w-full grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+          {/* Login Form */}
+          <div className="space-y-8">
+            <div className="text-center md:text-left">
+              <h2 className="text-4xl font-bold text-darkGray">Register now!</h2>
+              <p className="mt-2 text-mediumGray">Hi, Create your account 👋</p>
+            </div>
+
+            <RegisterForm
+              initialValues={initialValues}
+              validationSchema={registerValidationSchema}
+              onSubmit={handleSubmit}
+              isLoading={isLoading}
+              showPassword={showPassword}
+              setShowPassword={setShowPassword}
+            />
+
+            <div className="text-center">
+              <p className="text-sm text-gray-600">
+                Already have an account?{" "}
+                <Link
+                  to="/login"
+                  className="font-medium text-indigo-600 hover:text-indigo-500"
+                >
+                  Login
+                </Link>
+              </p>
+            </div>
+          </div>
+
+
+          {/* Illustration */}
+          <div className="hidden md:block">
+            <img
+              src={img}
+              alt="Education Illustration"
+              className="w-full h-auto"
+              loading="lazy"
+            />
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+};
+
+export default Register;
