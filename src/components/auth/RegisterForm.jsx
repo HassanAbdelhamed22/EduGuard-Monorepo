@@ -11,6 +11,8 @@ const RegisterForm = ({
   isLoading,
   showPassword,
   setShowPassword,
+  showPasswordConfirmation,
+  setShowPasswordConfirmation
 }) => {
   return (
     <Formik
@@ -101,7 +103,7 @@ const RegisterForm = ({
               <div className="relative">
                 <Input
                   id="password_confirmation"
-                  type={showPassword ? "text" : "password"}
+                  type={showPasswordConfirmation ? "text" : "password"}
                   placeholder="Enter password confirmation"
                   error={
                     !!(
@@ -113,10 +115,10 @@ const RegisterForm = ({
                 />
                 <button
                   type="button"
-                  onClick={() => setShowPassword(!showPassword)}
+                  onClick={() => setShowPasswordConfirmation(!showPasswordConfirmation)}
                   className="absolute inset-y-0 right-0 pr-3 flex items-center"
                 >
-                  {showPassword ? (
+                  {showPasswordConfirmation ? (
                     <EyeOff className="h-5 w-5 text-gray-400" />
                   ) : (
                     <Eye className="h-5 w-5 text-gray-400" />

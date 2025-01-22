@@ -13,6 +13,8 @@ const Register = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [showPasswordConfirmation, setShowPasswordConfirmation] =
+    useState(false);
 
   const initialValues = {
     name: "",
@@ -28,10 +30,10 @@ const Register = () => {
     try {
       const { data, status } = await register(values);
 
-      if (status === 200) {
+      if (status === 201) {
         saveUserData(data.data);
         toast.success(
-          "Login successful, you will navigate to the login page after 2 seconds!"
+          "Registration successful, you will navigate to the login page after 2 seconds!"
         );
 
         setTimeout(() => {
@@ -55,11 +57,7 @@ const Register = () => {
       {/* Header */}
       <header className="p-4 flex justify-between items-center max-w-7xl mx-auto w-full">
         <Logo />
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => navigate("/login")}
-        >
+        <Button variant="outline" size="sm" onClick={() => navigate("/login")}>
           Login
         </Button>
       </header>
@@ -70,7 +68,9 @@ const Register = () => {
           {/* Login Form */}
           <div className="space-y-8">
             <div className="text-center md:text-left">
-              <h2 className="text-4xl font-bold text-darkGray">Register now!</h2>
+              <h2 className="text-4xl font-bold text-darkGray">
+                Register now!
+              </h2>
               <p className="mt-2 text-mediumGray">Hi, Create your account 👋</p>
             </div>
 
@@ -81,6 +81,8 @@ const Register = () => {
               isLoading={isLoading}
               showPassword={showPassword}
               setShowPassword={setShowPassword}
+              showPasswordConfirmation={showPasswordConfirmation}
+              setShowPasswordConfirmation={setShowPasswordConfirmation}
             />
 
             <div className="text-center">
@@ -95,7 +97,6 @@ const Register = () => {
               </p>
             </div>
           </div>
-
 
           {/* Illustration */}
           <div className="hidden md:block">
