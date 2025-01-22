@@ -25,11 +25,10 @@ export const registerValidationSchema = Yup.object().shape({
       /[A-Z]/,
       "The password must contain at least one uppercase letter."
     )
-    .matches(/[0-9]/, "The password must contain at least one number.")
-    .oneOf(
-      [Yup.ref("passwordConfirmation")],
-      "Password confirmation does not match."
-    ),
+    .matches(/[0-9]/, "The password must contain at least one number."),
+  password_confirmation: Yup.string()
+    .required("Password confirmation is required")
+    .oneOf([Yup.ref("password")], "Password confirmation does not match."),
   phone: Yup.string()
     .required("The phone number field is required.")
     .matches(/^01[0125][0-9]{8}$/, "The phone number must be valid."),
