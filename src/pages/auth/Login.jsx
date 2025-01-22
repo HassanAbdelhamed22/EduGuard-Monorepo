@@ -1,18 +1,16 @@
 import React, { useState } from "react";
-import * as Yup from "yup";
-import { BASE_URL } from "../../constants";
 import toast from "react-hot-toast";
-import { Formik, Form, Field } from "formik";
 import { saveUserData } from "../../utils/functions";
-import { Eye, EyeOff } from "lucide-react";
-import axios from "axios";
 import Logo from "../../components/Logo";
 import img from "../../assets/auth/loginImg.svg";
 import Button from "../../components/ui/Button";
 import LoginForm from "../../components/auth/LoginForm";
 import { loginValidationSchema } from "../../utils/validation";
+import { Link, useNavigate } from "react-router-dom";
+import { login } from "../../services/authService";
 
 const Login = () => {
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -24,19 +22,7 @@ const Login = () => {
   async function handleSubmit(values) {
     setIsLoading(true);
     try {
-      console.log("Submitting values:", values); // Debugging
-      let { data, status } = await axios.post(
-        `${BASE_URL}auth/login`,
-        {
-          email: values.email,
-          password: values.password,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const { data, status } = await login(values);
 
       if (status === 200) {
         saveUserData(data.data);
@@ -72,7 +58,11 @@ const Login = () => {
       {/* Header */}
       <header className="p-4 flex justify-between items-center max-w-7xl mx-auto w-full">
         <Logo />
-        <Button variant="outline" size="sm">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => navigate("/register")}
+        >
           Sign Up
         </Button>
       </header>
@@ -98,10 +88,13 @@ const Login = () => {
 
             <div className="text-center">
               <p className="text-sm text-gray-600">
-                Don't have an account?{' '}
-                <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
+                Don't have an account?{" "}
+                <Link
+                  to="/register"
+                  className="font-medium text-indigo-600 hover:text-indigo-500"
+                >
                   Sign Up
-                </a>
+                </Link>
               </p>
             </div>
 
@@ -116,11 +109,7 @@ const Login = () => {
               </div>
             </div>
 
-            <Button
-              variant="outline"
-              fullWidth
-              className="gap-2"
-            >
+            <Button variant="outline" fullWidth className="gap-2">
               <img
                 src="https://www.google.com/favicon.ico"
                 alt="Google"
