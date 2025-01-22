@@ -82,9 +82,7 @@ const Login = () => {
       {/* Header */}
       <header className="p-4 flex justify-between items-center max-w-7xl mx-auto w-full">
         <Logo />
-        <button className="px-6 py-2 bg-indigo-600 text-white rounded-full hover:bg-primaryHover transition-colors">
-          Sign Up
-        </button>
+        <Button className="rounded-full">Sign Up</Button>
       </header>
 
       {/* Main Content */}
