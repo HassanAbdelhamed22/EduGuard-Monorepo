@@ -1,10 +1,11 @@
 import React from "react";
 import { Outlet } from "react-router";
+import Header from "../components/Header";
 
 const StudentLayout = () => {
   return (
     <div className="student-layout">
-      <header>Student Header</header>
+      <Header />
       <main>
         <Outlet />
       </main>
