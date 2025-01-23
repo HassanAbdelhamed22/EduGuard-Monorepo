@@ -1,26 +1,24 @@
-import axios from "axios";
-import { BASE_URL, token } from "../constants";
 import toast from "react-hot-toast";
+import api from "../config/api";
 
 export const uploadProfilePicture = async (file) => {
   const formData = new FormData();
   formData.append("profile_picture", file);
 
   try {
-    const response = await axios.post(
-      `${BASE_URL}auth/profile/upload-profile-picture`,
+    const response = await api.post(
+      `auth/profile/upload-profile-picture`,
       formData,
       {
         headers: {
-          Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
         },
       }
     );
-    
+
     const data = response.data;
     if (response.status !== 200) {
-      toast.error(data.message || 'Failed to upload profile picture');
+      toast.error(data.message || "Failed to upload profile picture");
     }
 
     // Update the profile picture URL in localStorage
@@ -36,15 +34,11 @@ export const uploadProfilePicture = async (file) => {
 
 export const deleteProfilePicture = async () => {
   try {
-    const response = await axios.delete(
-      `${BASE_URL}auth/profile/delete-profile-picture`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
+    const response = await api.delete(
+      `auth/profile/delete-profile-picture`,
     );
     localStorage.removeItem("profilePicture");
+
     return response.data;
   } catch (error) {
     toast.error("Error deleting profile picture:", error);
