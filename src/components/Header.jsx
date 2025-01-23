@@ -3,7 +3,10 @@ import { Bell, Trash2, Upload } from "lucide-react";
 import { profilePicture, username, userRole } from "../constants";
 import Logo from "./Logo";
 import SearchBar from "./ui/SearchBar";
-import { uploadProfilePicture } from "../services/userService";
+import {
+  deleteProfilePicture,
+  uploadProfilePicture,
+} from "../services/userService";
 import toast from "react-hot-toast";
 
 const Header = () => {
@@ -15,7 +18,9 @@ const Header = () => {
 
   // Check if profilePicture exists and is not an empty string
   const hasValidProfilePicture =
-    profilePicture && profilePicture.trim() !== "" && profilePicture !== "null";
+    profilePictureState &&
+    profilePictureState.trim() !== "" &&
+    profilePictureState !== "null";
 
   // ** Handlers
   const handleFileUpload = async (event) => {
@@ -41,8 +46,8 @@ const Header = () => {
   const handleDeletePicture = async () => {
     try {
       setIsUploading(true);
-      await uploadProfilePicture(null);
-      window.location.reload();
+      await deleteProfilePicture();
+      setProfilePictureState(null);
       toast.success("Profile picture deleted successfully");
     } catch (error) {
       console.error("Error deleting profile picture:", error);
