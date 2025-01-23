@@ -33,3 +33,21 @@ export const uploadProfilePicture = async (file) => {
     return null;
   }
 };
+
+export const deleteProfilePicture = async () => {
+  try {
+    const response = await axios.delete(
+      `${BASE_URL}auth/profile/delete-profile-picture`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    localStorage.removeItem("profilePicture");
+    return response.data;
+  } catch (error) {
+    toast.error("Error deleting profile picture:", error);
+    return null;
+  }
+};
