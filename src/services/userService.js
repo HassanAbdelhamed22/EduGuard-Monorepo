@@ -13,17 +13,18 @@ export const uploadProfilePicture = async (file) => {
       {
         headers: {
           Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
         },
       }
     );
     
-    const data = await response.data;
-    if (!response.ok) {
+    const data = response.data;
+    if (response.status !== 200) {
       toast.error(data.message || 'Failed to upload profile picture');
     }
 
     // Update the profile picture URL in localStorage
-    const fullImageUrl = `${BASE_URL}storage/${data.profile_picture}`;
+    const fullImageUrl = `http://127.0.0.1:8000${data.profile_picture}`;
     localStorage.setItem("profilePicture", fullImageUrl);
 
     return data;
