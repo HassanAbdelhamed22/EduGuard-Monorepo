@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { Bell } from "lucide-react";
 import { profilePicture, username, userRole } from "../constants";
 import Logo from "./Logo";
 import SearchBar from "./ui/SearchBar";
+import { uploadProfilePicture } from "../services/userService";
 
 const Header = () => {
+  const [isUploading, setIsUploading] = useState(false);
   const getInitials = (name) => name.charAt(0).toUpperCase();
 
   console.log("Profile Picture:", profilePicture); // Debugging log
@@ -12,6 +14,23 @@ const Header = () => {
 
   // Check if profilePicture exists and is not an empty string
   const hasValidProfilePicture = profilePicture && profilePicture.trim() !== "" && profilePicture !== "null";
+
+  // ** Handlers
+  const handleFileUpload = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try{
+      setIsUploading(true);
+    await uploadProfilePicture(file);
+    window.location.reload();
+    } catch (error) {
+      console.error("Error uploading profile picture:", error);
+      toast.error("Error uploading profile picture");
+    } finally {
+      setIsUploading(false);
+    }
+  }
 
   return (
     <header className="flex items-center justify-between px-5 py-2 bg-white shadow-sm">
