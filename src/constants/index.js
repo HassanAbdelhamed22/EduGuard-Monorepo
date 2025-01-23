@@ -5,3 +5,5 @@ export const token = localStorage.getItem("token");
 export const userRole = localStorage.getItem("role");
 
 export const username = localStorage.getItem("username");
+
+export const profilePicture = localStorage.getItem("profile_picture");

@@ -2,13 +2,13 @@ import Input from "./Input";
 
 const SearchBar = ({ value, onChange, placeholder = "Search ..." }) => {
   return (
-    <div className="relative flex items-center mx-auto sm:mx-4 mt-20 mb-10">
+    <div className="relative flex items-center mx-auto sm:mx-4 ">
       <Input
         type="text"
         placeholder={placeholder}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full py-4 pl-4 pr-10 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-indigoLight dark:focus:ring-indigoDark transition-transform duration-300 ease-in-out transform focus:scale-105 bg-inherit placeholder:text-mediumGray dark:placeholder:text-gray-300"
+        className="w-full py-2 pl-4 pr-10 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-indigoLight dark:focus:ring-indigoDark transition-transform duration-300 ease-in-out transform focus:scale-105 bg-inherit placeholder:text-mediumGray dark:placeholder:text-gray-300"
       />
       <svg
         xmlns="http://www.w3.org/2000/svg"
