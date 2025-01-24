@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { resetPass } from "./../../services/authService";
+import { resetPassValidationSchema } from "../../utils/validation";
+import { useFormik } from "formik";
 
 const ResetPass = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -27,6 +29,14 @@ const ResetPass = () => {
       setIsLoading(false);
     }
   }
+
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+    },
+    handleSubmit,
+    resetPassValidationSchema,
+  });
   return <div>ResetPass</div>;
 };
 
