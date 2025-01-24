@@ -36,3 +36,7 @@ export const registerValidationSchema = Yup.object().shape({
     .required("The address field is required.")
     .max(255, "The address must not exceed 255 characters."),
 });
+
+export const resetPassValidationSchema = Yup.object({
+  email: Yup.string().required(' Email is required').email('Email must be Valid')
+})
