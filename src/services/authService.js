@@ -26,3 +26,16 @@ export const register = async (credentials) => {
   );
   return { data, status };
 };
+
+export const resetPass = async (credentials) => {
+  const { data, status } = await axios.post(
+    `${BASE_URL}auth/forgot-password`,
+    credentials,
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  return { data, status };
+};
