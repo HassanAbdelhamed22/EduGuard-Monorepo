@@ -1,5 +1,6 @@
 import axios from "axios";
 import { BASE_URL } from "../constants";
+import api from "../config/api";
 
 export const login = async (credentials) => {
   const { data, status } = await axios.post(
@@ -50,5 +51,14 @@ export const sendCode = async (credentials) => {
       },
     }
   );
+  return { data, status };
+};
+
+export const logout = async () => {
+  const { data, status } = await api.post(`${BASE_URL}auth/logout`, null, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
   return { data, status };
 };
