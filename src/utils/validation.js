@@ -37,13 +37,13 @@ export const registerValidationSchema = Yup.object().shape({
     .max(255, "The address must not exceed 255 characters."),
 });
 
-export const resetPassValidationSchema = Yup.object.shape({
+export const resetPassValidationSchema = Yup.object().shape({
   email: Yup.string()
     .required(" Email is required")
     .email("Email must be Valid"),
 });
 
-export const sendCodeValidationSchema = Yup.object.shape({
+export const sendCodeValidationSchema = Yup.object().shape({
   email: Yup.string()
     .required(" Email is required")
     .email("Email must be Valid"),
