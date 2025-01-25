@@ -1,7 +1,7 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import SecureRoute from "./SecureRoute";
-import Dashboard from './../pages/admin/Dashboard';
+import Dashboard from "./../pages/admin/Dashboard";
 import AdminLayout from "../layouts/AdminLayout";
 
 const AdminRoutes = () => {
@@ -10,7 +10,13 @@ const AdminRoutes = () => {
       <Route element={<SecureRoute allowedRoles={["admin"]} />}>
         <Route element={<AdminLayout />}>
           <Route path="dashboard" element={<Dashboard />} />
-          {/* Add more admin-specific routes */}
+          <Route path="users" element={<div>Users List</div>} />
+          <Route path="users/create" element={<div>Create User</div>} />
+          <Route path="students" element={<div>Students List</div>} />
+          <Route path="professors" element={<div>Professors List</div>} />
+          <Route path="courses" element={<div>Courses List</div>} />
+          <Route path="courses/create" element={<div>Create Course</div>} />
+          <Route path="courses/assign" element={<div>Assign Course</div>} />
         </Route>
       </Route>
     </Routes>
