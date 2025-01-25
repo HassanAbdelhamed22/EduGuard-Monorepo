@@ -6,7 +6,7 @@ export const adminItems = [
     path: "/admin/dashboard",
   },
   {
-    name: "User Management",
+    title: "User Management",
     icon: <Users className="w-5 h-5" />,
     items: [
       {
