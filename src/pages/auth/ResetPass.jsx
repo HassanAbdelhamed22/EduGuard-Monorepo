@@ -131,7 +131,7 @@ const ResetPass = () => {
                       >
                         {isSubmitting || isLoading
                           ? "Sending..."
-                          : "Reset Password"}
+                          : "Send Password Reset Link"}
                       </Button>
 
                       <p className="text-center text-sm text-gray-600 mt-4">
