@@ -3,6 +3,7 @@ import { Formik, Form } from "formik";
 import { Eye, EyeOff } from "lucide-react";
 import Button from "../ui/Button";
 import Input from "../ui/Input";
+import { Link } from "react-router";
 
 const LoginForm = ({
   initialValues,
@@ -88,12 +89,12 @@ const LoginForm = ({
                 Remember Me
               </label>
             </div>
-            <a
-              href="#"
+            <Link
+              to="/reset-password"
               className="text-sm text-indigo-600 hover:text-indigo-500"
             >
               Forgot Password?
-            </a>
+            </Link>
           </div>
 
           <Button type="submit" fullWidth isLoading={isSubmitting || isLoading}>
