@@ -20,11 +20,11 @@ const SendCode = () => {
 
       if (status === 200) {
         toast.success(
-          "Password reset link sent successfully, you will navigate to the send code page after 2 seconds!"
+          "Password reset successfully, you will navigate to the login page after 2 seconds!"
         );
 
         setTimeout(() => {
-          window.location.href = "/send-code";
+          window.location.href = "/login";
         }, 2000);
       } else {
         toast.error("Unexpected server response. Please try again.");
@@ -41,6 +41,9 @@ const SendCode = () => {
 
   const initialValues = {
     email: "",
+    otp: "",
+    password: "",
+    password_confirmation: "",
   };
   return <div>SendCode</div>;
 };
