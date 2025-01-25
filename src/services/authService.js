@@ -39,3 +39,16 @@ export const resetPass = async (credentials) => {
   );
   return { data, status };
 };
+
+export const sendCode = async (credentials) => {
+  const { data, status } = await axios.post(
+    `${BASE_URL}auth/reset-password`,
+    credentials,
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  return { data, status };
+};
