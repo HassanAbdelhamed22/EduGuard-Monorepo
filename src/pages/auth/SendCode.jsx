@@ -1,15 +1,19 @@
 import React, { useState } from "react";
 import { sendCode } from "./../../services/authService";
-import { resetPassValidationSchema } from "../../utils/validation";
+import { sendCodeValidationSchema } from "../../utils/validation";
 import { Form, Formik } from "formik";
 import Input from "../../components/ui/Input";
 import Button from "../../components/ui/Button";
 import Logo from "../../components/Logo";
 import { useNavigate } from "react-router";
 import toast from "react-hot-toast";
+import { Eye, EyeOff } from "lucide-react";
 
 const SendCode = () => {
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPasswordConfirmation, setShowPasswordConfirmation] =
+    useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   async function handleSubmit(value) {
@@ -78,7 +82,7 @@ const SendCode = () => {
 
             <Formik
               initialValues={initialValues}
-              validationSchema={resetPassValidationSchema}
+              validationSchema={sendCodeValidationSchema}
               onSubmit={handleSubmit}
             >
               {({
@@ -143,7 +147,8 @@ const SendCode = () => {
                       <p className="text-sm text-red-500 mt-1">{errors.otp}</p>
                     )}
                   </div>
-                  <div className="space-y-2">
+
+                  <div className="space-y-2 relative">
                     <label
                       htmlFor="password"
                       className="block text-sm font-medium text-gray-700"
@@ -151,7 +156,7 @@ const SendCode = () => {
                       Password
                     </label>
                     <Input
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                       id="password"
                       name="password"
                       onChange={handleChange}
@@ -164,6 +169,17 @@ const SendCode = () => {
                           : "border-gray-200 focus-visible:ring-violet-500"
                       }`}
                     />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center "
+                    >
+                      {showPassword ? (
+                        <EyeOff className="h-5 w-5 text-gray-400" />
+                      ) : (
+                        <Eye className="h-5 w-5 text-gray-400" />
+                      )}
+                    </button>
                     {touched.password && errors.password && (
                       <p className="text-sm text-red-500 mt-1">
                         {errors.password}
@@ -171,7 +187,7 @@ const SendCode = () => {
                     )}
                   </div>
 
-                  <div className="space-y-2">
+                  <div className="space-y-2 relative">
                     <label
                       htmlFor="password_confirmation"
                       className="block text-sm font-medium text-gray-700"
@@ -179,7 +195,7 @@ const SendCode = () => {
                       Password Confirmation
                     </label>
                     <Input
-                      type="password_confirmation"
+                      type={showPasswordConfirmation ? "text" : "password"}
                       id="password_confirmation"
                       name="password_confirmation"
                       onChange={handleChange}
@@ -193,6 +209,19 @@ const SendCode = () => {
                           : "border-gray-200 focus-visible:ring-violet-500"
                       }`}
                     />
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setShowPasswordConfirmation(!showPasswordConfirmation)
+                      }
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                    >
+                      {showPassword ? (
+                        <EyeOff className="h-5 w-5 text-gray-400" />
+                      ) : (
+                        <Eye className="h-5 w-5 text-gray-400" />
+                      )}
+                    </button>
                     {touched.password_confirmation &&
                       errors.password_confirmation && (
                         <p className="text-sm text-red-500 mt-1">
