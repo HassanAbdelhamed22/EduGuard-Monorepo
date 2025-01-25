@@ -58,15 +58,9 @@ const Header = () => {
   };
 
   return (
-    <header className="flex items-center justify-between px-5 py-2 bg-white shadow-sm">
-      {/* LOGO*/}
-
-      <div className="flex items-center gap-4">
-        <Logo />
-
-        {/* Search Bar*/}
-        <SearchBar />
-      </div>
+    <header className="flex items-center justify-between px-5 py-3 bg-white shadow-sm sticky top-0">
+      {/* Search Bar*/}
+      <SearchBar />
 
       {/* User Info*/}
       <div className="flex items-center gap-4">
