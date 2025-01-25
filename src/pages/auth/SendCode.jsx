@@ -27,7 +27,7 @@ const SendCode = () => {
         );
 
         setTimeout(() => {
-          window.location.href = "/login";
+          navigate("/login");
         }, 2000);
       } else {
         toast.error("Unexpected server response. Please try again.");

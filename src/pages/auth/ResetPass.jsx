@@ -24,7 +24,7 @@ const ResetPass = () => {
         );
 
         setTimeout(() => {
-          window.location.href = "/send-code";
+          navigate("/send-code");
         }, 2000);
       } else {
         toast.error("Unexpected server response. Please try again.");

@@ -31,7 +31,10 @@ api.interceptors.request.use(
         localStorage.setItem("token", newToken);
         localStorage.setItem(
           "tokenExpiry",
-          (Date.now() + Number(refreshResponse.data.expires_in) * 1000).toString()
+          (
+            Date.now() +
+            Number(refreshResponse.data.expires_in) * 1000
+          ).toString()
         );
 
         config.headers.Authorization = `Bearer ${newToken}`;
