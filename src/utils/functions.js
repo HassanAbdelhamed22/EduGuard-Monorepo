@@ -18,3 +18,13 @@ export const removeUserData = () => {
   localStorage.removeItem("profilePicture");
   localStorage.removeItem("tokenExpiry");
 };
+
+export const getInitials = (name) => {
+  if (!name) return '';
+  return name
+    .split(' ')
+    .map(word => word[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
+};
