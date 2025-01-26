@@ -65,7 +65,7 @@ export const sendCodeValidationSchema = Yup.object().shape({
 });
 
 export const updatePassValidationSchema = Yup.object().shape({
-  password: Yup.string()
+  current_password: Yup.string()
     .required("Password is required")
     .min(6, "Password must be at least 6 characters")
     .max(20, "Password must not exceed 20 characters")
