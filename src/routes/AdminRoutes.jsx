@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import SecureRoute from "./SecureRoute";
 import Dashboard from "./../pages/admin/Dashboard";
 import AdminLayout from "../layouts/AdminLayout";
+import Profile from "../pages/auth/Profile";
 
 const AdminRoutes = () => {
   return (
@@ -17,6 +18,7 @@ const AdminRoutes = () => {
           <Route path="courses" element={<div>Courses List</div>} />
           <Route path="courses/create" element={<div>Create Course</div>} />
           <Route path="courses/assign" element={<div>Assign Course</div>} />
+          <Route path="/profile" element={<Profile />} />
         </Route>
       </Route>
     </Routes>
