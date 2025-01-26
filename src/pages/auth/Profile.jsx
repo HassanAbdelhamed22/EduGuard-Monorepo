@@ -6,7 +6,6 @@ import {
 import { updateProfile, getProfile } from "./../../services/authService";
 import Button from "./../../components/ui/Button";
 import {
-  Camera,
   Edit2,
   Mail,
   MapPin,
@@ -14,9 +13,9 @@ import {
   Save,
   Trash2,
   Upload,
+  X,
 } from "lucide-react";
 import { getInitials } from "../../utils/functions";
-import { username } from "../../constants";
 import toast from "react-hot-toast";
 
 const defaultProfile = {
@@ -24,7 +23,6 @@ const defaultProfile = {
   email: "",
   phone: "",
   address: "",
-  profile_picture: "",
 };
 
 const Profile = () => {
@@ -41,7 +39,7 @@ const Profile = () => {
     try {
       const { data } = await getProfile();
       if (data?.profile_picture) {
-        data.profile_picture = `http://127.0.0.1:8000/storage/${data.profile_picture}`; 
+        data.profile_picture = `http://127.0.0.1:8000/storage/${data.profile_picture}`;
       }
       setProfile(data || defaultProfile);
       console.log("Fetched profile:", data);
@@ -62,9 +60,14 @@ const Profile = () => {
     event.preventDefault();
     setIsLoading(true);
     try {
-      await updateProfile(profile);
-      setIsEditing(false);
-      toast.success("Profile updated successfully");
+      const { data, status } = await updateProfile(profile);
+
+      if (status === 200) {
+        setIsEditing(false);
+        toast.success("Profile updated successfully");
+      } else {
+        toast.error(data.message);
+      }
     } catch (error) {
       console.error("Error updating profile:", error);
       toast.error("Error updating profile");
@@ -126,8 +129,8 @@ const Profile = () => {
               >
                 {isEditing ? (
                   <>
-                    <Camera className="h-4 w-4 mr-2" />
                     Cancel
+                    <X className="h-4 w-4 ml-2" />
                   </>
                 ) : (
                   <>
@@ -270,14 +273,15 @@ const Profile = () => {
 
               {isEditing && (
                 <div className="mt-6">
-                  <button
+                  <Button
                     type="submit"
                     disabled={isLoading}
-                    className="w-full inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+                    isLoading={isLoading}
+                    fullWidth
                   >
                     <Save className="h-4 w-4 mr-2" />
                     {isLoading ? "Saving..." : "Save Changes"}
-                  </button>
+                  </Button>
                 </div>
               )}
             </form>
