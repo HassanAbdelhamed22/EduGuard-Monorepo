@@ -46,8 +46,17 @@ export const adminItems = [
     ],
   },
   {
-    title: "Profile",
+    title: "Settings",
     icon: <UserCog className="w-5 h-5" />,
-    path: "/admin/profile",
+    items: [
+      {
+        title: "Profile",
+        path: "/admin/profile",
+      },
+      {
+        title: "Update Password",
+        path: "/admin/update-password",
+      },
+    ]
   },
 ];

@@ -80,3 +80,16 @@ export const updateProfile = async (profile) => {
   });
   return { data, status };
 };
+
+export const updatePassword = async (credentials) => {
+  const { data, status } = await api.patch(
+    `${BASE_URL}auth/password/update`,
+    credentials,
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  return { data, status };
+};

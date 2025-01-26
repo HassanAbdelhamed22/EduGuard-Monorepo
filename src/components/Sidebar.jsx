@@ -36,7 +36,7 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="h-full bg-white shadow-lg">
+    <div className="h-screen bg-white shadow-lg flex flex-col">
       {/* Mobile Header */}
       <div className="flex items-center justify-between p-4 bg-indigo-600 text-white lg:hidden">
         <Logo />
@@ -54,7 +54,7 @@ const Sidebar = () => {
       </div>
 
       {/* Navigation */}
-      <div className="flex flex-col">
+      <div className="flex flex-col flex-1 justify-between">
         <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
           {adminItems.map((item) => (
             <div key={item.title} className="space-y-2">
@@ -116,7 +116,7 @@ const Sidebar = () => {
         </nav>
 
         {/* Footer */}
-        <div className="p-4 border-t items-end">
+        <div className="p-4 border-t">
           <button
             className="flex items-center w-full px-4 py-2.5 text-sm font-medium text-red-600 rounded-lg hover:bg-red-50 transition-colors duration-200"
             onClick={handleLogout}

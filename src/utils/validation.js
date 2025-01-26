@@ -63,3 +63,27 @@ export const sendCodeValidationSchema = Yup.object().shape({
     .required("Password confirmation is required")
     .oneOf([Yup.ref("password")], "Password confirmation does not match."),
 });
+
+export const updatePassValidationSchema = Yup.object().shape({
+  current_password: Yup.string()
+    .required("Password is required")
+    .min(6, "Password must be at least 6 characters")
+    .max(20, "Password must not exceed 20 characters")
+    .matches(
+      /[A-Z]/,
+      "The password must contain at least one uppercase letter."
+    )
+    .matches(/[0-9]/, "The password must contain at least one number."),
+  new_password: Yup.string()
+    .required("The new password is required.")
+    .min(6, "The password must be at least 6 characters.")
+    .max(20, "The password must not exceed 20 characters.")
+    .matches(
+      /[A-Z]/,
+      "The password must contain at least one uppercase letter."
+    )
+    .matches(/[0-9]/, "The password must contain at least one number."),
+  new_password_confirmation: Yup.string()
+    .required("Please confirm your new password.")
+    .oneOf([Yup.ref("new_password"), null], "Passwords must match."),
+});
