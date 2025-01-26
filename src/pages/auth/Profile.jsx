@@ -46,9 +46,7 @@ const Profile = () => {
     } catch (error) {
       console.error("Error fetching profile:", error);
       toast.error("Error fetching profile");
-    } finally {
-      setIsLoading(false);
-    }
+    } 
   };
 
   const handleChange = (event) => {
@@ -70,7 +68,7 @@ const Profile = () => {
       }
     } catch (error) {
       console.error("Error updating profile:", error);
-      toast.error("Error updating profile");
+      toast.error(error.response?.data?.message);
     } finally {
       setIsLoading(false);
     }

@@ -29,8 +29,6 @@ const Header = () => {
     } catch (error) {
       console.error("Error fetching profile:", error);
       toast.error("Error fetching profile");
-    } finally {
-      setIsLoading(false);
     }
   };
 
