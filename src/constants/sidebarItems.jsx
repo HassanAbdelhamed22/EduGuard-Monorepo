@@ -1,4 +1,4 @@
-import { BookOpen, Users } from "lucide-react";
+import { BookOpen, UserCog, Users } from "lucide-react";
 
 export const adminItems = [
   {
@@ -44,5 +44,10 @@ export const adminItems = [
         path: "/admin/courses/assign",
       },
     ],
+  },
+  {
+    title: "Profile",
+    icon: <UserCog className="w-5 h-5" />,
+    path: "/admin/profile",
   },
 ];
