@@ -1,29 +1,38 @@
-import React, { useState } from "react";
-import { Bell, Trash2, Upload } from "lucide-react";
-import { profilePicture, username, userRole } from "../constants";
-import Logo from "./Logo";
+import React, { useEffect, useState } from "react";
+import { Bell } from "lucide-react";
+import { username, userRole } from "../constants";
 import SearchBar from "./ui/SearchBar";
-import {
-  deleteProfilePicture,
-  uploadProfilePicture,
-} from "../services/userService";
 import toast from "react-hot-toast";
+import { getInitials } from "../utils/functions";
+import { getProfile } from "../services/authService";
 
 const Header = () => {
-  const [profilePictureState, setProfilePictureState] = useState(
-    profilePicture || null
-  );
-  const [isUploading, setIsUploading] = useState(false);
-  const getInitials = (name) => name.charAt(0).toUpperCase();
+  const [profile, setProfile] = useState({ profile_picture: null, name: "" });
 
   // Check if profilePicture exists and is not an empty string
   const hasValidProfilePicture =
-    profilePictureState &&
-    profilePictureState.trim() !== "" &&
-    profilePictureState !== "null";
+    profile.profile_picture && profile.profile_picture !== "null";
 
   // ** Handlers
+  useEffect(() => {
+    fetchProfile();
+  }, []);
 
+  const fetchProfile = async () => {
+    try {
+      const { data } = await getProfile();
+      if (data?.profile_picture) {
+        data.profile_picture = `http://127.0.0.1:8000/storage/${data.profile_picture}`;
+      }
+      setProfile(data);
+      console.log("Fetched profile:", data);
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+      toast.error("Error fetching profile");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <header className="flex items-center justify-between px-5 py-3 bg-white shadow-sm sticky top-0">
@@ -41,7 +50,7 @@ const Header = () => {
           <div className="relative group">
             {hasValidProfilePicture ? (
               <img
-                src={profilePictureState}
+                src={profile.profile_picture}
                 alt={`${username}'s avatar`}
                 className="w-14 h-14 ml-2 rounded-full"
               />
