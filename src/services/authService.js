@@ -71,3 +71,12 @@ export const getProfile = async () => {
   });
   return { data, status };
 };
+
+export const updateProfile = async () => {
+  const { data, status } = await api.patch(`${BASE_URL}auth/profile/update`, null, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  return { data, status };
+};
