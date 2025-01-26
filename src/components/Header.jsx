@@ -1,59 +1,36 @@
-import React, { useState } from "react";
-import { Bell, Trash2, Upload } from "lucide-react";
-import { profilePicture, username, userRole } from "../constants";
-import Logo from "./Logo";
+import React, { useEffect, useState } from "react";
+import { Bell } from "lucide-react";
+import { username, userRole } from "../constants";
 import SearchBar from "./ui/SearchBar";
-import {
-  deleteProfilePicture,
-  uploadProfilePicture,
-} from "../services/userService";
 import toast from "react-hot-toast";
+import { getInitials } from "../utils/functions";
+import { getProfile } from "../services/authService";
 
 const Header = () => {
-  const [profilePictureState, setProfilePictureState] = useState(
-    profilePicture || null
-  );
-  const [isUploading, setIsUploading] = useState(false);
-  const getInitials = (name) => name.charAt(0).toUpperCase();
+  const [profile, setProfile] = useState({ profile_picture: null, name: "" });
 
   // Check if profilePicture exists and is not an empty string
   const hasValidProfilePicture =
-    profilePictureState &&
-    profilePictureState.trim() !== "" &&
-    profilePictureState !== "null";
+    profile.profile_picture && profile.profile_picture !== "null";
 
   // ** Handlers
-  const handleFileUpload = async (event) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
+  useEffect(() => {
+    fetchProfile();
+  }, []);
 
+  const fetchProfile = async () => {
     try {
-      setIsUploading(true);
-      const response = await uploadProfilePicture(file);
-      if (response?.profile_picture) {
-        const fullImageUrl = `http://127.0.0.1:8000${response.profile_picture}`;
-        setProfilePictureState(fullImageUrl);
-        toast.success("Profile picture uploaded successfully");
+      const { data } = await getProfile();
+      if (data?.profile_picture) {
+        data.profile_picture = `http://127.0.0.1:8000/storage/${data.profile_picture}`;
       }
+      setProfile(data);
+      console.log("Fetched profile:", data);
     } catch (error) {
-      console.error("Error uploading profile picture:", error);
-      toast.error("Error uploading profile picture");
+      console.error("Error fetching profile:", error);
+      toast.error("Error fetching profile");
     } finally {
-      setIsUploading(false);
-    }
-  };
-
-  const handleDeletePicture = async () => {
-    try {
-      setIsUploading(true);
-      await deleteProfilePicture();
-      setProfilePictureState(null);
-      toast.success("Profile picture deleted successfully");
-    } catch (error) {
-      console.error("Error deleting profile picture:", error);
-      toast.error("Error deleting profile picture");
-    } finally {
-      setIsUploading(false);
+      setIsLoading(false);
     }
   };
 
@@ -73,7 +50,7 @@ const Header = () => {
           <div className="relative group">
             {hasValidProfilePicture ? (
               <img
-                src={profilePictureState}
+                src={profile.profile_picture}
                 alt={`${username}'s avatar`}
                 className="w-14 h-14 ml-2 rounded-full"
               />
@@ -85,28 +62,6 @@ const Header = () => {
                 {getInitials(username)}
               </div>
             )}
-
-            {/* Upload/Delete overlay */}
-            <div className="absolute inset-0 ml-3 flex items-center justify-center rounded-full bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-200 opacity-0 group-hover:opacity-100">
-              <label className="cursor-pointer p-1 hover:text-blue-400 text-white">
-                <Upload className="w-5 h-5" />
-                <input
-                  type="file"
-                  className="hidden"
-                  accept="image/*"
-                  onChange={handleFileUpload}
-                  disabled={isUploading}
-                />
-              </label>
-              {hasValidProfilePicture && (
-                <button
-                  onClick={handleDeletePicture}
-                  className="p-1 text-white hover:text-red-400"
-                >
-                  <Trash2 className="w-5 h-5" />
-                </button>
-              )}
-            </div>
           </div>
         </div>
       </div>
