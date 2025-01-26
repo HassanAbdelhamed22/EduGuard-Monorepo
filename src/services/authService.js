@@ -62,3 +62,12 @@ export const logout = async () => {
   });
   return { data, status };
 };
+
+export const getProfile = async () => {
+  const { data, status } = await api.post(`${BASE_URL}auth/profile`, null, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  return { data, status };
+};
