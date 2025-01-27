@@ -5,11 +5,16 @@ import Dashboard from "./../pages/admin/Dashboard";
 import AdminLayout from "../layouts/AdminLayout";
 import Profile from "../pages/auth/Profile";
 import UpdatePassword from "../pages/auth/UpdatePassword";
+import ErrorHandler from "../components/errors/ErrorHandler";
+import PageNotFound from "../pages/PageNotFound";
 
 const AdminRoutes = () => {
   return (
     <Routes>
-      <Route element={<SecureRoute allowedRoles={["admin"]} />}>
+      <Route
+        element={<SecureRoute allowedRoles={["admin"]} />}
+        errorElement={<ErrorHandler />}
+      >
         <Route element={<AdminLayout />}>
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="users" element={<div>Users List</div>} />
@@ -21,6 +26,9 @@ const AdminRoutes = () => {
           <Route path="courses/assign" element={<div>Assign Course</div>} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/update-password" element={<UpdatePassword />} />
+
+          {/* Page not found */}
+          <Route path="*" element={<PageNotFound />} />
         </Route>
       </Route>
     </Routes>

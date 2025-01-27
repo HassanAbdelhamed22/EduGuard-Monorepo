@@ -1,3 +1,5 @@
+import { userRole } from "../constants";
+
 export const saveUserData = (data) => {
   localStorage.setItem("token", data.token);
   localStorage.setItem("username", data.name);
@@ -28,3 +30,16 @@ export const getInitials = (name) => {
     .toUpperCase()
     .slice(0, 1);
 };
+
+export const getHomePath = () => {
+  switch (userRole) {
+    case "admin":
+      return "/admin/dashboard";
+    case "professor":
+      return "/professor/dashboard";
+    case "user":
+      return "/student/dashboard";
+    default:
+      return "/";
+  }
+}
