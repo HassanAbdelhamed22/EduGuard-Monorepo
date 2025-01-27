@@ -36,7 +36,7 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="h-screen bg-white shadow-lg flex flex-col">
+    <div className="h-full bg-white shadow-lg flex flex-col overflow-hidden">
       {/* Mobile Header */}
       <div className="flex items-center justify-between p-4 bg-indigo-600 text-white lg:hidden">
         <Logo />
@@ -49,13 +49,13 @@ const Sidebar = () => {
       </div>
 
       {/* Desktop Logo */}
-      <div className="hidden lg:block px-6 py-[18px] border-b">
+      <div className="hidden lg:block px-6 py-[24px] shadow-sm">
         <Logo />
       </div>
 
       {/* Navigation */}
-      <div className="flex flex-col flex-1 justify-between">
-        <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+      <div className="flex flex-col flex-1 justify-between shadow-sm">
+        <nav className="flex-1 p-4 space-y-2">
           {adminItems.map((item) => (
             <div key={item.title} className="space-y-2">
               {/* Main NavLink for the item */}

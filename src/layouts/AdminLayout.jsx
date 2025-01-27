@@ -6,18 +6,21 @@ import Sidebar from "../components/Sidebar";
 const AdminLayout = () => {
   return (
     <div className="min-h-screen flex flex-col">
-      <main className="flex flex-1 overflow-hidden">
+      <main className="flex flex-1">
         {/* Sidebar */}
         <aside className="w-64 hidden lg:block">
           <Sidebar />
         </aside>
 
         {/* Main Content */}
-        <div className="flex-1 flex flex-col overflow-hidden bg-gray-50">
+        <div className="flex-1 flex flex-col h-screen">
+          {/* Header */}
           <div className="sticky top-0 z-50 w-full">
             <Header />
           </div>
-          <div className="flex-1 overflow-y-auto px-6 py-4">
+
+          {/* Scrollable Outlet Content */}
+          <div className="flex-1 px-6 py-4 overflow-y-auto">
             <Outlet />
           </div>
         </div>
