@@ -1,3 +1,4 @@
+import api from "../config/api";
 import { BASE_URL } from "../constants";
 
 export const getStatistics = async () => {
