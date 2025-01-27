@@ -1,5 +1,5 @@
 import { BookOpen, GraduationCap, School, Users } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getStatistics } from "../../services/adminService";
 import toast from "react-hot-toast";
 
@@ -13,7 +13,9 @@ const initialStatistics = {
 const Dashboard = () => {
   const [statistics, setStatistics] = useState(initialStatistics);
 
-
+  useEffect(() => {
+    handleGetStatistics();
+  }, []);
 
   const handleGetStatistics = async () => {
     try {
@@ -70,7 +72,7 @@ const Dashboard = () => {
                     </dt>
                     <dd className="flex items-baseline">
                       <div className="text-2xl font-semibold text-gray-900">
-                        {}
+                        {statistics.totalUsers}
                       </div>
                     </dd>
                   </dl>
@@ -93,7 +95,7 @@ const Dashboard = () => {
                     </dt>
                     <dd className="flex items-baseline">
                       <div className="text-2xl font-semibold text-gray-900">
-                        {stats.totalProfessors}
+                        {statistics.totalProfessors}
                       </div>
                     </dd>
                   </dl>
@@ -116,7 +118,7 @@ const Dashboard = () => {
                     </dt>
                     <dd className="flex items-baseline">
                       <div className="text-2xl font-semibold text-gray-900">
-                        {stats.totalStudents}
+                        {statistics.totalStudents}
                       </div>
                     </dd>
                   </dl>
@@ -139,7 +141,7 @@ const Dashboard = () => {
                     </dt>
                     <dd className="flex items-baseline">
                       <div className="text-2xl font-semibold text-gray-900">
-                        {stats.totalCourses}
+                        {statistics.totalCourses}
                       </div>
                     </dd>
                   </dl>
