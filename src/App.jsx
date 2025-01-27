@@ -5,6 +5,7 @@ import AdminRoutes from "./routes/AdminRoutes";
 import ProfessorRoutes from "./routes/ProfessorRoutes";
 import StudentRoutes from "./routes/StudentRoutes";
 import UnauthorizedPage from "./pages/auth/Unauthorized";
+import PageNotFound from "./pages/PageNotFound";
 
 function App() {
   return (
@@ -27,6 +28,9 @@ function App() {
 
           {/* Unauthorized page */}
           <Route path="/unauthorized" element={<UnauthorizedPage />} />
+
+          {/* Page not found */}
+          <Route path="*" element={<PageNotFound />} />
         </Routes>
       </Router>
     </div>
