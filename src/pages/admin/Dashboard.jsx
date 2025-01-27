@@ -1,7 +1,15 @@
-import { BookOpen, File, GraduationCap, School, Settings, Users } from "lucide-react";
+import {
+  BookOpen,
+  File,
+  GraduationCap,
+  School,
+  Settings,
+  Users,
+} from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { getStatistics } from "../../services/adminService";
 import toast from "react-hot-toast";
+import { Link } from "react-router-dom";
 
 const initialStatistics = {
   totalUsers: 0,
@@ -83,108 +91,103 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen py-6">
       <div className="container mx-auto px-4">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-darkGray ">
+            Welcome to Your Dashboard
+          </h1>
+          <p className="text-gray-600 ">
+            Here’s an overview of your system stats and quick actions.
+          </p>
+        </div>
+
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Total Users */}
-          <div className="bg-indigo-100 overflow-hidden shadow rounded-lg">
-            <div className="p-5">
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <Users className="h-6 w-6 text-gray-500" />
-                </div>
-                <div className="ml-5 w-0 flex-1">
-                  <dl>
-                    <dt className="text-sm font-medium text-gray-600 truncate">
-                      Total Users
-                    </dt>
-                    <dd className="flex items-baseline">
-                      <div className="text-2xl font-semibold text-gray-900">
-                        {statistics.totalUsers}
-                      </div>
-                    </dd>
-                  </dl>
-                </div>
+          <div className="bg-gradient-to-r from-indigo-500 to-blue-500 overflow-hidden shadow-lg rounded-lg hover:scale-105 transition-transform duration-300">
+            <div className="p-5 flex items-center">
+              <div className="bg-white p-3 rounded-full">
+                <Users className="h-6 w-6 text-indigo-500" />
+              </div>
+              <div className="ml-5">
+                <h3 className="text-white text-lg font-medium">Total Users</h3>
+                <p className="text-3xl font-bold text-white">
+                  {statistics.totalUsers}
+                </p>
               </div>
             </div>
           </div>
 
           {/* Total Professors */}
-          <div className="bg-red-100 overflow-hidden shadow rounded-lg">
-            <div className="p-5">
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <School className="h-6 w-6 text-gray-500" />
-                </div>
-                <div className="ml-5 w-0 flex-1">
-                  <dl>
-                    <dt className="text-sm font-medium text-gray-600 truncate">
-                      Professors
-                    </dt>
-                    <dd className="flex items-baseline">
-                      <div className="text-2xl font-semibold text-gray-900">
-                        {statistics.totalProfessors}
-                      </div>
-                    </dd>
-                  </dl>
-                </div>
+          <div className="bg-gradient-to-r from-red-500 to-pink-500 shadow-lg rounded-lg p-5 hover:scale-105 transition-transform duration-300">
+            <div className="flex items-center">
+              <div className="bg-white p-3 rounded-full">
+                <School className="h-6 w-6 text-red-500" />
+              </div>
+              <div className="ml-5">
+                <h3 className="text-white text-lg font-medium">Professors</h3>
+                <p className="text-3xl font-bold text-white">
+                  {statistics.totalProfessors}
+                </p>
               </div>
             </div>
           </div>
 
           {/* Total Students */}
-          <div className="bg-yellow-100 overflow-hidden shadow rounded-lg">
-            <div className="p-5">
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <GraduationCap className="h-6 w-6 text-gray-500" />
-                </div>
-                <div className="ml-5 w-0 flex-1">
-                  <dl>
-                    <dt className="text-sm font-medium text-gray-600 truncate">
-                      Students
-                    </dt>
-                    <dd className="flex items-baseline">
-                      <div className="text-2xl font-semibold text-gray-900">
-                        {statistics.totalStudents}
-                      </div>
-                    </dd>
-                  </dl>
-                </div>
+          <div className="bg-gradient-to-r from-yellow-500 to-orange-500 shadow-lg rounded-lg p-5 hover:scale-105 transition-transform duration-300">
+            <div className="flex items-center">
+              <div className="bg-white p-3 rounded-full">
+                <GraduationCap className="h-6 w-6 text-yellow-500" />
+              </div>
+              <div className="ml-5">
+                <h3 className="text-white text-lg font-medium">Students</h3>
+                <p className="text-3xl font-bold text-white">
+                  {statistics.totalStudents}
+                </p>
               </div>
             </div>
           </div>
 
           {/* Total Courses */}
-          <div className="bg-green-100 overflow-hidden shadow rounded-lg">
-            <div className="p-5">
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <BookOpen className="h-6 w-6 text-gray-500" />
-                </div>
-                <div className="ml-5 w-0 flex-1">
-                  <dl>
-                    <dt className="text-sm font-medium text-gray-600 truncate">
-                      Active Courses
-                    </dt>
-                    <dd className="flex items-baseline">
-                      <div className="text-2xl font-semibold text-gray-900">
-                        {statistics.totalCourses}
-                      </div>
-                    </dd>
-                  </dl>
-                </div>
+          <div className="bg-gradient-to-r from-green-500 to-teal-500 shadow-lg rounded-lg p-5 hover:scale-105 transition-transform duration-300">
+            <div className="flex items-center">
+              <div className="bg-white p-3 rounded-full">
+                <BookOpen className="h-6 w-6 text-green-500" />
+              </div>
+              <div className="ml-5">
+                <h3 className="text-white text-lg font-medium">
+                  Active Courses
+                </h3>
+                <p className="text-3xl font-bold text-white">
+                  {statistics.totalCourses}
+                </p>
               </div>
             </div>
           </div>
         </div>
 
         {/* Quick Actions */}
-        <div className="mt-8">
-          <h2 className="text-lg font-medium mb-4 text-darkGray">
+        <div className="mt-12">
+          <h2 className="text-xl font-semibold mb-4 text-darkGray">
             Quick Actions
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-
+            {quickActions.map((action) => (
+              <div
+                key={action.id}
+                className="bg-white shadow-lg rounded-lg p-5 flex items-center justify-between  hover:cursor-pointer hover:scale-105 transition-transform duration-300"
+              >
+                <Link
+                  to={action.path}
+                  className="flex items-center text-gray-700 "
+                >
+                  <div className="bg-indigo-100  p-3 rounded-full">
+                    {action.icon}
+                  </div>
+                  <p className="ml-4 text-lg font-medium">{action.name}</p>
+                </Link>
+              </div>
+            ))}
           </div>
         </div>
       </div>
