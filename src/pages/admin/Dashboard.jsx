@@ -7,7 +7,7 @@ import {
   Users,
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import { getStatistics } from "../../services/adminService";
+import { getResentActivities, getStatistics } from "../../services/adminService";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 
@@ -20,6 +20,8 @@ const initialStatistics = {
 
 const Dashboard = () => {
   const [statistics, setStatistics] = useState(initialStatistics);
+
+  const [activities, setActivities] = useState([]);
 
   useEffect(() => {
     handleGetStatistics();
@@ -34,32 +36,14 @@ const Dashboard = () => {
     }
   };
 
-  const recentActivities = [
-    {
-      id: 1,
-      type: "New Professor",
-      message: "Dr. Sarah Johnson joined Computer Science",
-      time: "2 hours ago",
-    },
-    {
-      id: 2,
-      type: "Exam Alert",
-      message: "Multiple submissions detected in CS101 Final",
-      time: "3 hours ago",
-    },
-    {
-      id: 3,
-      type: "Course Added",
-      message: "New course: Advanced Machine Learning",
-      time: "5 hours ago",
-    },
-    {
-      id: 4,
-      type: "System Alert",
-      message: "Peak user activity detected",
-      time: "6 hours ago",
-    },
-  ];
+  const handleGetActivities = async () => {
+    try {
+      const data = await getResentActivities();
+      setActivities(data);
+    } catch (error) {
+      toast.error(error);
+    }
+  }
 
   const quickActions = [
     {
@@ -190,6 +174,8 @@ const Dashboard = () => {
             ))}
           </div>
         </div>
+
+        {/* Recent Activity */}
       </div>
     </div>
   );
