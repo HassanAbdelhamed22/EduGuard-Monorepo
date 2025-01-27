@@ -1,15 +1,28 @@
 import { BookOpen, GraduationCap, School, Users } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
+import { getStatistics } from "../../services/adminService";
+import toast from "react-hot-toast";
+
+const initialStatistics = {
+  totalUsers: 0,
+  totalStudents: 0,
+  totalProfessors: 0,
+  totalCourses: 0,
+};
 
 const Dashboard = () => {
-  const stats = {
-    totalUsers: 1250,
-    totalProfessors: 45,
-    totalStudents: 1200,
-    totalCourses: 68,
-    activeExams: 12,
-    flaggedIncidents: 8,
-  };
+  const [statistics, setStatistics] = useState(initialStatistics);
+
+
+
+  const handleGetStatistics = async () => {
+    try {
+      const data = await getStatistics();
+      setStatistics(data);
+    } catch (error) {
+      toast.error(error);
+    }
+  } 
 
   const recentActivities = [
     {
@@ -57,7 +70,7 @@ const Dashboard = () => {
                     </dt>
                     <dd className="flex items-baseline">
                       <div className="text-2xl font-semibold text-gray-900">
-                        {stats.totalUsers}
+                        {}
                       </div>
                     </dd>
                   </dl>
