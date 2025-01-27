@@ -1,15 +1,30 @@
 import { BookOpen, GraduationCap, School, Users } from "lucide-react";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { getStatistics } from "../../services/adminService";
+import toast from "react-hot-toast";
+
+const initialStatistics = {
+  totalUsers: 0,
+  totalStudents: 0,
+  totalProfessors: 0,
+  totalCourses: 0,
+};
 
 const Dashboard = () => {
-  const stats = {
-    totalUsers: 1250,
-    totalProfessors: 45,
-    totalStudents: 1200,
-    totalCourses: 68,
-    activeExams: 12,
-    flaggedIncidents: 8,
-  };
+  const [statistics, setStatistics] = useState(initialStatistics);
+
+  useEffect(() => {
+    handleGetStatistics();
+  }, []);
+
+  const handleGetStatistics = async () => {
+    try {
+      const data = await getStatistics();
+      setStatistics(data);
+    } catch (error) {
+      toast.error(error);
+    }
+  } 
 
   const recentActivities = [
     {
@@ -57,7 +72,7 @@ const Dashboard = () => {
                     </dt>
                     <dd className="flex items-baseline">
                       <div className="text-2xl font-semibold text-gray-900">
-                        {stats.totalUsers}
+                        {statistics.totalUsers}
                       </div>
                     </dd>
                   </dl>
@@ -80,7 +95,7 @@ const Dashboard = () => {
                     </dt>
                     <dd className="flex items-baseline">
                       <div className="text-2xl font-semibold text-gray-900">
-                        {stats.totalProfessors}
+                        {statistics.totalProfessors}
                       </div>
                     </dd>
                   </dl>
@@ -103,7 +118,7 @@ const Dashboard = () => {
                     </dt>
                     <dd className="flex items-baseline">
                       <div className="text-2xl font-semibold text-gray-900">
-                        {stats.totalStudents}
+                        {statistics.totalStudents}
                       </div>
                     </dd>
                   </dl>
@@ -126,7 +141,7 @@ const Dashboard = () => {
                     </dt>
                     <dd className="flex items-baseline">
                       <div className="text-2xl font-semibold text-gray-900">
-                        {stats.totalCourses}
+                        {statistics.totalCourses}
                       </div>
                     </dd>
                   </dl>
