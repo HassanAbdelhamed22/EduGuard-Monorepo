@@ -1,4 +1,4 @@
-import { BookOpen, GraduationCap, School, Users } from "lucide-react";
+import { BookOpen, File, GraduationCap, School, Settings, Users } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { getStatistics } from "../../services/adminService";
 import toast from "react-hot-toast";
@@ -24,7 +24,7 @@ const Dashboard = () => {
     } catch (error) {
       toast.error(error);
     }
-  } 
+  };
 
   const recentActivities = [
     {
@@ -50,6 +50,33 @@ const Dashboard = () => {
       type: "System Alert",
       message: "Peak user activity detected",
       time: "6 hours ago",
+    },
+  ];
+
+  const quickActions = [
+    {
+      id: 1,
+      name: "Create User",
+      icon: <Users className="w-6 h-6" />,
+      path: "/admin/users/create",
+    },
+    {
+      id: 2,
+      name: "Create Course",
+      icon: <BookOpen className="w-6 h-6" />,
+      path: "/admin/courses/create",
+    },
+    {
+      id: 3,
+      name: "Profile Settings",
+      icon: <Settings className="w-6 h-6" />,
+      path: "/admin/profile",
+    },
+    {
+      id: 4,
+      name: "View Reports",
+      icon: <File className="w-6 h-6" />,
+      path: "#",
     },
   ];
 
@@ -148,6 +175,16 @@ const Dashboard = () => {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="mt-8">
+          <h2 className="text-lg font-medium mb-4 text-darkGray">
+            Quick Actions
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+
           </div>
         </div>
       </div>
