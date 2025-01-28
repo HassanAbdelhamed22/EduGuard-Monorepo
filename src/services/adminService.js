@@ -5,3 +5,8 @@ export const getStatistics = async () => {
   const { data } = await api.get(`${BASE_URL}admin/statistics`);
   return data;
 };
+
+export const getResentActivities = async () => {
+  const { data } = await api.get(`${BASE_URL}admin/recent-activities`);
+  return data;
+};
