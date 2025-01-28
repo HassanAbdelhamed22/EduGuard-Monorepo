@@ -20,3 +20,8 @@ export const updateUserAccount = async (id, data) => {
   const { data: response } = await api.patch(`${BASE_URL}admin/users/${id}`, data);
   return response;
 };
+
+export const deleteUserAccount = async (id) => {
+  const { data: response } = await api.delete(`${BASE_URL}admin/users/${id}`);
+  return response;
+};
