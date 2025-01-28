@@ -8,8 +8,10 @@ import {
   TableRow,
 } from "../../components/ui/Table";
 import { getAllUsers } from "../../services/adminService";
-import { stat } from "./../../../node_modules/@types/node/fs.d";
-import { use } from "react";
+import { toast } from "react-hot-toast";
+import Button from "../../components/ui/Button";
+import { Pencil, Trash2, UserCog } from "lucide-react";
+import Loading from "../../components/ui/Loading";
 
 const AllUsers = () => {
   const [users, setUsers] = useState([]);
@@ -23,14 +25,10 @@ const AllUsers = () => {
   const fetchUsers = async (page) => {
     setIsLoading(true);
     try {
-      const response = await getAllUsers(page);
-
-      if (response.status === 200) {
-        setUsers(response.data);
-        setPagination(response.pagination);
-      } else {
-        toast.error(response.message);
-      }
+      const { data } = await getAllUsers(page);
+      console.log("API Response:", data);
+      setUsers(data);
+      setPagination(pagination);
     } catch (error) {
       toast.error(error.message);
     } finally {
@@ -47,30 +45,60 @@ const AllUsers = () => {
   };
 
   if (isLoading && users.length === 0) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        Loading...
-      </div>
-    );
+    return <Loading />;
   }
   return (
-    <div className="p-4">
+    <div className="container mx-auto px-4 py-8">
+      <div className="mb-8">
+        <h2 className="text-2xl font-bold text-darkGray">All Users</h2>
+      </div>
+
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Product Name</TableHead>
-            <TableHead>Color</TableHead>
-            <TableHead>Category</TableHead>
-            <TableHead>Price</TableHead>
+            <TableHead className="w-1/12">ID</TableHead>
+            <TableHead className="w-2/12">Name</TableHead>
+            <TableHead className="w-1/12">Email</TableHead>
+            <TableHead className="w-1/12">Phone</TableHead>
+            <TableHead className="w-1/12">Address</TableHead>
+            <TableHead className="w-1/12">Role</TableHead>
+            <TableHead className="w-1/12">Action</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data.map((row, index) => (
-            <TableRow key={index} striped>
-              <TableCell>{row.name}</TableCell>
-              <TableCell>{row.color}</TableCell>
-              <TableCell>{row.category}</TableCell>
-              <TableCell>{row.price}</TableCell>
+          {users?.map((user) => (
+            <TableRow key={user.id}>
+              <TableCell>{user.id}</TableCell>
+              <TableCell>{user.name}</TableCell>
+              <TableCell>{user.email}</TableCell>
+              <TableCell>{user.phone}</TableCell>
+              <TableCell>{user.address}</TableCell>
+              <TableCell>{user.role}</TableCell>
+              <TableCell>
+                <div className="flex gap-2">
+                  <Button variant="ghost" size={"icon"} title="Assign Role">
+                    <UserCog className="w-5 h-5" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => {
+                      /* Implement edit */
+                    }}
+                    title="Edit User"
+                  >
+                    <Pencil className="h-4 w-4 text-primary" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    //onClick={() => handleDelete(user.id)}
+                    title="Delete User"
+                  >
+                    <Trash2 className="h-4 w-4 text-red-600" />
+                  </Button>
+                </div>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
