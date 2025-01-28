@@ -12,6 +12,14 @@ import { toast } from "react-hot-toast";
 import Button from "../../components/ui/Button";
 import { Pencil, Trash2, UserCog } from "lucide-react";
 import Loading from "../../components/ui/Loading";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "../../components/ui/Pagination";
 
 const AllUsers = () => {
   const [users, setUsers] = useState([]);
@@ -25,10 +33,9 @@ const AllUsers = () => {
   const fetchUsers = async (page) => {
     setIsLoading(true);
     try {
-      const { data } = await getAllUsers(page);
-      console.log("API Response:", data);
+      const { data, pagination } = await getAllUsers(page);
       setUsers(data);
-      setPagination(pagination);
+      setPagination({ ...pagination, current_page: page });
     } catch (error) {
       toast.error(error.message);
     } finally {
@@ -41,7 +48,13 @@ const AllUsers = () => {
   }, []);
 
   const handlePageChange = (page) => {
-    fetchUsers(page);
+    if (
+      page !== pagination.current_page &&
+      page > 0 &&
+      page <= pagination.total_pages
+    ) {
+      fetchUsers(page);
+    }
   };
 
   if (isLoading && users.length === 0) {
@@ -62,7 +75,7 @@ const AllUsers = () => {
             <TableHead className="w-1/12">Phone</TableHead>
             <TableHead className="w-1/12">Address</TableHead>
             <TableHead className="w-1/12">Role</TableHead>
-            <TableHead className="w-1/12">Action</TableHead>
+            <TableHead className="w-1/12">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -103,6 +116,54 @@ const AllUsers = () => {
           ))}
         </TableBody>
       </Table>
+
+      <Pagination className="mt-8">
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious
+              onClick={() =>
+                pagination.current_page > 1 &&
+                handlePageChange(pagination.current_page - 1)
+              }
+              className={
+                pagination.current_page <= 1
+                  ? "pointer-events-none opacity-50"
+                  : "cursor-pointer"
+              }
+            />
+          </PaginationItem>
+
+          {Array.from({ length: pagination.total_pages }, (_, i) => i + 1).map(
+            (page) => (
+              <PaginationItem key={page}>
+                <PaginationLink
+                  onClick={() => handlePageChange(page)}
+                  isActive={page === pagination.current_page}
+                  className={`${
+                    page === pagination.current_page ? "" : "cursor-pointer"
+                  }`}
+                >
+                  {page}
+                </PaginationLink>
+              </PaginationItem>
+            )
+          )}
+
+          <PaginationItem>
+            <PaginationNext
+              onClick={() =>
+                pagination.current_page < pagination.total_pages &&
+                handlePageChange(pagination.current_page + 1)
+              }
+              className={
+                pagination.current_page >= pagination.total_pages
+                  ? "pointer-events-none opacity-50"
+                  : "cursor-pointer"
+              }
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
     </div>
   );
 };
