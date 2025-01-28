@@ -29,6 +29,10 @@ const AllUsers = () => {
     total_items: 0,
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [deleteModal, setDeleteModal] = useState({
+    isOpen: false,
+    userId: null,
+  });
 
   const fetchUsers = async (page) => {
     setIsLoading(true);
@@ -55,6 +59,14 @@ const AllUsers = () => {
     ) {
       fetchUsers(page);
     }
+  };
+
+  const openDeleteModal = (userId) => {
+    setDeleteModal({ isOpen: true, userId });
+  };
+
+  const closeDeleteModal = () => {
+    setDeleteModal({ isOpen: false, userId: null });
   };
 
   if (isLoading && users.length === 0) {
