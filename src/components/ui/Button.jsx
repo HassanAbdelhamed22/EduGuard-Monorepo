@@ -1,7 +1,7 @@
 import { cn } from "../../lib/utils";
 import { cva } from "class-variance-authority";
 
-const buttonVariants = cva(
+export const buttonVariants = cva(
   "flex items-center justify-center rounded-md font-medium text-white duration-300 dark:text-black disabled:bg-indigo-400 disabled:hover:bg-indigo-400 disabled:cursor-not-allowed",
   {
     variants: {
@@ -17,6 +17,7 @@ const buttonVariants = cva(
         // ** OUTLINE
         outline:
           "border border-indigo-400 hover:text-white bg-transparent text-black hover:border-transparent hover:bg-indigo-600 dark:text-gray-700 dark:hover:text-white",
+        ghost: "text-gray-600 hover:bg-gray-100",
       },
       size: {
         default: "p-3",
@@ -77,4 +78,4 @@ const Button = ({
   );
 };
 
-export default { Button, buttonVariants };
+export default Button;
