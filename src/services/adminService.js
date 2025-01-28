@@ -10,3 +10,8 @@ export const getResentActivities = async () => {
   const { data } = await api.get(`${BASE_URL}admin/recent-activities`);
   return data;
 };
+
+export const getAllUsers = async () => {
+  const { data } = await api.get(`${BASE_URL}admin/users`);
+  return data;
+};
