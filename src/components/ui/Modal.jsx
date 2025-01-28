@@ -10,7 +10,7 @@ export default function Modal({
 }) {
   return (
     <Transition appear show={isOpen} as={Fragment}>
-      <Dialog as="div" className="relative z-10" onClose={closeModal}>
+      <Dialog as="div" className="relative z-50" onClose={closeModal}>
         {/* Overlay */}
         <div
           className="fixed inset-0 backdrop-blur-sm bg-black bg-opacity-25"
@@ -29,12 +29,12 @@ export default function Modal({
         >
           <div className="fixed inset-0 z-10 overflow-y-auto">
             <div className="flex min-h-full items-center justify-center p-4">
-              <Dialog.Panel className="relative w-full max-w-md rounded-xl shadow-lg bg-white dark:bg-gray-800 p-6">
+              <Dialog.Panel className="relative w-full max-w-md rounded-xl shadow-lg bg-white p-6">
                 {/* Title */}
                 {title && (
                   <DialogTitle
                     as="h3"
-                    className="text-lg font-bold text-darkGray dark:text-white"
+                    className="text-lg font-bold text-darkGray"
                   >
                     {title}
                   </DialogTitle>
@@ -43,7 +43,7 @@ export default function Modal({
                 {/* Description */}
                 {description && (
                   <div className="mt-2">
-                    <p className="text-sm text-mediumGray dark:text-gray-400">
+                    <p className="text-sm text-mediumGray ">
                       {description}
                     </p>
                   </div>
@@ -54,7 +54,7 @@ export default function Modal({
 
                 {/* Close Button */}
                 <button
-                  className="absolute top-3 right-3 text-mediumGray dark:text-gray-400 hover:text-red-600 dark:hover:text-red-500"
+                  className="absolute top-3 right-3 text-mediumGray  hover:text-red-600 "
                   onClick={closeModal}
                 >
                   <svg
