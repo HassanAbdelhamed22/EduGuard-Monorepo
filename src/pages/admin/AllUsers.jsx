@@ -7,7 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "../../components/ui/Table";
-import { getAllUsers } from "../../services/adminService";
+import { deleteUserAccount, getAllUsers } from "../../services/adminService";
 import { toast } from "react-hot-toast";
 import Button from "../../components/ui/Button";
 import { Pencil, Trash2, UserCog } from "lucide-react";
@@ -20,6 +20,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "../../components/ui/Pagination";
+import Modal from "../../components/ui/Modal";
 
 const AllUsers = () => {
   const [users, setUsers] = useState([]);
@@ -71,7 +72,7 @@ const AllUsers = () => {
 
   const handleDelete = async () => {
     try {
-      await deleteUsers(deleteModal.userId);
+      await deleteUserAccount(deleteModal.userId);
       toast.success("User deleted successfully");
       closeDeleteModal();
       fetchUsers(pagination.current_page);
@@ -128,7 +129,7 @@ const AllUsers = () => {
                   <Button
                     variant="ghost"
                     size="icon"
-                    //onClick={() => handleDelete(user.id)}
+                    onClick={() => openDeleteModal(user.id)}
                     title="Delete User"
                   >
                     <Trash2 className="h-4 w-4 text-red-600" />
@@ -187,6 +188,22 @@ const AllUsers = () => {
           </PaginationItem>
         </PaginationContent>
       </Pagination>
+
+      <Modal
+        isOpen={deleteModal.isOpen}
+        closeModal={closeDeleteModal}
+        title="Delete User"
+        description="Are you sure you want to delete this user? This action cannot be undone."
+      >
+        <div className="flex justify-end gap-2 mt-5">
+          <Button variant="cancel" onClick={closeDeleteModal}>
+            Cancel
+          </Button>
+          <Button variant={"danger"} onClick={handleDelete}>
+            Delete
+          </Button>
+        </div>
+      </Modal>
     </div>
   );
 };
