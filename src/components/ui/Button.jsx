@@ -22,6 +22,7 @@ export const buttonVariants = cva(
       size: {
         default: "p-3",
         sm: "text-sm px-4 py-2",
+        icon: "h-9 w-9",
       },
       fullWidth: {
         true: "w-full",
