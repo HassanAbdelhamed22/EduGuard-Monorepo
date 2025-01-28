@@ -25,3 +25,8 @@ export const deleteUserAccount = async (id) => {
   const { data: response } = await api.delete(`${BASE_URL}admin/users/${id}`);
   return response;
 };
+
+export const assignRole = async (id, role) => {
+  const { data: response } = await api.post(`${BASE_URL}admin/users/assign-role`, { id, role });
+  return response;
+}
