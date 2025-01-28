@@ -69,6 +69,17 @@ const AllUsers = () => {
     setDeleteModal({ isOpen: false, userId: null });
   };
 
+  const handleDelete = async () => {
+    try {
+      await deleteUsers(deleteModal.userId);
+      toast.success("User deleted successfully");
+      closeDeleteModal();
+      fetchUsers(pagination.current_page);
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
   if (isLoading && users.length === 0) {
     return <Loading />;
   }
