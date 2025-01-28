@@ -11,13 +11,17 @@ export const getResentActivities = async () => {
   return data;
 };
 
-export const getAllUsers = async () => {
-  const { data } = await api.get(`${BASE_URL}admin/users`);
-  return data;
+export const getAllUsers = async (page) => {
+  const response = await api.get(`${BASE_URL}admin/users?page=${page}`);
+  const { data, pagination } = response.data;
+  return { data, pagination };
 };
 
 export const updateUserAccount = async (id, data) => {
-  const { data: response } = await api.patch(`${BASE_URL}admin/users/${id}`, data);
+  const { data: response } = await api.patch(
+    `${BASE_URL}admin/users/${id}`,
+    data
+  );
   return response;
 };
 
@@ -27,6 +31,9 @@ export const deleteUserAccount = async (id) => {
 };
 
 export const assignRole = async (id, role) => {
-  const { data: response } = await api.post(`${BASE_URL}admin/users/assign-role`, { id, role });
+  const { data: response } = await api.post(
+    `${BASE_URL}admin/users/assign-role`,
+    { id, role }
+  );
   return response;
-}
+};
