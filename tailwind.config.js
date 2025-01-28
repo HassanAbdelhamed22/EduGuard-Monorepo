@@ -11,6 +11,8 @@ export default {
         mediumGray: "#4b5563",
         lightGray: "#E9ECEF",
         borderLight: "#e5e7eb",
+        muted: "#f9fafb",
+        "muted-foreground": "#6b7280",
       },
     },
   },
