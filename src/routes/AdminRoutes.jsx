@@ -7,6 +7,7 @@ import Profile from "../pages/auth/Profile";
 import UpdatePassword from "../pages/auth/UpdatePassword";
 import ErrorHandler from "../components/errors/ErrorHandler";
 import PageNotFound from "../pages/PageNotFound";
+import AllUsers from "../pages/admin/AllUsers";
 
 const AdminRoutes = () => {
   return (
@@ -17,7 +18,7 @@ const AdminRoutes = () => {
       >
         <Route element={<AdminLayout />}>
           <Route path="dashboard" element={<Dashboard />} />
-          <Route path="users" element={<div>Users List</div>} />
+          <Route path="users" element={<AllUsers />} />
           <Route path="users/create" element={<div>Create User</div>} />
           <Route path="students" element={<div>Students List</div>} />
           <Route path="professors" element={<div>Professors List</div>} />
