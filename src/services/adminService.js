@@ -15,3 +15,8 @@ export const getAllUsers = async () => {
   const { data } = await api.get(`${BASE_URL}admin/users`);
   return data;
 };
+
+export const updateUserAccount = async (id, data) => {
+  const { data: response } = await api.patch(`${BASE_URL}admin/users/${id}`, data);
+  return response;
+};
