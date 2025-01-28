@@ -1,5 +1,7 @@
 import {
+  Activity,
   BookOpen,
+  Clock,
   File,
   GraduationCap,
   School,
@@ -7,7 +9,10 @@ import {
   Users,
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import { getResentActivities, getStatistics } from "../../services/adminService";
+import {
+  getResentActivities,
+  getStatistics,
+} from "../../services/adminService";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 
@@ -25,6 +30,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     handleGetStatistics();
+    handleGetActivities();
   }, []);
 
   const handleGetStatistics = async () => {
@@ -38,12 +44,12 @@ const Dashboard = () => {
 
   const handleGetActivities = async () => {
     try {
-      const data = await getResentActivities();
-      setActivities(data);
+      const response = await getResentActivities();
+      setActivities(response.activities);
     } catch (error) {
       toast.error(error);
     }
-  }
+  };
 
   const quickActions = [
     {
@@ -176,6 +182,55 @@ const Dashboard = () => {
         </div>
 
         {/* Recent Activity */}
+        <div className="mt-12">
+          <h2 className="text-xl font-semibold mb-4 text-darkGray">
+            Recent Activities
+          </h2>
+          <div className=" shadow-lg rounded-lg overflow-hidden">
+            <ul className="divide-y divide-gray-200">
+              {activities.map((activity) => (
+                <li
+                  key={activity.id}
+                  className="hover:bg-gray-50 transition duration-200"
+                >
+                  <div className="px-6 py-4 sm:px-8 flex items-start space-x-4">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex justify-between items-center mb-2">
+                        <div className="flex items-center space-x-2">
+                          <Activity className="h-5 w-5 text-gray-500" />
+                          <p className="text-sm font-medium text-primary truncate">
+                            {activity.Activity}
+                          </p>
+                        </div>
+                        <div className="ml-2 flex-shrink-0 flex items-center">
+                          <Clock className="h-4 w-4 text-gray-400 mr-1" />
+                          <p className="text-sm text-gray-500">
+                            {/* Format the date for better readability */}
+                            {new Date(activity.created_at).toLocaleDateString(
+                              "en-US",
+                              {
+                                year: "numeric",
+                                month: "short",
+                                day: "numeric",
+                              }
+                            )}
+                            {/* Format the time in hours and minutes */}
+                            {` ${new Date(
+                              activity.created_at
+                            ).toLocaleTimeString([], {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}`}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   );
