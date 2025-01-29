@@ -5,9 +5,14 @@ import SearchBar from "./ui/SearchBar";
 import toast from "react-hot-toast";
 import { getInitials } from "../utils/functions";
 import { getProfile } from "../services/authService";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProfile } from "../redux/slices/profileSlice";
 
 const Header = () => {
-  const [profile, setProfile] = useState({ profile_picture: null, name: "" });
+  const dispatch = useDispatch();
+
+  // Select profile data from Redux
+  const profile = useSelector((state) => state.profile.profile);
 
   // Check if profilePicture exists and is not an empty string
   const hasValidProfilePicture =
@@ -15,22 +20,8 @@ const Header = () => {
 
   // ** Handlers
   useEffect(() => {
-    fetchProfile();
-  }, []);
-
-  const fetchProfile = async () => {
-    try {
-      const { data } = await getProfile();
-      if (data?.profile_picture) {
-        data.profile_picture = `http://127.0.0.1:8000/storage/${data.profile_picture}`;
-      }
-      setProfile(data);
-      console.log("Fetched profile:", data);
-    } catch (error) {
-      console.error("Error fetching profile:", error);
-      toast.error("Error fetching profile");
-    }
-  };
+    dispatch(fetchProfile());
+  }, [dispatch]);
 
   return (
     <header className="flex items-center justify-between px-5 py-3 bg-white shadow-sm sticky top-0">
@@ -42,8 +33,8 @@ const Header = () => {
         <Bell className="w-6 h-6 cursor-pointer text-darkGray" />
         <div className="flex items-center gap-2">
           <div className="text-right">
-            <div className="font-semibold">{username}</div>
-            <div className="text-sm text-primary">{userRole}</div>
+            <div className="font-semibold">{profile.name}</div>
+            <div className="text-sm text-primary">{profile.role}</div>
           </div>
           <div className="relative group">
             {hasValidProfilePicture ? (
@@ -55,9 +46,9 @@ const Header = () => {
             ) : (
               <div
                 className="w-10 h-10 ml-3 flex items-center justify-center rounded-full bg-primary text-white font-semibold"
-                title={username}
+                title={profile.name}
               >
-                {getInitials(username)}
+                {getInitials(profile.name)}
               </div>
             )}
           </div>
