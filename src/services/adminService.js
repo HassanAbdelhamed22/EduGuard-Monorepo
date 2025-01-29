@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import api from "../config/api";
 import { BASE_URL } from "../constants";
 
@@ -17,12 +18,17 @@ export const getAllUsers = async (page) => {
   return { data, pagination };
 };
 
-export const updateUserAccount = async (id, data) => {
-  const { data: response } = await api.patch(
-    `${BASE_URL}admin/users/${id}`,
-    data
-  );
-  return response;
+export const updateUserAccount = async (id, userData) => {
+  try {
+    const { data, status } = await api.patch(
+      `${BASE_URL}admin/users/${id}`,
+      userData
+    );
+    return { data, status };
+  } catch (error) {
+    console.error(error);
+    toast.error(error?.response?.data?.message);
+  }
 };
 
 export const deleteUserAccount = async (id) => {

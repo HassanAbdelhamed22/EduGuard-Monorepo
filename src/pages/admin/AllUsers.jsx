@@ -7,7 +7,11 @@ import {
   TableHeader,
   TableRow,
 } from "../../components/ui/Table";
-import { deleteUserAccount, getAllUsers } from "../../services/adminService";
+import {
+  deleteUserAccount,
+  getAllUsers,
+  updateUserAccount,
+} from "../../services/adminService";
 import { toast } from "react-hot-toast";
 import Button from "../../components/ui/Button";
 import { Pencil, Trash2, UserCog } from "lucide-react";
@@ -21,6 +25,7 @@ import {
   PaginationPrevious,
 } from "../../components/ui/Pagination";
 import Modal from "../../components/ui/Modal";
+import UpdateUserAccountForm from "../../components/forms/UpdateUserAccountForm";
 
 const AllUsers = () => {
   const [users, setUsers] = useState([]);
@@ -34,8 +39,15 @@ const AllUsers = () => {
     isOpen: false,
     type: null,
     userId: null,
-    userData: null
+    userData: null,
   });
+
+  const initialValues = {
+    name: modal.userData?.name || "",
+    email: modal.userData?.email || "",
+    phone: modal.userData?.phone || "",
+    address: modal.userData?.address || "",
+  };
 
   const fetchUsers = async (page) => {
     setIsLoading(true);
@@ -67,18 +79,19 @@ const AllUsers = () => {
   const openDeleteModal = (userId) => {
     setModal({
       isOpen: true,
-      type: 'delete',
+      type: "delete",
       userId,
-      userData: null
+      userData: null,
     });
   };
 
   const openEditModal = (user) => {
+    console.log(user);
     setModal({
       isOpen: true,
-      type: 'edit',
+      type: "edit",
       userId: user.id,
-      userData: { ...user }
+      userData: user,
     });
   };
 
@@ -87,7 +100,7 @@ const AllUsers = () => {
       isOpen: false,
       type: null,
       userId: null,
-      userData: null
+      userData: null,
     });
   };
 
@@ -99,6 +112,69 @@ const AllUsers = () => {
       fetchUsers(pagination.current_page);
     } catch (error) {
       toast.error(error.message);
+    }
+  };
+
+  const handleUpdate = async (values) => {
+    try {
+      setIsLoading(true);
+      const updatedFields = {};
+      for (const key in values) {
+        if (values[key] !== initialValues[key] && values[key] !== "") {
+          updatedFields[key] = values[key];
+        }
+      }
+
+      if (Object.keys(updatedFields).length === 0) {
+        toast.error("No fields have been updated.");
+        return;
+      }
+
+      console.log("Updated Fields:", updatedFields); // Debugging
+
+      // Send only the updated fields to the backend
+      const { data, status } = await updateUserAccount(
+        modal.userId,
+        updatedFields
+      );
+      if (status === 200) {
+        toast.success("User updated successfully");
+        closeModal();
+        fetchUsers(pagination.current_page);
+      } else {
+        console.error("Update failed", data);
+        toast.error("Failed to update user");
+      }
+    } catch (err) {
+      toast.error(err?.response?.data?.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const renderModalContent = () => {
+    if (modal.type === "delete") {
+      return (
+        <div className="flex justify-end gap-2 mt-5">
+          <Button variant="cancel" onClick={closeModal}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={handleDelete}>
+            Delete
+          </Button>
+        </div>
+      );
+    }
+
+    if (modal.type === "edit") {
+      return (
+        <UpdateUserAccountForm
+          initialValues={initialValues}
+          onSubmit={handleUpdate}
+          isLoading={isLoading}
+          closeModal={closeModal}
+        />
+      );
     }
   };
 
@@ -141,7 +217,7 @@ const AllUsers = () => {
                     variant="ghost"
                     size="icon"
                     onClick={() => {
-                      /* Implement edit */
+                      openEditModal(user);
                     }}
                     title="Edit User"
                   >
@@ -213,17 +289,14 @@ const AllUsers = () => {
       <Modal
         isOpen={modal.isOpen}
         closeModal={closeModal}
-        title="Delete User"
-        description="Are you sure you want to delete this user? This action cannot be undone."
+        title={modal.type === "delete" ? "Delete User" : "Edit User"}
+        description={
+          modal.type === "delete"
+            ? "Are you sure you want to delete this user? This action cannot be undone."
+            : "Update user information"
+        }
       >
-        <div className="flex justify-end gap-2 mt-5">
-          <Button variant="cancel" onClick={closeModal}>
-            Cancel
-          </Button>
-          <Button variant={"danger"} onClick={handleDelete}>
-            Delete
-          </Button>
-        </div>
+        {renderModalContent()}
       </Modal>
     </div>
   );
