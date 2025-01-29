@@ -7,7 +7,11 @@ import {
   TableHeader,
   TableRow,
 } from "../../components/ui/Table";
-import { deleteUserAccount, getAllUsers } from "../../services/adminService";
+import {
+  deleteUserAccount,
+  getAllUsers,
+  updateUserAccount,
+} from "../../services/adminService";
 import { toast } from "react-hot-toast";
 import Button from "../../components/ui/Button";
 import { Pencil, Trash2, UserCog } from "lucide-react";
@@ -34,7 +38,7 @@ const AllUsers = () => {
     isOpen: false,
     type: null,
     userId: null,
-    userData: null
+    userData: null,
   });
 
   const fetchUsers = async (page) => {
@@ -67,18 +71,18 @@ const AllUsers = () => {
   const openDeleteModal = (userId) => {
     setModal({
       isOpen: true,
-      type: 'delete',
+      type: "delete",
       userId,
-      userData: null
+      userData: null,
     });
   };
 
   const openEditModal = (user) => {
     setModal({
       isOpen: true,
-      type: 'edit',
+      type: "edit",
       userId: user.id,
-      userData: { ...user }
+      userData: { ...user },
     });
   };
 
@@ -87,7 +91,7 @@ const AllUsers = () => {
       isOpen: false,
       type: null,
       userId: null,
-      userData: null
+      userData: null,
     });
   };
 
@@ -99,6 +103,26 @@ const AllUsers = () => {
       fetchUsers(pagination.current_page);
     } catch (error) {
       toast.error(error.message);
+    }
+  };
+
+  const handleUpdate = async (values, { setSubmitting, setFieldError }) => {
+    try {
+      await updateUserAccount(modal.userId, values);
+      toast.success("User updated successfully");
+      closeModal();
+      fetchUsers(pagination.current_page);
+    } catch (err) {
+      if (err.response?.data?.errors) {
+        // Handle validation errors from the server
+        Object.keys(err.response.data.errors).forEach((key) => {
+          setFieldError(key, err.response.data.errors[key][0]);
+        });
+      } else {
+        setError("Failed to update user");
+      }
+    } finally {
+      setSubmitting(false);
     }
   };
 
