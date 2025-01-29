@@ -36,6 +36,7 @@ const Profile = () => {
 
   const dispatch = useDispatch();
   const profileRedux = useSelector((state) => state.profile.profile);
+  const loading = useSelector((state) => state.profile.isLoading);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -125,9 +126,9 @@ const Profile = () => {
   const hasValidProfilePicture =
     profile?.profile_picture && profile?.profile_picture !== "null";
 
-  // if (isLoading) {
-  //   return <Loading />;
-  // }
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <div className="max-h-screen py-6 px-4 sm:px-6 lg:px-8">
