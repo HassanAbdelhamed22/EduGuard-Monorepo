@@ -17,6 +17,9 @@ import {
 } from "lucide-react";
 import { getInitials } from "../../utils/functions";
 import toast from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProfile } from "../../redux/slices/profileSlice";
+import Loading from "../../components/ui/Loading";
 
 const defaultProfile = {
   name: "",
@@ -31,23 +34,34 @@ const Profile = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
-  useEffect(() => {
-    fetchProfile();
-  }, []);
+  const dispatch = useDispatch();
+  const profileRedux = useSelector((state) => state.profile.profile);
 
-  const fetchProfile = async () => {
-    try {
-      const { data } = await getProfile();
-      if (data?.profile_picture) {
-        data.profile_picture = `http://127.0.0.1:8000/storage/${data.profile_picture}`;
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        await dispatch(fetchProfile());
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+      } finally {
+        setIsLoading(false);
       }
-      setProfile(data || defaultProfile);
-      console.log("Fetched profile:", data);
-    } catch (error) {
-      console.error("Error fetching profile:", error);
-      toast.error("Error fetching profile");
-    } 
-  };
+    };
+  
+    fetchData();
+  }, [dispatch]);
+  
+  useEffect(() => {
+    if (profileRedux) {
+      setProfile({
+        name: profileRedux.name || "",
+        email: profileRedux.email || "",
+        phone: profileRedux.phone || "",
+        address: profileRedux.address || "",
+        profile_picture: profileRedux.profile_picture || null,
+      });
+    }
+  }, [profileRedux]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -63,6 +77,7 @@ const Profile = () => {
       if (status === 200) {
         setIsEditing(false);
         toast.success("Profile updated successfully");
+        dispatch(fetchProfile());
       } else {
         toast.error(data.message);
       }
@@ -82,9 +97,8 @@ const Profile = () => {
       setIsUploading(true);
       const response = await uploadProfilePicture(file);
       if (response?.profile_picture) {
-        const fullImageUrl = `http://127.0.0.1:8000${response.profile_picture}`;
-        setProfile((prev) => ({ ...prev, profile_picture: fullImageUrl }));
         toast.success("Profile picture uploaded successfully");
+        dispatch(fetchProfile());
       }
     } catch (error) {
       console.error("Error uploading profile picture:", error);
@@ -98,8 +112,8 @@ const Profile = () => {
     try {
       setIsUploading(true);
       await deleteProfilePicture();
-      setProfile((prev) => ({ ...prev, profile_picture: null }));
       toast.success("Profile picture deleted successfully");
+      dispatch(fetchProfile());
     } catch (error) {
       console.error("Error deleting profile picture:", error);
       toast.error("Error deleting profile picture");
@@ -109,7 +123,11 @@ const Profile = () => {
   };
 
   const hasValidProfilePicture =
-    profile.profile_picture && profile.profile_picture !== "null";
+    profile?.profile_picture && profile?.profile_picture !== "null";
+
+  // if (isLoading) {
+  //   return <Loading />;
+  // }
 
   return (
     <div className="max-h-screen py-6 px-4 sm:px-6 lg:px-8">
@@ -156,7 +174,7 @@ const Profile = () => {
                       className="h-28 w-28 rounded-full bg-primary flex items-center justify-center text-white text-3xl font-semibold border-4 border-white shadow-lg"
                       title={profile.name}
                     >
-                      {getInitials(profile.name)}
+                      {getInitials(profile?.name)}
                     </div>
                   )}
 
