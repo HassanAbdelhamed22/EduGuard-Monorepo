@@ -25,6 +25,8 @@ import {
   PaginationPrevious,
 } from "../../components/ui/Pagination";
 import Modal from "../../components/ui/Modal";
+import UpdateUserAccountForm from "../../components/forms/UpdateUserAccountForm";
+import { is } from "./../../../node_modules/immer/src/utils/common";
 
 const AllUsers = () => {
   const [users, setUsers] = useState([]);
@@ -40,6 +42,13 @@ const AllUsers = () => {
     userId: null,
     userData: null,
   });
+
+  const initialValues = {
+    name: modal.userData?.name || "",
+    email: modal.userData?.email || "",
+    phone: modal.userData?.phone || "",
+    address: modal.userData?.address || "",
+  };
 
   const fetchUsers = async (page) => {
     setIsLoading(true);
@@ -123,6 +132,31 @@ const AllUsers = () => {
       }
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const renderModalContent = () => {
+    if (modal.type === "delete") {
+      return (
+        <div className="flex justify-end gap-2 mt-5">
+          <Button variant="cancel" onClick={closeModal}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={handleDelete}>
+            Delete
+          </Button>
+        </div>
+      );
+    }
+
+    if (modal.type === "edit") {
+      return (
+        <UpdateUserAccountForm
+          initialValues={initialValues}
+          onSubmit={handleUpdate}
+          isLoading={isLoading}
+        />
+      );
     }
   };
 
