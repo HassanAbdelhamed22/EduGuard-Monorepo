@@ -26,7 +26,6 @@ import {
 } from "../../components/ui/Pagination";
 import Modal from "../../components/ui/Modal";
 import UpdateUserAccountForm from "../../components/forms/UpdateUserAccountForm";
-import { is } from "./../../../node_modules/immer/src/utils/common";
 
 const AllUsers = () => {
   const [users, setUsers] = useState([]);
@@ -87,11 +86,12 @@ const AllUsers = () => {
   };
 
   const openEditModal = (user) => {
+    console.log(user);
     setModal({
       isOpen: true,
       type: "edit",
       userId: user.id,
-      userData: { ...user },
+      userData: user,
     });
   };
 
@@ -115,23 +115,40 @@ const AllUsers = () => {
     }
   };
 
-  const handleUpdate = async (values, { setSubmitting, setFieldError }) => {
+  const handleUpdate = async (values) => {
     try {
-      await updateUserAccount(modal.userId, values);
-      toast.success("User updated successfully");
-      closeModal();
-      fetchUsers(pagination.current_page);
-    } catch (err) {
-      if (err.response?.data?.errors) {
-        // Handle validation errors from the server
-        Object.keys(err.response.data.errors).forEach((key) => {
-          setFieldError(key, err.response.data.errors[key][0]);
-        });
-      } else {
-        setError("Failed to update user");
+      setIsLoading(true);
+      const updatedFields = {};
+      for (const key in values) {
+        if (values[key] !== initialValues[key] && values[key] !== "") {
+          updatedFields[key] = values[key];
+        }
       }
+
+      if (Object.keys(updatedFields).length === 0) {
+        toast.error("No fields have been updated.");
+        return;
+      }
+
+      console.log("Updated Fields:", updatedFields); // Debugging
+
+      // Send only the updated fields to the backend
+      const { data, status } = await updateUserAccount(
+        modal.userId,
+        updatedFields
+      );
+      if (status === 200) {
+        toast.success("User updated successfully");
+        closeModal();
+        fetchUsers(pagination.current_page);
+      } else {
+        console.error("Update failed", data);
+        toast.error("Failed to update user");
+      }
+    } catch (err) {
+      toast.error(err?.response?.data?.message);
     } finally {
-      setSubmitting(false);
+      setIsLoading(false);
     }
   };
 
@@ -155,6 +172,7 @@ const AllUsers = () => {
           initialValues={initialValues}
           onSubmit={handleUpdate}
           isLoading={isLoading}
+          closeModal={closeModal}
         />
       );
     }
@@ -199,7 +217,7 @@ const AllUsers = () => {
                     variant="ghost"
                     size="icon"
                     onClick={() => {
-                      /* Implement edit */
+                      openEditModal(user);
                     }}
                     title="Edit User"
                   >
@@ -271,17 +289,14 @@ const AllUsers = () => {
       <Modal
         isOpen={modal.isOpen}
         closeModal={closeModal}
-        title="Delete User"
-        description="Are you sure you want to delete this user? This action cannot be undone."
+        title={modal.type === "delete" ? "Delete User" : "Edit User"}
+        description={
+          modal.type === "delete"
+            ? "Are you sure you want to delete this user? This action cannot be undone."
+            : "Update user information"
+        }
       >
-        <div className="flex justify-end gap-2 mt-5">
-          <Button variant="cancel" onClick={closeModal}>
-            Cancel
-          </Button>
-          <Button variant={"danger"} onClick={handleDelete}>
-            Delete
-          </Button>
-        </div>
+        {renderModalContent()}
       </Modal>
     </div>
   );
