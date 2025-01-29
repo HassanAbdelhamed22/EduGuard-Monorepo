@@ -28,7 +28,7 @@ const initialState = {
     email: "",
     phone: "",
     address: "",
-    profile_picture: null, // Ensure this is set correctly
+    profile_picture: null,
   },
   isLoading: false,
   error: null,
