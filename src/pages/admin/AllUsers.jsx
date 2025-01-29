@@ -30,9 +30,11 @@ const AllUsers = () => {
     total_items: 0,
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [deleteModal, setDeleteModal] = useState({
+  const [modal, setModal] = useState({
     isOpen: false,
+    type: null,
     userId: null,
+    userData: null
   });
 
   const fetchUsers = async (page) => {
@@ -63,18 +65,37 @@ const AllUsers = () => {
   };
 
   const openDeleteModal = (userId) => {
-    setDeleteModal({ isOpen: true, userId });
+    setModal({
+      isOpen: true,
+      type: 'delete',
+      userId,
+      userData: null
+    });
   };
 
-  const closeDeleteModal = () => {
-    setDeleteModal({ isOpen: false, userId: null });
+  const openEditModal = (user) => {
+    setModal({
+      isOpen: true,
+      type: 'edit',
+      userId: user.id,
+      userData: { ...user }
+    });
+  };
+
+  const closeModal = () => {
+    setModal({
+      isOpen: false,
+      type: null,
+      userId: null,
+      userData: null
+    });
   };
 
   const handleDelete = async () => {
     try {
-      await deleteUserAccount(deleteModal.userId);
+      await deleteUserAccount(modal.userId);
       toast.success("User deleted successfully");
-      closeDeleteModal();
+      closeModal();
       fetchUsers(pagination.current_page);
     } catch (error) {
       toast.error(error.message);
@@ -190,13 +211,13 @@ const AllUsers = () => {
       </Pagination>
 
       <Modal
-        isOpen={deleteModal.isOpen}
-        closeModal={closeDeleteModal}
+        isOpen={modal.isOpen}
+        closeModal={closeModal}
         title="Delete User"
         description="Are you sure you want to delete this user? This action cannot be undone."
       >
         <div className="flex justify-end gap-2 mt-5">
-          <Button variant="cancel" onClick={closeDeleteModal}>
+          <Button variant="cancel" onClick={closeModal}>
             Cancel
           </Button>
           <Button variant={"danger"} onClick={handleDelete}>
