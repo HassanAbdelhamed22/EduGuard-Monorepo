@@ -1,4 +1,5 @@
 import React from "react";
+import { Pencil, Trash2, UserCog } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -6,9 +7,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../../components/ui/Table";
-import { Button } from "../ui/Button";
-import { Pencil, Trash2, UserCog } from "lucide-react";
+} from "../ui/Table";
+import Button from "../ui/Button";
 
 const AllUsersTable = ({ users, onAssignRole, onDelete, onEdit }) => {
   return (
@@ -39,7 +39,7 @@ const AllUsersTable = ({ users, onAssignRole, onDelete, onEdit }) => {
                   variant="ghost"
                   size={"icon"}
                   title="Assign Role"
-                  onClick={() => onAssignRole(user.id)}
+                  onClick={() => onAssignRole(user.id, user.role)}
                 >
                   <UserCog className="w-5 h-5" />
                 </Button>
@@ -47,7 +47,7 @@ const AllUsersTable = ({ users, onAssignRole, onDelete, onEdit }) => {
                   variant="ghost"
                   size="icon"
                   onClick={() => {
-                    onEdit(user);
+                    onEdit(user.id, user);
                   }}
                   title="Edit User"
                 >
