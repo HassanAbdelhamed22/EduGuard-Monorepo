@@ -13,37 +13,12 @@ import UpdateUserAccountForm from "../../components/forms/UpdateUserAccountForm"
 import AssignRoleForm from "../../components/forms/AssignRoleForm";
 
 const AllUsers = () => {
-  const [users, setUsers] = useState([]);
-  const [pagination, setPagination] = useState({
-    current_page: 1,
-    total_pages: 1,
-    total_items: 0,
-  });
-  const [isLoading, setIsLoading] = useState(false);
-
   const initialValues = {
     name: modal.userData?.name || "",
     email: modal.userData?.email || "",
     phone: modal.userData?.phone || "",
     address: modal.userData?.address || "",
   };
-
-  const fetchUsers = async (page) => {
-    setIsLoading(true);
-    try {
-      const { data, pagination } = await getAllUsers(page);
-      setUsers(data);
-      setPagination({ ...pagination, current_page: page });
-    } catch (error) {
-      toast.error(error.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchUsers(1);
-  }, []);
 
   const handlePageChange = (page) => {
     if (
