@@ -37,7 +37,6 @@ export const deleteUserAccount = async (id) => {
 };
 
 export const assignRole = async (userId, role) => {
-  console.log("Request Payload:", { user_id: userId, role }); // Debugging
   const { data, status } = await api.post(
     `${BASE_URL}admin/users/assign-role`,
     { user_id: userId, role }
