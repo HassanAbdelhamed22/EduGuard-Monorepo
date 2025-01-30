@@ -233,8 +233,7 @@ const AllUsers = () => {
         <AssignRoleForm
           initialRole={modal.selectedRole}
           onSubmit={(role) => {
-            setModal((prev) => ({ ...prev, selectedRole: role }));
-            handleAssignRole();
+            handleAssignRole(role);
           }}
           onCancel={closeModal}
         />
