@@ -166,7 +166,7 @@ const AllUsers = () => {
     }
   };
 
-  const handleAssignRole = async () => {
+  const handleAssignRole = async (selectedRole) => {
     if (!modal.userId) {
       toast.error("User ID is required");
       return;
@@ -176,12 +176,12 @@ const AllUsers = () => {
     const user = users.find((u) => u.id === modal.userId);
 
     // Check if the selected role is the same as the current role
-    if (user && user.role === modal.selectedRole) {
+    if (user && user.role === selectedRole) {
       toast.error("This user already has the selected role");
       return;
     }
 
-    if (!modal.selectedRole) {
+    if (!selectedRole) {
       toast.error("Please select a role");
       return;
     }
@@ -189,7 +189,7 @@ const AllUsers = () => {
     try {
       const { data, status } = await assignRole(
         modal.userId,
-        modal.selectedRole
+        selectedRole
       );
       if (status === 200) {
         toast.success("Role assigned successfully");
