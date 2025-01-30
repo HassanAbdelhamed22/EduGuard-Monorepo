@@ -8,14 +8,6 @@ import {
 import { toast } from "react-hot-toast";
 import Button from "../../components/ui/Button";
 import Loading from "../../components/ui/Loading";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "../../components/ui/Pagination";
 import Modal from "../../components/ui/Modal";
 import UpdateUserAccountForm from "../../components/forms/UpdateUserAccountForm";
 import AssignRoleForm from "../../components/forms/AssignRoleForm";
@@ -240,54 +232,6 @@ const AllUsers = () => {
       <div className="mb-8">
         <h2 className="text-2xl font-bold text-darkGray">All Users</h2>
       </div>
-
-      <Pagination className="mt-8">
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious
-              onClick={() =>
-                pagination.current_page > 1 &&
-                handlePageChange(pagination.current_page - 1)
-              }
-              className={
-                pagination.current_page <= 1
-                  ? "pointer-events-none opacity-50"
-                  : "cursor-pointer"
-              }
-            />
-          </PaginationItem>
-
-          {Array.from({ length: pagination.total_pages }, (_, i) => i + 1).map(
-            (page) => (
-              <PaginationItem key={page}>
-                <PaginationLink
-                  onClick={() => handlePageChange(page)}
-                  isActive={page === pagination.current_page}
-                  className={`${
-                    page === pagination.current_page ? "" : "cursor-pointer"
-                  }`}
-                >
-                  {page}
-                </PaginationLink>
-              </PaginationItem>
-            )
-          )}
-
-          <PaginationItem>
-            <PaginationNext
-              onClick={() =>
-                pagination.current_page < pagination.total_pages &&
-                handlePageChange(pagination.current_page + 1)
-              }
-              className={
-                pagination.current_page >= pagination.total_pages
-                  ? "pointer-events-none opacity-50"
-                  : "cursor-pointer"
-              }
-            />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
 
       <Modal
         isOpen={modal.isOpen}
