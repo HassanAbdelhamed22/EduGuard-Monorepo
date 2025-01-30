@@ -8,6 +8,7 @@ import {
   TableRow,
 } from "../../components/ui/Table";
 import {
+  assignRole,
   deleteUserAccount,
   getAllUsers,
   updateUserAccount,
@@ -26,6 +27,7 @@ import {
 } from "../../components/ui/Pagination";
 import Modal from "../../components/ui/Modal";
 import UpdateUserAccountForm from "../../components/forms/UpdateUserAccountForm";
+import AssignRoleForm from "../../components/forms/AssignRoleForm";
 
 const AllUsers = () => {
   const [users, setUsers] = useState([]);
@@ -40,6 +42,7 @@ const AllUsers = () => {
     type: null,
     userId: null,
     userData: null,
+    selectedRole: null,
   });
 
   const initialValues = {
@@ -92,6 +95,17 @@ const AllUsers = () => {
       type: "edit",
       userId: user.id,
       userData: user,
+    });
+  };
+
+  const openAssignRoleModal = (userId) => {
+    const user = users.find((u) => u.id === userId);
+    setModal({
+      isOpen: true,
+      type: "assignRole",
+      userId,
+      userData: null,
+      selectedRole: user?.role || null,
     });
   };
 
@@ -152,6 +166,43 @@ const AllUsers = () => {
     }
   };
 
+  const handleAssignRole = async (selectedRole) => {
+    if (!modal.userId) {
+      toast.error("User ID is required");
+      return;
+    }
+
+    // Find the user in the `users` state
+    const user = users.find((u) => u.id === modal.userId);
+
+    // Check if the selected role is the same as the current role
+    if (user && user.role === selectedRole) {
+      toast.error("This user already has the selected role");
+      return;
+    }
+
+    if (!selectedRole) {
+      toast.error("Please select a role");
+      return;
+    }
+
+    try {
+      const { data, status } = await assignRole(
+        modal.userId,
+        selectedRole
+      );
+      if (status === 200) {
+        toast.success("Role assigned successfully");
+        closeModal();
+        fetchUsers(pagination.current_page);
+      } else {
+        toast.error("Failed to assign role");
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message);
+    }
+  };
+
   const renderModalContent = () => {
     if (modal.type === "delete") {
       return (
@@ -173,6 +224,18 @@ const AllUsers = () => {
           onSubmit={handleUpdate}
           isLoading={isLoading}
           closeModal={closeModal}
+        />
+      );
+    }
+
+    if (modal.type === "assignRole") {
+      return (
+        <AssignRoleForm
+          initialRole={modal.selectedRole}
+          onSubmit={(role) => {
+            handleAssignRole(role);
+          }}
+          onCancel={closeModal}
         />
       );
     }
@@ -210,7 +273,12 @@ const AllUsers = () => {
               <TableCell>{user.role}</TableCell>
               <TableCell>
                 <div className="flex gap-2">
-                  <Button variant="ghost" size={"icon"} title="Assign Role">
+                  <Button
+                    variant="ghost"
+                    size={"icon"}
+                    title="Assign Role"
+                    onClick={() => openAssignRoleModal(user.id)}
+                  >
                     <UserCog className="w-5 h-5" />
                   </Button>
                   <Button
@@ -289,11 +357,19 @@ const AllUsers = () => {
       <Modal
         isOpen={modal.isOpen}
         closeModal={closeModal}
-        title={modal.type === "delete" ? "Delete User" : "Edit User"}
+        title={
+          modal.type === "delete"
+            ? "Delete User"
+            : modal.type === "edit"
+            ? "Edit User"
+            : "Assign Role"
+        }
         description={
           modal.type === "delete"
             ? "Are you sure you want to delete this user? This action cannot be undone."
-            : "Update user information"
+            : modal.type === "edit"
+            ? "Update user information"
+            : "Select a role to assign to the user"
         }
       >
         {renderModalContent()}

@@ -100,3 +100,9 @@ export const updateUserAccountValidationSchema = Yup.object().shape({
     .max(255, "The address must not exceed 255 characters.")
     .nullable(),
 });
+
+export const roleValidationSchema = Yup.object().shape({
+  role: Yup.string()
+    .required("Role is required")
+    .oneOf(["admin", "user", "professor"], "Invalid role"),
+});

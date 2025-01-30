@@ -36,10 +36,10 @@ export const deleteUserAccount = async (id) => {
   return response;
 };
 
-export const assignRole = async (id, role) => {
-  const { data: response } = await api.post(
+export const assignRole = async (userId, role) => {
+  const { data, status } = await api.post(
     `${BASE_URL}admin/users/assign-role`,
-    { id, role }
+    { user_id: userId, role }
   );
-  return response;
+  return { data, status };
 };
