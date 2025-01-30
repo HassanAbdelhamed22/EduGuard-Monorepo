@@ -87,3 +87,22 @@ export const updatePassValidationSchema = Yup.object().shape({
     .required("Please confirm your new password.")
     .oneOf([Yup.ref("new_password"), null], "Passwords must match."),
 });
+
+export const updateUserAccountValidationSchema = Yup.object().shape({
+  name: Yup.string()
+    .max(190, "The name must not exceed 190 characters.")
+    .nullable(),
+  email: Yup.string().email("Please provide a valid email address.").nullable(),
+  phone: Yup.string()
+    .matches(/^01[0125][0-9]{8}$/, "The phone number must be valid.")
+    .nullable(),
+  address: Yup.string()
+    .max(255, "The address must not exceed 255 characters.")
+    .nullable(),
+});
+
+export const roleValidationSchema = Yup.object().shape({
+  role: Yup.string()
+    .required("Role is required")
+    .oneOf(["admin", "user", "professor"], "Invalid role"),
+});
