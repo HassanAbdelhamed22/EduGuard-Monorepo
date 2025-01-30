@@ -7,7 +7,7 @@ import img from "../../assets/auth/registerImg.svg";
 import { registerValidationSchema } from "../../utils/validation";
 import Logo from "../../components/Logo";
 import Button from "../../components/ui/Button";
-import RegisterForm from "../../components/auth/RegisterForm";
+import RegisterForm from "../../components/forms/RegisterForm";
 
 const Register = () => {
   const navigate = useNavigate();
