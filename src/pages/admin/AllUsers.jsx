@@ -20,13 +20,6 @@ const AllUsers = () => {
     total_items: 0,
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [modal, setModal] = useState({
-    isOpen: false,
-    type: null,
-    userId: null,
-    userData: null,
-    selectedRole: null,
-  });
 
   const initialValues = {
     name: modal.userData?.name || "",
@@ -89,15 +82,6 @@ const AllUsers = () => {
       userId,
       userData: null,
       selectedRole: user?.role || null,
-    });
-  };
-
-  const closeModal = () => {
-    setModal({
-      isOpen: false,
-      type: null,
-      userId: null,
-      userData: null,
     });
   };
 
