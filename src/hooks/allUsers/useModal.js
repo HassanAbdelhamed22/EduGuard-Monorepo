@@ -25,6 +25,7 @@ const useModal = () => {
       type: null,
       userId: null,
       userData: null,
+      selectedRole: null,
     });
   };
 
