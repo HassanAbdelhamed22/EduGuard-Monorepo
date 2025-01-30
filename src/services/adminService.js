@@ -36,10 +36,11 @@ export const deleteUserAccount = async (id) => {
   return response;
 };
 
-export const assignRole = async (id, role) => {
+export const assignRole = async (userId, role) => {
+  console.log("Request Payload:", { user_id: userId, role }); // Debugging
   const { data, status } = await api.post(
     `${BASE_URL}admin/users/assign-role`,
-    { id, role }
+    { user_id: userId, role }
   );
   return { data, status };
 };
