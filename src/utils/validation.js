@@ -102,7 +102,6 @@ export const updateUserAccountValidationSchema = Yup.object().shape({
 });
 
 export const roleValidationSchema = Yup.object().shape({
-  user_id: Yup.number().required("User ID is required"),
   role: Yup.string()
     .required("Role is required")
     .oneOf(["admin", "user", "professor"], "Invalid role"),
