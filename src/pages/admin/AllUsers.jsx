@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   assignRole,
   deleteUserAccount,
-  getAllUsers,
   updateUserAccount,
 } from "../../services/adminService";
 import { toast } from "react-hot-toast";
@@ -11,14 +10,14 @@ import Loading from "../../components/ui/Loading";
 import Modal from "../../components/ui/Modal";
 import UpdateUserAccountForm from "../../components/forms/UpdateUserAccountForm";
 import AssignRoleForm from "../../components/forms/AssignRoleForm";
+import useUsers from "../../hooks/allUsers/useUsers";
+import useModal from "../../hooks/allUsers/useModal";
+import AllUsersTable from "../../components/Tables/AllUsersTable";
+import PaginationLogic from "../../components/PaginationLogic";
 
 const AllUsers = () => {
-  const initialValues = {
-    name: modal.userData?.name || "",
-    email: modal.userData?.email || "",
-    phone: modal.userData?.phone || "",
-    address: modal.userData?.address || "",
-  };
+  const { users, pagination, isLoading, fetchUsers } = useUsers();
+  const { modal, openModal, closeModal } = useModal();
 
   const handlePageChange = (page) => {
     if (
@@ -28,36 +27,6 @@ const AllUsers = () => {
     ) {
       fetchUsers(page);
     }
-  };
-
-  const openDeleteModal = (userId) => {
-    setModal({
-      isOpen: true,
-      type: "delete",
-      userId,
-      userData: null,
-    });
-  };
-
-  const openEditModal = (user) => {
-    console.log(user);
-    setModal({
-      isOpen: true,
-      type: "edit",
-      userId: user.id,
-      userData: user,
-    });
-  };
-
-  const openAssignRoleModal = (userId) => {
-    const user = users.find((u) => u.id === userId);
-    setModal({
-      isOpen: true,
-      type: "assignRole",
-      userId,
-      userData: null,
-      selectedRole: user?.role || null,
-    });
   };
 
   const handleDelete = async () => {
@@ -73,10 +42,9 @@ const AllUsers = () => {
 
   const handleUpdate = async (values) => {
     try {
-      setIsLoading(true);
       const updatedFields = {};
       for (const key in values) {
-        if (values[key] !== initialValues[key] && values[key] !== "") {
+        if (values[key] !== modal.userData[key] && values[key] !== "") {
           updatedFields[key] = values[key];
         }
       }
@@ -85,8 +53,6 @@ const AllUsers = () => {
         toast.error("No fields have been updated.");
         return;
       }
-
-      console.log("Updated Fields:", updatedFields); // Debugging
 
       // Send only the updated fields to the backend
       const { data, status } = await updateUserAccount(
@@ -98,13 +64,13 @@ const AllUsers = () => {
         closeModal();
         fetchUsers(pagination.current_page);
       } else {
-        console.error("Update failed", data);
         toast.error("Failed to update user");
       }
     } catch (err) {
-      toast.error(err?.response?.data?.message);
-    } finally {
-      setIsLoading(false);
+      console.error("Update error:", err); // Log the full error object
+      toast.error(
+        err?.response?.data?.message || "An error occurred during update."
+      );
     }
   };
 
@@ -116,7 +82,6 @@ const AllUsers = () => {
 
     // Find the user in the `users` state
     const user = users.find((u) => u.id === modal.userId);
-
     // Check if the selected role is the same as the current role
     if (user && user.role === selectedRole) {
       toast.error("This user already has the selected role");
@@ -129,10 +94,7 @@ const AllUsers = () => {
     }
 
     try {
-      const { data, status } = await assignRole(
-        modal.userId,
-        selectedRole
-      );
+      const { status } = await assignRole(modal.userId, selectedRole);
       if (status === 200) {
         toast.success("Role assigned successfully");
         closeModal();
@@ -146,6 +108,7 @@ const AllUsers = () => {
   };
 
   const renderModalContent = () => {
+    console.log("Modal state:", modal);
     if (modal.type === "delete") {
       return (
         <div className="flex justify-end gap-2 mt-5">
@@ -159,10 +122,10 @@ const AllUsers = () => {
       );
     }
 
-    if (modal.type === "edit") {
+    if (modal.type === "edit" && modal.userData) {
       return (
         <UpdateUserAccountForm
-          initialValues={initialValues}
+          initialValues={modal.userData} // Ensure this receives data
           onSubmit={handleUpdate}
           isLoading={isLoading}
           closeModal={closeModal}
@@ -170,13 +133,11 @@ const AllUsers = () => {
       );
     }
 
-    if (modal.type === "assignRole") {
+    if (modal.type === "assignRole" && modal.selectedRole !== null) {
       return (
         <AssignRoleForm
-          initialRole={modal.selectedRole}
-          onSubmit={(role) => {
-            handleAssignRole(role);
-          }}
+          initialRole={modal.selectedRole} // Ensure this receives data
+          onSubmit={(role) => handleAssignRole(role)}
           onCancel={closeModal}
         />
       );
@@ -191,6 +152,20 @@ const AllUsers = () => {
       <div className="mb-8">
         <h2 className="text-2xl font-bold text-darkGray">All Users</h2>
       </div>
+
+      <AllUsersTable
+        users={users}
+        onAssignRole={(userId, role) =>
+          openModal("assignRole", userId, null, role)
+        }
+        onDelete={(id) => openModal("delete", id)}
+        onEdit={(userId, userData) => openModal("edit", userId, userData)}
+      />
+
+      <PaginationLogic
+        pagination={pagination}
+        handlePageChange={handlePageChange}
+      />
 
       <Modal
         isOpen={modal.isOpen}
