@@ -40,6 +40,7 @@ const AllUsers = () => {
     type: null,
     userId: null,
     userData: null,
+    selectedRole: null,
   });
 
   const initialValues = {
@@ -92,6 +93,16 @@ const AllUsers = () => {
       type: "edit",
       userId: user.id,
       userData: user,
+    });
+  };
+
+  const openAssignRoleModal = (userId) => {
+    setModal({
+      isOpen: true,
+      type: "assignRole",
+      userId,
+      userData: null,
+      selectedRole: null,
     });
   };
 
