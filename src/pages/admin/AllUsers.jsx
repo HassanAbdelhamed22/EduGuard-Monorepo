@@ -8,6 +8,7 @@ import {
   TableRow,
 } from "../../components/ui/Table";
 import {
+  assignRole,
   deleteUserAccount,
   getAllUsers,
   updateUserAccount,
@@ -160,6 +161,29 @@ const AllUsers = () => {
       toast.error(err?.response?.data?.message);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleAssignRole = async () => {
+    if (!modal.selectedRole) {
+      toast.error("Please select a role");
+      return;
+    }
+
+    try {
+      const { data, status } = await assignRole(
+        modal.userId,
+        modal.selectedRole
+      );
+      if (status === 200) {
+        toast.success("Role assigned successfully");
+        closeModal();
+        fetchUsers(pagination.current_page);
+      } else {
+        toast.error("Failed to assign role");
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message);
     }
   };
 
