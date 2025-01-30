@@ -4,7 +4,7 @@ import { saveUserData } from "../../utils/functions";
 import Logo from "../../components/Logo";
 import img from "../../assets/auth/loginImg.svg";
 import Button from "../../components/ui/Button";
-import LoginForm from "../../components/auth/LoginForm";
+import LoginForm from "../../components/forms/LoginForm";
 import { loginValidationSchema } from "../../utils/validation";
 import { Link, useNavigate } from "react-router-dom";
 import { login } from "../../services/authService";

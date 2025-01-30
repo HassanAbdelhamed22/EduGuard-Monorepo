@@ -1,73 +1,23 @@
-import React, { useEffect, useState } from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "../../components/ui/Table";
+import React from "react";
 import {
   assignRole,
   deleteUserAccount,
-  getAllUsers,
   updateUserAccount,
 } from "../../services/adminService";
 import { toast } from "react-hot-toast";
 import Button from "../../components/ui/Button";
-import { Pencil, Trash2, UserCog } from "lucide-react";
 import Loading from "../../components/ui/Loading";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "../../components/ui/Pagination";
 import Modal from "../../components/ui/Modal";
 import UpdateUserAccountForm from "../../components/forms/UpdateUserAccountForm";
 import AssignRoleForm from "../../components/forms/AssignRoleForm";
+import useUsers from "../../hooks/allUsers/useUsers";
+import useModal from "../../hooks/allUsers/useModal";
+import AllUsersTable from "../../components/Tables/AllUsersTable";
+import PaginationLogic from "../../components/PaginationLogic";
 
 const AllUsers = () => {
-  const [users, setUsers] = useState([]);
-  const [pagination, setPagination] = useState({
-    current_page: 1,
-    total_pages: 1,
-    total_items: 0,
-  });
-  const [isLoading, setIsLoading] = useState(false);
-  const [modal, setModal] = useState({
-    isOpen: false,
-    type: null,
-    userId: null,
-    userData: null,
-    selectedRole: null,
-  });
-
-  const initialValues = {
-    name: modal.userData?.name || "",
-    email: modal.userData?.email || "",
-    phone: modal.userData?.phone || "",
-    address: modal.userData?.address || "",
-  };
-
-  const fetchUsers = async (page) => {
-    setIsLoading(true);
-    try {
-      const { data, pagination } = await getAllUsers(page);
-      setUsers(data);
-      setPagination({ ...pagination, current_page: page });
-    } catch (error) {
-      toast.error(error.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchUsers(1);
-  }, []);
+  const { users, pagination, isLoading, fetchUsers } = useUsers();
+  const { modal, openModal, closeModal } = useModal();
 
   const handlePageChange = (page) => {
     if (
@@ -77,45 +27,6 @@ const AllUsers = () => {
     ) {
       fetchUsers(page);
     }
-  };
-
-  const openDeleteModal = (userId) => {
-    setModal({
-      isOpen: true,
-      type: "delete",
-      userId,
-      userData: null,
-    });
-  };
-
-  const openEditModal = (user) => {
-    console.log(user);
-    setModal({
-      isOpen: true,
-      type: "edit",
-      userId: user.id,
-      userData: user,
-    });
-  };
-
-  const openAssignRoleModal = (userId) => {
-    const user = users.find((u) => u.id === userId);
-    setModal({
-      isOpen: true,
-      type: "assignRole",
-      userId,
-      userData: null,
-      selectedRole: user?.role || null,
-    });
-  };
-
-  const closeModal = () => {
-    setModal({
-      isOpen: false,
-      type: null,
-      userId: null,
-      userData: null,
-    });
   };
 
   const handleDelete = async () => {
@@ -131,10 +42,9 @@ const AllUsers = () => {
 
   const handleUpdate = async (values) => {
     try {
-      setIsLoading(true);
       const updatedFields = {};
       for (const key in values) {
-        if (values[key] !== initialValues[key] && values[key] !== "") {
+        if (values[key] !== modal.userData[key] && values[key] !== "") {
           updatedFields[key] = values[key];
         }
       }
@@ -143,8 +53,6 @@ const AllUsers = () => {
         toast.error("No fields have been updated.");
         return;
       }
-
-      console.log("Updated Fields:", updatedFields); // Debugging
 
       // Send only the updated fields to the backend
       const { data, status } = await updateUserAccount(
@@ -156,13 +64,13 @@ const AllUsers = () => {
         closeModal();
         fetchUsers(pagination.current_page);
       } else {
-        console.error("Update failed", data);
         toast.error("Failed to update user");
       }
     } catch (err) {
-      toast.error(err?.response?.data?.message);
-    } finally {
-      setIsLoading(false);
+      console.error("Update error:", err); // Log the full error object
+      toast.error(
+        err?.response?.data?.message || "An error occurred during update."
+      );
     }
   };
 
@@ -174,7 +82,6 @@ const AllUsers = () => {
 
     // Find the user in the `users` state
     const user = users.find((u) => u.id === modal.userId);
-
     // Check if the selected role is the same as the current role
     if (user && user.role === selectedRole) {
       toast.error("This user already has the selected role");
@@ -187,10 +94,7 @@ const AllUsers = () => {
     }
 
     try {
-      const { data, status } = await assignRole(
-        modal.userId,
-        selectedRole
-      );
+      const { status } = await assignRole(modal.userId, selectedRole);
       if (status === 200) {
         toast.success("Role assigned successfully");
         closeModal();
@@ -204,6 +108,7 @@ const AllUsers = () => {
   };
 
   const renderModalContent = () => {
+    console.log("Modal state:", modal);
     if (modal.type === "delete") {
       return (
         <div className="flex justify-end gap-2 mt-5">
@@ -217,10 +122,10 @@ const AllUsers = () => {
       );
     }
 
-    if (modal.type === "edit") {
+    if (modal.type === "edit" && modal.userData) {
       return (
         <UpdateUserAccountForm
-          initialValues={initialValues}
+          initialValues={modal.userData} // Ensure this receives data
           onSubmit={handleUpdate}
           isLoading={isLoading}
           closeModal={closeModal}
@@ -228,13 +133,11 @@ const AllUsers = () => {
       );
     }
 
-    if (modal.type === "assignRole") {
+    if (modal.type === "assignRole" && modal.selectedRole !== null) {
       return (
         <AssignRoleForm
-          initialRole={modal.selectedRole}
-          onSubmit={(role) => {
-            handleAssignRole(role);
-          }}
+          initialRole={modal.selectedRole} // Ensure this receives data
+          onSubmit={(role) => handleAssignRole(role)}
           onCancel={closeModal}
         />
       );
@@ -250,109 +153,19 @@ const AllUsers = () => {
         <h2 className="text-2xl font-bold text-darkGray">All Users</h2>
       </div>
 
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-1/12">ID</TableHead>
-            <TableHead className="w-2/12">Name</TableHead>
-            <TableHead className="w-1/12">Email</TableHead>
-            <TableHead className="w-1/12">Phone</TableHead>
-            <TableHead className="w-1/12">Address</TableHead>
-            <TableHead className="w-1/12">Role</TableHead>
-            <TableHead className="w-1/12">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {users?.map((user) => (
-            <TableRow key={user.id}>
-              <TableCell>{user.id}</TableCell>
-              <TableCell>{user.name}</TableCell>
-              <TableCell>{user.email}</TableCell>
-              <TableCell>{user.phone}</TableCell>
-              <TableCell>{user.address}</TableCell>
-              <TableCell>{user.role}</TableCell>
-              <TableCell>
-                <div className="flex gap-2">
-                  <Button
-                    variant="ghost"
-                    size={"icon"}
-                    title="Assign Role"
-                    onClick={() => openAssignRoleModal(user.id)}
-                  >
-                    <UserCog className="w-5 h-5" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => {
-                      openEditModal(user);
-                    }}
-                    title="Edit User"
-                  >
-                    <Pencil className="h-4 w-4 text-primary" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => openDeleteModal(user.id)}
-                    title="Delete User"
-                  >
-                    <Trash2 className="h-4 w-4 text-red-600" />
-                  </Button>
-                </div>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      <AllUsersTable
+        users={users}
+        onAssignRole={(userId, role) =>
+          openModal("assignRole", userId, null, role)
+        }
+        onDelete={(id) => openModal("delete", id)}
+        onEdit={(userId, userData) => openModal("edit", userId, userData)}
+      />
 
-      <Pagination className="mt-8">
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious
-              onClick={() =>
-                pagination.current_page > 1 &&
-                handlePageChange(pagination.current_page - 1)
-              }
-              className={
-                pagination.current_page <= 1
-                  ? "pointer-events-none opacity-50"
-                  : "cursor-pointer"
-              }
-            />
-          </PaginationItem>
-
-          {Array.from({ length: pagination.total_pages }, (_, i) => i + 1).map(
-            (page) => (
-              <PaginationItem key={page}>
-                <PaginationLink
-                  onClick={() => handlePageChange(page)}
-                  isActive={page === pagination.current_page}
-                  className={`${
-                    page === pagination.current_page ? "" : "cursor-pointer"
-                  }`}
-                >
-                  {page}
-                </PaginationLink>
-              </PaginationItem>
-            )
-          )}
-
-          <PaginationItem>
-            <PaginationNext
-              onClick={() =>
-                pagination.current_page < pagination.total_pages &&
-                handlePageChange(pagination.current_page + 1)
-              }
-              className={
-                pagination.current_page >= pagination.total_pages
-                  ? "pointer-events-none opacity-50"
-                  : "cursor-pointer"
-              }
-            />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
+      <PaginationLogic
+        pagination={pagination}
+        handlePageChange={handlePageChange}
+      />
 
       <Modal
         isOpen={modal.isOpen}
