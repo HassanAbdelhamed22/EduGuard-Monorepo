@@ -1,13 +1,5 @@
 import React, { useEffect, useState } from "react";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "../../components/ui/Table";
-import {
   assignRole,
   deleteUserAccount,
   getAllUsers,
@@ -15,7 +7,6 @@ import {
 } from "../../services/adminService";
 import { toast } from "react-hot-toast";
 import Button from "../../components/ui/Button";
-import { Pencil, Trash2, UserCog } from "lucide-react";
 import Loading from "../../components/ui/Loading";
 import {
   Pagination,
@@ -249,62 +240,6 @@ const AllUsers = () => {
       <div className="mb-8">
         <h2 className="text-2xl font-bold text-darkGray">All Users</h2>
       </div>
-
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-1/12">ID</TableHead>
-            <TableHead className="w-2/12">Name</TableHead>
-            <TableHead className="w-1/12">Email</TableHead>
-            <TableHead className="w-1/12">Phone</TableHead>
-            <TableHead className="w-1/12">Address</TableHead>
-            <TableHead className="w-1/12">Role</TableHead>
-            <TableHead className="w-1/12">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {users?.map((user) => (
-            <TableRow key={user.id}>
-              <TableCell>{user.id}</TableCell>
-              <TableCell>{user.name}</TableCell>
-              <TableCell>{user.email}</TableCell>
-              <TableCell>{user.phone}</TableCell>
-              <TableCell>{user.address}</TableCell>
-              <TableCell>{user.role}</TableCell>
-              <TableCell>
-                <div className="flex gap-2">
-                  <Button
-                    variant="ghost"
-                    size={"icon"}
-                    title="Assign Role"
-                    onClick={() => openAssignRoleModal(user.id)}
-                  >
-                    <UserCog className="w-5 h-5" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => {
-                      openEditModal(user);
-                    }}
-                    title="Edit User"
-                  >
-                    <Pencil className="h-4 w-4 text-primary" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => openDeleteModal(user.id)}
-                    title="Delete User"
-                  >
-                    <Trash2 className="h-4 w-4 text-red-600" />
-                  </Button>
-                </div>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
 
       <Pagination className="mt-8">
         <PaginationContent>
