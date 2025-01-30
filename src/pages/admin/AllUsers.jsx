@@ -27,6 +27,7 @@ import {
 } from "../../components/ui/Pagination";
 import Modal from "../../components/ui/Modal";
 import UpdateUserAccountForm from "../../components/forms/UpdateUserAccountForm";
+import AssignRoleForm from "../../components/forms/AssignRoleForm";
 
 const AllUsers = () => {
   const [users, setUsers] = useState([]);
@@ -98,12 +99,13 @@ const AllUsers = () => {
   };
 
   const openAssignRoleModal = (userId) => {
+    const user = users.find((u) => u.id === userId);
     setModal({
       isOpen: true,
       type: "assignRole",
       userId,
       userData: null,
-      selectedRole: null,
+      selectedRole: user?.role || null,
     });
   };
 
@@ -165,6 +167,20 @@ const AllUsers = () => {
   };
 
   const handleAssignRole = async () => {
+    if (!modal.userId) {
+      toast.error("User ID is required");
+      return;
+    }
+
+    // Find the user in the `users` state
+    const user = users.find((u) => u.id === modal.userId);
+
+    // Check if the selected role is the same as the current role
+    if (user && user.role === modal.selectedRole) {
+      toast.error("This user already has the selected role");
+      return;
+    }
+
     if (!modal.selectedRole) {
       toast.error("Please select a role");
       return;
@@ -211,6 +227,19 @@ const AllUsers = () => {
         />
       );
     }
+
+    if (modal.type === "assignRole") {
+      return (
+        <AssignRoleForm
+          initialRole={modal.selectedRole}
+          onSubmit={(role) => {
+            setModal((prev) => ({ ...prev, selectedRole: role }));
+            handleAssignRole();
+          }}
+          onCancel={closeModal}
+        />
+      );
+    }
   };
 
   if (isLoading && users.length === 0) {
@@ -245,7 +274,12 @@ const AllUsers = () => {
               <TableCell>{user.role}</TableCell>
               <TableCell>
                 <div className="flex gap-2">
-                  <Button variant="ghost" size={"icon"} title="Assign Role">
+                  <Button
+                    variant="ghost"
+                    size={"icon"}
+                    title="Assign Role"
+                    onClick={() => openAssignRoleModal(user.id)}
+                  >
                     <UserCog className="w-5 h-5" />
                   </Button>
                   <Button
@@ -324,11 +358,19 @@ const AllUsers = () => {
       <Modal
         isOpen={modal.isOpen}
         closeModal={closeModal}
-        title={modal.type === "delete" ? "Delete User" : "Edit User"}
+        title={
+          modal.type === "delete"
+            ? "Delete User"
+            : modal.type === "edit"
+            ? "Edit User"
+            : "Assign Role"
+        }
         description={
           modal.type === "delete"
             ? "Are you sure you want to delete this user? This action cannot be undone."
-            : "Update user information"
+            : modal.type === "edit"
+            ? "Update user information"
+            : "Select a role to assign to the user"
         }
       >
         {renderModalContent()}
