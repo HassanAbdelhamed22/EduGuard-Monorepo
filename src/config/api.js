@@ -104,4 +104,7 @@ const checkTokenExpiry = () => {
   }
 };
 
+// Check token expiry on page load
+window.addEventListener("load", checkTokenExpiry);
+
 export default api;
