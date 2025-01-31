@@ -18,6 +18,16 @@ export const getAllUsers = async (page) => {
   return { data, pagination };
 };
 
+export const createUserAccount = async (userData) => {
+  try {
+    const { data, status } = await api.post(`${BASE_URL}admin/users`, userData);
+    return { data, status };
+  } catch (error) {
+    console.error(error);
+    toast.error(error?.response?.data?.message);
+  }
+};
+
 export const updateUserAccount = async (id, userData) => {
   try {
     const { data, status } = await api.patch(
