@@ -5,7 +5,7 @@ import Button from "../ui/Button";
 import Input from "../ui/Input";
 import CustomSelect from "../ui/CustomSelect";
 
-const createUserAccountForm = ({
+const CreateUserAccountForm = ({
   initialValues,
   validationSchema,
   onSubmit,
@@ -27,7 +27,14 @@ const createUserAccountForm = ({
       validationSchema={validationSchema}
       onSubmit={onSubmit}
     >
-      {({ errors, touched, isSubmitting, getFieldProps }) => (
+      {({
+        errors,
+        touched,
+        isSubmitting,
+        values,
+        setFieldValue,
+        getFieldProps,
+      }) => (
         <Form className="space-y-6">
           <div className="space-y-4">
             <div>
@@ -76,10 +83,11 @@ const createUserAccountForm = ({
                 Select Role
               </label>
               <CustomSelect
-                label="Role"
+                //label="Role"
                 options={roleOptions}
                 value={values.role}
                 onChange={(value) => setFieldValue("role", value)}
+                className="w-full"
               />
               {errors.role && touched.role && (
                 <p className="mt-1 text-sm text-red-600">{errors.role}</p>
@@ -200,7 +208,7 @@ const createUserAccountForm = ({
           </div>
 
           <Button type="submit" fullWidth isLoading={isSubmitting || isLoading}>
-            {isSubmitting || isLoading ? "Signing up..." : "Register"}
+            {isSubmitting || isLoading ? "Creating..." : "Create Account"}
           </Button>
         </Form>
       )}
@@ -208,4 +216,4 @@ const createUserAccountForm = ({
   );
 };
 
-export default createUserAccountForm;
+export default CreateUserAccountForm;
