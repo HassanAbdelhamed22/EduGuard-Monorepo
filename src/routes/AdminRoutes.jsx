@@ -10,6 +10,7 @@ import PageNotFound from "../pages/PageNotFound";
 import AllUsers from "../pages/admin/AllUsers";
 import AllStudents from "../pages/admin/AllStudents";
 import AllProfessors from "../pages/admin/AllProfessors";
+import CreateUserAccount from "../pages/admin/CreateUserAccount";
 
 const AdminRoutes = () => {
   return (
@@ -21,7 +22,7 @@ const AdminRoutes = () => {
         <Route element={<AdminLayout />}>
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="users" element={<AllUsers />} />
-          <Route path="users/create" element={<div>Create User</div>} />
+          <Route path="users/create" element={<CreateUserAccount />} />
           <Route path="students" element={<AllStudents />} />
           <Route path="professors" element={<AllProfessors />} />
           <Route path="courses" element={<div>Courses List</div>} />
