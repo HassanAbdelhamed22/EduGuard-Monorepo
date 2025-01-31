@@ -106,3 +106,31 @@ export const roleValidationSchema = Yup.object().shape({
     .required("Role is required")
     .oneOf(["admin", "user", "professor"], "Invalid role"),
 });
+
+export const createUserAccountValidationSchema = Yup.object().shape({
+  name: Yup.string()
+    .required("The name field is required.")
+    .max(190, "The name must not exceed 190 characters."),
+  email: Yup.string().email("Invalid email").required("Email is required"),
+  password: Yup.string()
+    .required("Password is required")
+    .min(6, "Password must be at least 6 characters")
+    .max(20, "Password must not exceed 20 characters")
+    .matches(
+      /[A-Z]/,
+      "The password must contain at least one uppercase letter."
+    )
+    .matches(/[0-9]/, "The password must contain at least one number."),
+  password_confirmation: Yup.string()
+    .required("Password confirmation is required")
+    .oneOf([Yup.ref("password")], "Password confirmation does not match."),
+  phone: Yup.string()
+    .required("The phone number field is required.")
+    .matches(/^01[0125][0-9]{8}$/, "The phone number must be valid."),
+  address: Yup.string()
+    .required("The address field is required.")
+    .max(255, "The address must not exceed 255 characters."),
+  role: Yup.string()
+    .required("Role is required")
+    .oneOf(["admin", "user", "professor"], "Invalid role"),
+});
