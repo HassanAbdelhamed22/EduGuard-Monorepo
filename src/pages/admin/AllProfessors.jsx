@@ -4,7 +4,7 @@ import Loading from "../../components/ui/Loading";
 import { suspendStudent, unSuspendStudent } from "../../services/adminService";
 import toast from "react-hot-toast";
 import PaginationLogic from "../../components/PaginationLogic";
-import AllStudentsTable from "../../components/Tables/AllStudentsTable";
+import AllStudentsTable from "../../components/Tables/UserTable";
 import Modal from "../../components/ui/Modal";
 import Textarea from "../../components/ui/Textarea";
 import Button from "../../components/ui/Button";
@@ -77,7 +77,10 @@ const AllProfessors = () => {
         <h2 className="text-2xl font-bold text-darkGray">All Professors</h2>
       </div>
 
-      <AllStudentsTable students={professors} onBlockToggle={handleBlockToggle} />
+      <AllStudentsTable
+        students={professors}
+        onBlockToggle={handleBlockToggle}
+      />
 
       <PaginationLogic
         pagination={pagination}

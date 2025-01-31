@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import useStudents from "./../../hooks/allStudents/useStudents";
-import AllStudentsTable from "../../components/Tables/AllStudentsTable";
+import AllStudentsTable from "../../components/Tables/UserTable";
 import PaginationLogic from "../../components/PaginationLogic";
 import toast from "react-hot-toast";
 import { suspendStudent, unSuspendStudent } from "../../services/adminService";

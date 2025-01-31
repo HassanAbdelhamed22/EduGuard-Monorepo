@@ -3,10 +3,10 @@ import toast from "react-hot-toast";
 import { suspendUser, unSuspendUser } from "../services/adminService";
 import Loading from "./ui/Loading";
 import Button from "./ui/Button";
-import AllStudentsTable from "./Tables/AllStudentsTable";
 import PaginationLogic from "./PaginationLogic";
 import Modal from "./ui/Modal";
 import Textarea from "./ui/Textarea";
+import UserTable from "./Tables/UserTable";
 
 const UserManagementPage = ({
   users,
@@ -81,7 +81,7 @@ const UserManagementPage = ({
         <h2 className="text-2xl font-bold text-darkGray">{pageTitle}</h2>
       </div>
 
-      <AllStudentsTable users={users} onBlockToggle={handleBlockToggle} />
+      <UserTable users={users} onBlockToggle={handleBlockToggle} />
 
       <PaginationLogic
         pagination={pagination}
