@@ -10,7 +10,7 @@ import {
 import Button from "../ui/Button";
 import { Lock, Unlock } from "lucide-react";
 
-const AllStudentsTable = ({ students, onBlockToggle }) => {
+const UserTable = ({ users, onBlockToggle }) => {
   return (
     <Table>
       <TableHeader>
@@ -24,24 +24,24 @@ const AllStudentsTable = ({ students, onBlockToggle }) => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {students?.map((student) => (
-          <TableRow key={student.id}>
-            <TableCell>{student.id}</TableCell>
-            <TableCell>{student.name}</TableCell>
-            <TableCell>{student.email}</TableCell>
+        {users?.map((user) => (
+          <TableRow key={user.id}>
+            <TableCell>{user.id}</TableCell>
+            <TableCell>{user.name}</TableCell>
+            <TableCell>{user.email}</TableCell>
             <TableCell>
               <span
                 className={`px-2 py-1 rounded-md text-white ${
-                  student.is_blocked ? "bg-red-600" : "bg-green-500"
+                  user.is_blocked ? "bg-red-600" : "bg-green-500"
                 }`}
               >
-                {student.is_blocked ? "Blocked" : "Active"}
+                {user.is_blocked ? "Blocked" : "Active"}
               </span>
             </TableCell>
             <TableCell>
-              {student.courses.length > 0 ? (
+              {user.courses.length > 0 ? (
                 <ul className="list-disc list-inside">
-                  {student.courses.map((course) => (
+                  {user.courses.map((course) => (
                     <li key={course.id}>{course.name}</li>
                   ))}
                 </ul>
@@ -53,10 +53,10 @@ const AllStudentsTable = ({ students, onBlockToggle }) => {
               <Button
                 variant="ghost"
                 size={"icon"}
-                onClick={() => onBlockToggle(student)}
-                title={student.is_blocked ? "Unblock Student" : "Block Student"}
+                onClick={() => onBlockToggle(user)}
+                title={user.is_blocked ? "Unblock User" : "Block User"}
               >
-                {student.is_blocked ? (
+                {user.is_blocked ? (
                   <Unlock className="h-5 w-5 text-green-500" />
                 ) : (
                   <Lock className="h-5 w-5 text-red-600" />
@@ -70,4 +70,4 @@ const AllStudentsTable = ({ students, onBlockToggle }) => {
   );
 };
 
-export default AllStudentsTable;
+export default UserTable;
