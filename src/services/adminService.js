@@ -43,3 +43,9 @@ export const assignRole = async (userId, role) => {
   );
   return { data, status };
 };
+
+export const getAllStudents = async (page) => {
+  const response = await api.get(`${BASE_URL}admin/students?page=${page}`);
+  const { students, pagination } = response.data;
+  return { students, pagination };
+};
