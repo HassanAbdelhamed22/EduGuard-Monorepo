@@ -18,7 +18,7 @@ const createUserAccountForm = ({
   const roleOptions = [
     { value: "admin", label: "Admin" },
     { value: "professor", label: "Professor" },
-    { value: "student", label: "Student" },
+    { value: "user", label: "Student" },
   ];
 
   return (
