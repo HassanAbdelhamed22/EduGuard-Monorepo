@@ -3,7 +3,7 @@ import useStudents from "./../../hooks/allStudents/useStudents";
 import AllStudentsTable from "../../components/Tables/AllStudentsTable";
 import PaginationLogic from "../../components/PaginationLogic";
 import toast from "react-hot-toast";
-import { suspendStudent } from "../../services/adminService";
+import { suspendStudent, unSuspendStudent } from "../../services/adminService";
 
 const AllStudents = () => {
   const { students, pagination, isLoading, fetchStudents } = useStudents();
@@ -49,11 +49,18 @@ const AllStudents = () => {
     }
   };
 
-  const handleBlockToggle = (studentId, newStatus) => {
-    // Call API to update block status
-    console.log(
-      `Student ${studentId} is now ${newStatus ? "Blocked" : "Unblocked"}`
-    );
+  const handleBlockToggle = async (student) => {
+    if (student.is_blocked) {
+      try {
+        await unSuspendStudent(student.id);
+        toast.success("Student has been unblocked successfully");
+        fetchStudents(pagination.current_page);
+      } catch (error) {
+        toast.error(error.message);
+      }
+    } else {
+      openModal(student);
+    }
   };
 
   return (
