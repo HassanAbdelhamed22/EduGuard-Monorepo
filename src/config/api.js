@@ -90,4 +90,18 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+// Function to check token expiry and auto-logout
+const checkTokenExpiry = () => {
+  const storedToken = localStorage.getItem("token");
+  const storedTokenExpiry = localStorage.getItem("tokenExpiry");
+
+  if (storedToken && Date.now() > Number(storedTokenExpiry)) {
+    // Token is expired
+    removeUserData();
+    toast.error("Session expired. Please log in again");
+    window.open("/login", "_blank"); // Open login page in a new tab
+  }
+};
+
 export default api;
