@@ -2,6 +2,8 @@ import React from "react";
 import useStudents from "./../../hooks/allStudents/useStudents";
 import AllStudentsTable from "../../components/Tables/AllStudentsTable";
 import PaginationLogic from "../../components/PaginationLogic";
+import toast from "react-hot-toast";
+import { suspendStudent } from "../../services/adminService";
 
 const AllStudents = () => {
   const { students, pagination, isLoading, fetchStudents } = useStudents();
@@ -28,7 +30,24 @@ const AllStudents = () => {
     setSelectedStudent(null);
     setIsModalOpen(false);
     setReason("");
-  }
+  };
+
+  const handleConfirmBlock = async () => {
+    if (!reason.trim()) {
+      toast.error("Please provide a reason to block the student");
+      return;
+    }
+
+    try {
+      await suspendStudent(selectedStudent.id, reason);
+      toast.success("Student has been blocked successfully");
+      fetchStudents(pagination.current_page);
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      closeModal();
+    }
+  };
 
   const handleBlockToggle = (studentId, newStatus) => {
     // Call API to update block status
