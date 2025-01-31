@@ -8,19 +8,19 @@ import {
   TableRow,
 } from "../ui/Table";
 import Button from "../ui/Button";
-import { Unlock } from "lucide-react";
+import { Lock, Unlock } from "lucide-react";
 
 const AllStudentsTable = ({ students, onBlockToggle }) => {
   return (
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead className="w-1/12">ID</TableHead>
-          <TableHead className="w-2/12">Name</TableHead>
-          <TableHead className="w-1/12">Email</TableHead>
+          <TableHead className="w-/12">ID</TableHead>
+          <TableHead className="w-3/12">Name</TableHead>
+          <TableHead className="w-3/12">Email</TableHead>
           <TableHead className="w-1/12">Blocked</TableHead>
-          <TableHead className="w-1/12">Courses</TableHead>
-          <TableHead className="w-1/12">Actions</TableHead>
+          <TableHead className="w-4/12">Courses</TableHead>
+          <TableHead className="w-/12">Actions</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -49,7 +49,7 @@ const AllStudentsTable = ({ students, onBlockToggle }) => {
                 <span className="text-gray-500">No Courses</span>
               )}
             </TableCell>
-            <TableCell>
+            <TableCell className='flex items-center justify-center border-none'>
               <Button
                 variant="ghost"
                 size={"icon"}
