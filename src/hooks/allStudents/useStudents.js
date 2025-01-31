@@ -13,8 +13,8 @@ const useStudents = () => {
   const fetchStudents = async (page) => {
     setIsLoading(true);
     try {
-      const { data, pagination } = await getAllStudents(page);
-      setStudents(data);
+      const { students, pagination } = await getAllStudents(page);
+      setStudents(students);
       setPagination({ ...pagination, current_page: page });
     } catch (error) {
       toast.error(error.message);
