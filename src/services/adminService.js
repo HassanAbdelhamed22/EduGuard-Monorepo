@@ -50,14 +50,20 @@ export const getAllStudents = async (page) => {
   return { students, pagination };
 };
 
-export const suspendStudent = async (id, reason) => {
+export const suspendUser = async (id, reason) => {
   const { data, status } = await api.post(`auth/students/${id}/suspend`, {
     reason,
   });
   return { data, status };
 };
 
-export const unSuspendStudent = async (id) => {
+export const unSuspendUser = async (id) => {
   const { data, status } = await api.post(`auth/students/${id}/unsuspend`);
   return { data, status };
+};
+
+export const getAllProfessors = async (page) => {
+  const response = await api.get(`${BASE_URL}admin/professors?page=${page}`);
+  const { professors, pagination } = response.data;
+  return { professors, pagination };
 };
