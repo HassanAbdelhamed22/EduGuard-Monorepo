@@ -5,6 +5,9 @@ import PaginationLogic from "../../components/PaginationLogic";
 
 const AllStudents = () => {
   const { students, pagination, isLoading, fetchStudents } = useStudents();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [reason, setReason] = useState("");
 
   const handlePageChange = (page) => {
     if (
@@ -15,6 +18,17 @@ const AllStudents = () => {
       fetchUsers(page);
     }
   };
+
+  const openModal = (student) => {
+    setSelectedStudent(student);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setSelectedStudent(null);
+    setIsModalOpen(false);
+    setReason("");
+  }
 
   const handleBlockToggle = (studentId, newStatus) => {
     // Call API to update block status
