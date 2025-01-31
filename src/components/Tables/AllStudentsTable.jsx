@@ -53,7 +53,7 @@ const AllStudentsTable = ({ students, onBlockToggle }) => {
               <Button
                 variant="ghost"
                 size={"icon"}
-                onClick={() => onBlockToggle(student.id, !student.is_blocked)}
+                onClick={() => onBlockToggle(student)}
                 title={student.is_blocked ? "Unblock Student" : "Block Student"}
               >
                 {student.is_blocked ? (

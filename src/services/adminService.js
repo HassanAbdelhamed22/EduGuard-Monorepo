@@ -49,3 +49,15 @@ export const getAllStudents = async (page) => {
   const { students, pagination } = response.data;
   return { students, pagination };
 };
+
+export const suspendStudent = async (id, reason) => {
+  const { data, status } = await api.post(`auth/students/${id}/suspend`, {
+    reason,
+  });
+  return { data, status };
+};
+
+export const unSuspendStudent = async (id) => {
+  const { data, status } = await api.post(`auth/students/${id}/unsuspend`);
+  return { data, status };
+};
