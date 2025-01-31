@@ -11,39 +11,39 @@ export default function CustomSelect({
   onChange,
 }) {
   return (
-    <div className={clsx("w-full max-w-md px-4", className)}>
+    <div className={clsx("w-full", className)}>
       <Field>
         {/* Label */}
-        <Label className="text-sm font-medium text-white">{label}</Label>
+        <Label className="block text-sm font-medium text-gray-700 ">
+          {label}
+        </Label>
 
         {/* Description (optional) */}
         {description && (
-          <Description className="text-sm text-white/50">{description}</Description>
+          <Description className="text-sm text-gray-500 mb-2">
+            {description}
+          </Description>
         )}
 
         {/* Select Dropdown */}
         <div className="relative">
           <Select
             className={clsx(
-              "mt-3 block w-full appearance-none rounded-lg border-none bg-white/5 py-1.5 px-3 text-sm text-white",
-              "focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25",
-              "*:text-black"
+              "border-[1px] border-borderLight dark:border-borderDark shadow-lg focus:border-indigo-600 focus:outline-none focus:ring-1 focus:ring-indigo-600 rounded-lg px-3 py-3 text-md w-full bg-transparent"
             )}
             value={value}
             onChange={(e) => onChange(e.target.value)}
           >
             {options.map((option) => (
-              <option key={option.value} value={option.value}>
+              <option
+                key={option.value}
+                value={option.value}
+                className="text-gray-900"
+              >
                 {option.label}
               </option>
             ))}
           </Select>
-
-          {/* Chevron Icon */}
-          <ChevronDownIcon
-            className="absolute top-2.5 right-2.5 size-4 fill-white/60 pointer-events-none"
-            aria-hidden="true"
-          />
         </div>
       </Field>
     </div>
