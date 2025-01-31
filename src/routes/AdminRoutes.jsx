@@ -8,6 +8,7 @@ import UpdatePassword from "../pages/auth/UpdatePassword";
 import ErrorHandler from "../components/errors/ErrorHandler";
 import PageNotFound from "../pages/PageNotFound";
 import AllUsers from "../pages/admin/AllUsers";
+import AllStudents from "../pages/admin/AllStudents";
 
 const AdminRoutes = () => {
   return (
@@ -20,7 +21,7 @@ const AdminRoutes = () => {
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="users" element={<AllUsers />} />
           <Route path="users/create" element={<div>Create User</div>} />
-          <Route path="students" element={<div>Students List</div>} />
+          <Route path="students" element={<AllStudents />} />
           <Route path="professors" element={<div>Professors List</div>} />
           <Route path="courses" element={<div>Courses List</div>} />
           <Route path="courses/create" element={<div>Create Course</div>} />
