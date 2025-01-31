@@ -43,12 +43,21 @@ api.interceptors.request.use(
       } catch (error) {
         console.error("Token refresh failed:", error);
 
+        // Handle different types of errors
+        if (error.response) {
+          // Backend returned an error response
+          toast.error("Session expired. Please log in again");
+        } else if (error.request) {
+          // No response received (network error)
+          toast.error("Network error. Please check your connection.");
+        } else {
+          // Something went wrong in the request setup
+          toast.error("An error occurred. Please try again.");
+        }
+
         // Clear user data and redirect to login page
         removeUserData();
-        toast.error("Session expired. Please log in again");
-
-        // Open login page in a new tab
-        window.open("/login", "_blank");
+        window.open("/login", "_blank"); // Open login page in a new tab
 
         // Reject the request to prevent hanging
         return Promise.reject(error);
