@@ -61,3 +61,9 @@ export const unSuspendStudent = async (id) => {
   const { data, status } = await api.post(`auth/students/${id}/unsuspend`);
   return { data, status };
 };
+
+export const getAllProfessors = async (page) => {
+  const response = await api.get(`${BASE_URL}admin/professors?page=${page}`);
+  const { professors, pagination } = response.data;
+  return { professors, pagination };
+};
