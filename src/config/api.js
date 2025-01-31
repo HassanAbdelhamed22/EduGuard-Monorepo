@@ -107,4 +107,7 @@ const checkTokenExpiry = () => {
 // Check token expiry on page load
 window.addEventListener("load", checkTokenExpiry);
 
+// Check token expiry every 5 minutes
+setInterval(checkTokenExpiry, 5 * 60 * 1000);
+
 export default api;
