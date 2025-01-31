@@ -72,4 +72,22 @@ api.interceptors.request.use(
   }
 );
 
+// Add a response interceptor to handle token expiry globally
+api.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      // Token is invalid or expired
+      console.error("Unauthorized access:", error);
+
+      // Clear user data and redirect to login page
+      removeUserData();
+      toast.error("Session expired. Please log in again");
+      window.open("/login", "_blank"); // Open login page in a new tab
+    }
+    return Promise.reject(error);
+  }
+);
 export default api;
