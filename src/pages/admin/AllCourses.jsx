@@ -41,7 +41,10 @@ const AllCourses = () => {
         <h2 className="text-2xl font-bold text-darkGray">All Courses</h2>
       </div>
 
-      <AllCoursesTable courses={courses} />
+      <AllCoursesTable
+        courses={courses}
+        onDelete={(id) => openModal("delete", id)}
+      />
 
       <PaginationLogic
         pagination={pagination}
