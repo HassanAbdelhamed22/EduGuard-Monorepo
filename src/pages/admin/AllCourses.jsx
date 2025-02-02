@@ -4,7 +4,7 @@ import useModal from "./../../hooks/allCourses/useModal";
 import Loading from "../../components/ui/Loading";
 import AllCoursesTable from "../../components/Tables/AllCoursesTable";
 import PaginationLogic from "../../components/PaginationLogic";
-import { deleteCourse } from "../../services/adminService";
+import { deleteCourse, updateCourse } from "../../services/adminService";
 import toast from "react-hot-toast";
 
 const AllCourses = () => {
@@ -29,6 +29,24 @@ const AllCourses = () => {
       fetchCourses(pagination.current_page);
     } catch (error) {
       toast.error(error.message);
+    }
+  };
+
+  const handleUpdate = async (values) => {
+    try {
+      const { data, status } = await updateCourse(modal.userId, values);
+      if (status === 200) {
+        toast.success("Course updated successfully");
+        closeModal();
+        fetchCourses(pagination.current_page);
+      } else {
+        toast.error("Failed to update course");
+      }
+    } catch (err) {
+      console.error("Update error:", err);
+      toast.error(
+        err?.response?.data?.message || "An error occurred during update."
+      );
     }
   };
 
