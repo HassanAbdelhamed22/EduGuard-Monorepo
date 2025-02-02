@@ -36,8 +36,20 @@ const AllCourses = () => {
   };
 
   const handleUpdate = async (values) => {
+    const updatedFields = {};
+      for (const key in values) {
+        if (values[key] !== modal.courseData[key] && values[key] !== "") {
+          updatedFields[key] = values[key];
+        }
+      }
+
+      if (Object.keys(updatedFields).length === 0) {
+        toast.error("No fields have been updated.");
+        return;
+      }
+
     try {
-      const { data, status } = await updateCourse(modal.courseId, values);
+      const { data, status } = await updateCourse(modal.courseId, updatedFields);
       if (status === 200) {
         toast.success("Course updated successfully");
         closeModal();
