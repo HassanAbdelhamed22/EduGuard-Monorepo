@@ -79,12 +79,22 @@ export const getAllProfessors = async (page) => {
 };
 
 export const getAllCourses = async (page) => {
-  const response = await api.get(`${BASE_URL}admin/courses/with-professor?page=${page}`);
+  const response = await api.get(
+    `${BASE_URL}admin/courses/with-professor?page=${page}`
+  );
   const { data, pagination } = response.data;
   return { data, pagination };
+};
+
+export const updateCourse = async (id, courseData) => {
+  const { data } = await api.patch(
+    `${BASE_URL}admin/courses/${id}`,
+    courseData
+  );
+  return data;
 };
 
 export const deleteCourse = async (id) => {
   const { data } = await api.delete(`${BASE_URL}admin/courses/${id}`);
   return data;
-}
+};
