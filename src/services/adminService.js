@@ -77,3 +77,9 @@ export const getAllProfessors = async (page) => {
   const { professors, pagination } = response.data;
   return { professors, pagination };
 };
+
+export const getAllCourses = async (page) => {
+  const response = await api.get(`${BASE_URL}admin/courses/with-professor?page=${page}`);
+  const { data, pagination } = response.data;
+  return { data, pagination };
+};
