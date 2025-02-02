@@ -28,9 +28,9 @@ const AllCoursesTable = ({ courses, onDelete, onEdit }) => {
           <TableRow key={course.CourseID}>
             <TableCell>{course.CourseID}</TableCell>
             <TableCell>{course.CourseName}</TableCell>
-            <TableCell>{course.professor.name}</TableCell>
-            <TableCell>{course.professor.email}</TableCell>
-            <TableCell>{course.course_registrations_count}</TableCell>
+            <TableCell>{course.professor?.name || "N/A"}</TableCell>
+            <TableCell>{course.professor?.email || "N/A"}</TableCell>
+            <TableCell>{course.course_registrations_count }</TableCell>
             <TableCell>
               <div className="flex gap-2">
                 <Button
