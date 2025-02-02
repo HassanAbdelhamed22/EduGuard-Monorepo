@@ -24,7 +24,7 @@ const UpdateCourseForm = ({
         <Form className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Course Name
+              Course Code
             </label>
             <Field
               type="text"
