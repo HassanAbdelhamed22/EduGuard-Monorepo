@@ -1,7 +1,7 @@
 import React from "react";
 import { Field, Form, Formik } from "formik";
 import Button from "../ui/Button";
-import { updateCourseValidationSchema } from "../../utils/validation";
+import { courseValidationSchema } from "../../utils/validation";
 
 const UpdateCourseForm = ({
   initialValues,
@@ -12,7 +12,7 @@ const UpdateCourseForm = ({
   return (
     <Formik
       initialValues={initialValues}
-      validationSchema={updateCourseValidationSchema}
+      validationSchema={courseValidationSchema}
       onSubmit={(values, { setSubmitting }) => {
         onSubmit(values);
         setSubmitting(false);
