@@ -4,6 +4,8 @@ import useModal from "./../../hooks/allCourses/useModal";
 import Loading from "../../components/ui/Loading";
 import AllCoursesTable from "../../components/Tables/AllCoursesTable";
 import PaginationLogic from "../../components/PaginationLogic";
+import { deleteCourse } from "../../services/adminService";
+import toast from "react-hot-toast";
 
 const AllCourses = () => {
   const { courses, pagination, isLoading, fetchCourses } = useCourses();
@@ -16,6 +18,17 @@ const AllCourses = () => {
       page <= pagination.total_pages
     ) {
       fetchCourses(page);
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      await deleteCourse(modal.userId);
+      toast.success("Course deleted successfully");
+      closeModal();
+      fetchCourses(pagination.current_page);
+    } catch (error) {
+      toast.error(error.message);
     }
   };
 
