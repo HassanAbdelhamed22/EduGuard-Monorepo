@@ -6,6 +6,9 @@ import AllCoursesTable from "../../components/Tables/AllCoursesTable";
 import PaginationLogic from "../../components/PaginationLogic";
 import { deleteCourse, updateCourse } from "../../services/adminService";
 import toast from "react-hot-toast";
+import Button from "../../components/ui/Button";
+import UpdateCourseForm from "../../components/forms/UpdateCourseForm";
+import Modal from "../../components/ui/Modal";
 
 const AllCourses = () => {
   const { courses, pagination, isLoading, fetchCourses } = useCourses();
@@ -22,8 +25,9 @@ const AllCourses = () => {
   };
 
   const handleDelete = async () => {
+    console.log("Deleting course with ID:", modal.courseId);
     try {
-      await deleteCourse(modal.userId);
+      await deleteCourse(modal.courseId);
       toast.success("Course deleted successfully");
       closeModal();
       fetchCourses(pagination.current_page);
@@ -34,7 +38,7 @@ const AllCourses = () => {
 
   const handleUpdate = async (values) => {
     try {
-      const { data, status } = await updateCourse(modal.userId, values);
+      const { data, status } = await updateCourse(modal.courseId, values);
       if (status === 200) {
         toast.success("Course updated successfully");
         closeModal();
@@ -50,6 +54,32 @@ const AllCourses = () => {
     }
   };
 
+  const renderModalContent = () => {
+    if (modal.type === "delete") {
+      return (
+        <div className="flex justify-end gap-2 mt-5">
+          <Button variant="cancel" onClick={closeModal}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={handleDelete}>
+            Delete
+          </Button>
+        </div>
+      );
+    }
+
+    if (modal.type === "edit" && modal.courseData) {
+      return (
+        <UpdateCourseForm
+          initialValues={modal.courseData}
+          onSubmit={handleUpdate}
+          isLoading={isLoading}
+          closeModal={closeModal}
+        />
+      );
+    }
+  };
+
   if (isLoading && courses.length === 0) {
     return <Loading />;
   }
@@ -61,14 +91,37 @@ const AllCourses = () => {
 
       <AllCoursesTable
         courses={courses}
-        onEdit={(userId, userData) => openModal("edit", userId, userData)}
-        onDelete={(id) => openModal("delete", id)}
+        onEdit={(courseId, courseData) =>
+          openModal("edit", courseId, courseData)
+        }
+        onDelete={(courseId) => openModal("delete", courseId)}
       />
 
       <PaginationLogic
         pagination={pagination}
         handlePageChange={handlePageChange}
       />
+
+      <Modal
+        isOpen={modal.isOpen}
+        closeModal={closeModal}
+        title={
+          modal.type === "delete"
+            ? "Delete Course"
+            : modal.type === "edit"
+            ? "Edit Course"
+            : ""
+        }
+        description={
+          modal.type === "delete"
+            ? "Are you sure you want to delete this course? This action cannot be undone."
+            : modal.type === "edit"
+            ? "Update course information"
+            : ""
+        }
+      >
+        {renderModalContent()}
+      </Modal>
     </div>
   );
 };

@@ -37,7 +37,7 @@ const AllCoursesTable = ({ courses, onDelete, onEdit }) => {
                   variant="ghost"
                   size="icon"
                   onClick={() => {
-                    onEdit(course.id, course);
+                    onEdit(course.CourseID, course);
                   }}
                   title="Edit Course"
                 >
@@ -46,7 +46,7 @@ const AllCoursesTable = ({ courses, onDelete, onEdit }) => {
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={() => onDelete(course.id)}
+                  onClick={() => onDelete(course.CourseID)}
                   title="Delete Course"
                 >
                   <Trash2 className="h-4 w-4 text-red-600" />

@@ -87,11 +87,11 @@ export const getAllCourses = async (page) => {
 };
 
 export const updateCourse = async (id, courseData) => {
-  const { data } = await api.patch(
+  const { data, status } = await api.patch(
     `${BASE_URL}admin/courses/${id}`,
     courseData
   );
-  return data;
+  return { data, status };
 };
 
 export const deleteCourse = async (id) => {
