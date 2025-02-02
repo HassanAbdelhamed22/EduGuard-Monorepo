@@ -108,7 +108,6 @@ const AllUsers = () => {
   };
 
   const renderModalContent = () => {
-    console.log("Modal state:", modal);
     if (modal.type === "delete") {
       return (
         <div className="flex justify-end gap-2 mt-5">

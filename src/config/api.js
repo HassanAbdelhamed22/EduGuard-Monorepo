@@ -27,8 +27,6 @@ api.interceptors.request.use(
           }
         );
 
-        console.log("Refresh Response:", refreshResponse.data);
-
         const newToken = refreshResponse.data.token;
         const newTokenExpiry = (
           Date.now() +

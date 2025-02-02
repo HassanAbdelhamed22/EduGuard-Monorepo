@@ -25,7 +25,6 @@ const AllCourses = () => {
   };
 
   const handleDelete = async () => {
-    console.log("Deleting course with ID:", modal.courseId);
     try {
       await deleteCourse(modal.courseId);
       toast.success("Course deleted successfully");

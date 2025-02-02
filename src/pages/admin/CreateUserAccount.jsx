@@ -22,7 +22,6 @@ const CreateUserAccount = () => {
 
   const handleSubmit = async (values) => {
     setIsLoading(true);
-    console.log("Submitting values:", values);
     try {
       const { data, status } = await createUserAccount(values);
 
