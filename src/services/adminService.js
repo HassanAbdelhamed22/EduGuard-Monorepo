@@ -83,3 +83,8 @@ export const getAllCourses = async (page) => {
   const { data, pagination } = response.data;
   return { data, pagination };
 };
+
+export const deleteCourse = async (id) => {
+  const { data } = await api.delete(`${BASE_URL}admin/courses/${id}`);
+  return data;
+}
