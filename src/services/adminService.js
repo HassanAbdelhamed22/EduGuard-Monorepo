@@ -87,7 +87,10 @@ export const getAllCourses = async (page) => {
 };
 
 export const createCourse = async (courseData) => {
-  const { data, status } = await api.post(`${BASE_URL}admin/courses`, courseData);
+  const { data, status } = await api.post(
+    `${BASE_URL}admin/courses`,
+    courseData
+  );
   return { data, status };
 };
 
@@ -102,4 +105,15 @@ export const updateCourse = async (id, courseData) => {
 export const deleteCourse = async (id) => {
   const { data } = await api.delete(`${BASE_URL}admin/courses/${id}`);
   return data;
+};
+
+export const assignCourse = async (CourseID, ProfessorID) => {
+  const { data, status } = await api.post(
+    `${BASE_URL}admin/courses/assign-professor`,
+    {
+      CourseID,
+      ProfessorID,
+    }
+  );
+  return { data, status };
 };
