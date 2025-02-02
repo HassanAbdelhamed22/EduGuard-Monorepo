@@ -17,6 +17,9 @@ const CreateCourse = () => {
 
       if (status === 200) {
         toast.success(data.message);
+        // Reset form values
+        initialValues.CourseCode = "";
+        initialValues.CourseName = "";
       } else {
         toast.error("Unexpected server response. Please try again.");
       }

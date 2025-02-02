@@ -27,13 +27,19 @@ const CreateUserAccount = () => {
 
       if (status === 201) {
         toast.success(data.message);
-      
+        // Reset form values
+        initialValues.name = "";
+        initialValues.email = "";
+        initialValues.password = "";
+        initialValues.password_confirmation = "";
+        initialValues.phone = "";
+        initialValues.address = "";
+        initialValues.role = "user";
       } else {
         toast.error("Unexpected server response. Please try again.");
       }
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message ;
+      const errorMessage = error.response?.data?.message;
       toast.error(errorMessage);
     } finally {
       setIsLoading(false);
