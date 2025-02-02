@@ -17,6 +17,8 @@ const UpdateCourseForm = ({
         onSubmit(values);
         setSubmitting(false);
       }}
+      validateOnChange={true}
+      validateOnBlur={true}
     >
       {({ errors, touched, isSubmitting, isLoading }) => (
         <Form className="space-y-4">
@@ -26,16 +28,16 @@ const UpdateCourseForm = ({
             </label>
             <Field
               type="text"
-              name="course_name"
+              name="CourseName"
               className={`mt-1 block w-full rounded-md border px-3 py-2 focus:outline-none focus:ring-1 ${
-                errors.course_name && touched.course_name
+                errors.CourseName && touched.CourseName
                   ? "border-red-500 focus:border-red-500 focus:ring-red-500"
                   : "border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
               }`}
             />
-            {errors.course_name && touched.course_name && (
+            {errors.CourseName && touched.CourseName && (
               <div className="mt-1 text-sm text-red-600">
-                {errors.course_name}
+                {errors.CourseName}
               </div>
             )}
           </div>
