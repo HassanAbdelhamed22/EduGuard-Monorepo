@@ -13,6 +13,7 @@ import AllProfessors from "../pages/admin/AllProfessors";
 import CreateUserAccount from "../pages/admin/CreateUserAccount";
 import AllCourses from "../pages/admin/AllCourses";
 import CreateCourse from "../pages/admin/CreateCourse";
+import AssignCourse from "../pages/admin/AssignCourse";
 
 const AdminRoutes = () => {
   return (
@@ -29,7 +30,7 @@ const AdminRoutes = () => {
           <Route path="professors" element={<AllProfessors />} />
           <Route path="courses" element={<AllCourses />} />
           <Route path="courses/create" element={<CreateCourse />} />
-          <Route path="courses/assign" element={<div>Assign Course</div>} />
+          <Route path="courses/assign" element={<AssignCourse />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/update-password" element={<UpdatePassword />} />
 
