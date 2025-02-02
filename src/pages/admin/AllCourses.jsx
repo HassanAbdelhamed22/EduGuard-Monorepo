@@ -61,6 +61,7 @@ const AllCourses = () => {
 
       <AllCoursesTable
         courses={courses}
+        onEdit={(userId, userData) => openModal("edit", userId, userData)}
         onDelete={(id) => openModal("delete", id)}
       />
 
