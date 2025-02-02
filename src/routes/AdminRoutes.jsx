@@ -11,6 +11,7 @@ import AllUsers from "../pages/admin/AllUsers";
 import AllStudents from "../pages/admin/AllStudents";
 import AllProfessors from "../pages/admin/AllProfessors";
 import CreateUserAccount from "../pages/admin/CreateUserAccount";
+import AllCourses from "../pages/admin/AllCourses";
 
 const AdminRoutes = () => {
   return (
@@ -25,7 +26,7 @@ const AdminRoutes = () => {
           <Route path="users/create" element={<CreateUserAccount />} />
           <Route path="students" element={<AllStudents />} />
           <Route path="professors" element={<AllProfessors />} />
-          <Route path="courses" element={<div>Courses List</div>} />
+          <Route path="courses" element={<AllCourses />} />
           <Route path="courses/create" element={<div>Create Course</div>} />
           <Route path="courses/assign" element={<div>Assign Course</div>} />
           <Route path="/profile" element={<Profile />} />
