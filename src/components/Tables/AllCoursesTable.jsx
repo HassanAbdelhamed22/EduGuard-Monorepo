@@ -15,10 +15,10 @@ const AllCoursesTable = ({ courses, onDelete, onEdit }) => {
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead className="w-1/12">ID</TableHead>
+          <TableHead className="w-/12">ID</TableHead>
           <TableHead className="w-2/12">Course Code</TableHead>
           <TableHead className="w-3/12">Course Name</TableHead>
-          <TableHead className="w-1/12">Professor</TableHead>
+          <TableHead className="w-2/12">Professor</TableHead>
           <TableHead className="w-2/12">Professor Email</TableHead>
           <TableHead className="w-2/12">Number of Students</TableHead>
           <TableHead className="w-/12">Actions</TableHead>
