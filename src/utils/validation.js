@@ -135,8 +135,15 @@ export const createUserAccountValidationSchema = Yup.object().shape({
     .oneOf(["admin", "user", "professor"], "Invalid role"),
 });
 
-export const updateCourseValidationSchema = Yup.object().shape({
+export const courseValidationSchema = Yup.object().shape({
   CourseName: Yup.string()
     .required("The course name field is required.")
     .max(255, "The course name must not exceed 255 characters."),
+  CourseCode: Yup.string()
+    .required("The course code field is required.")
+    .max(10, "The course code must not exceed 10 characters.")
+    .matches(
+      /^[a-zA-Z0-9]+$/,
+      "The course code must contain only letters and numbers."
+    ),
 });
