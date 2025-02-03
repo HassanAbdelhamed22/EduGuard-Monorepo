@@ -1,17 +1,20 @@
 import { ChevronDown, LogOut, Menu, X } from "lucide-react";
 import React, { useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { adminItems } from "./../constants/sidebarItems";
+import { adminItems, professorItems } from "./../constants/sidebarItems";
 import Logo from "./Logo";
 import { logout } from "../services/authService";
 import { removeUserData } from "../utils/functions";
 import toast from "react-hot-toast";
+import { userRole } from "../constants";
 
 const Sidebar = () => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(true);
   const [expandedItems, setExpandedItems] = useState([]);
   const location = useLocation();
+
+  const sidebarItems = userRole === "admin" ? adminItems : professorItems;
 
   const toggleExpand = (title) => {
     setExpandedItems((prevItems) =>
@@ -56,7 +59,7 @@ const Sidebar = () => {
       {/* Navigation */}
       <div className="flex flex-col flex-1 justify-between shadow-sm">
         <nav className="flex-1 p-4 space-y-2">
-          {adminItems.map((item) => (
+          {sidebarItems.map((item) => (
             <div key={item.title} className="space-y-2">
               {/* Main NavLink for the item */}
               <NavLink
