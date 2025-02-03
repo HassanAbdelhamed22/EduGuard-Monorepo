@@ -1,17 +1,20 @@
 import { ChevronDown, LogOut, Menu, X } from "lucide-react";
 import React, { useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { adminItems } from "./../constants/sidebarItems";
+import { adminItems, professorItems } from "./../constants/sidebarItems";
 import Logo from "./Logo";
 import { logout } from "../services/authService";
 import { removeUserData } from "../utils/functions";
 import toast from "react-hot-toast";
+import { userRole } from "../constants";
 
 const Sidebar = () => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(true);
   const [expandedItems, setExpandedItems] = useState([]);
   const location = useLocation();
+
+  const sidebarItems = userRole === "admin" ? adminItems : professorItems;
 
   const toggleExpand = (title) => {
     setExpandedItems((prevItems) =>
@@ -36,7 +39,7 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="h-full bg-white shadow-lg flex flex-col overflow-hidden">
+    <div className="h-full bg-white shadow-lg flex flex-col">
       {/* Mobile Header */}
       <div className="flex items-center justify-between p-4 bg-indigo-600 text-white lg:hidden">
         <Logo />
@@ -49,82 +52,81 @@ const Sidebar = () => {
       </div>
 
       {/* Desktop Logo */}
-      <div className="hidden lg:block px-6 py-[24px] shadow-sm">
+      <div className="hidden lg:block px-6 py-[24px] shadow-sm !sticky !top-0 bg-white !z-50">
         <Logo />
       </div>
 
-      {/* Navigation */}
-      <div className="flex flex-col flex-1 justify-between shadow-sm">
-        <nav className="flex-1 p-4 space-y-2">
-          {adminItems.map((item) => (
-            <div key={item.title} className="space-y-2">
-              {/* Main NavLink for the item */}
-              <NavLink
-                to={item.path || "#"}
-                className={({ isActive }) =>
-                  `flex items-center justify-between w-full px-4 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 
-                    ${
-                      isActive && !item.items?.length
-                        ? "bg-indigo-50 text-indigo-600"
-                        : "text-gray-700 hover:bg-indigo-50"
-                    }
-                  }`
-                }
-                end={item.items?.length === 0}
-                onClick={() => {
-                  if (item.items?.length) {
-                    toggleExpand(item.title);
+      {/* Main Container */}
+      <div className="flex-1 overflow-y-auto p-4 space-y-2">
+        {sidebarItems.map((item) => (
+          <div key={item.title} className="space-y-2">
+            {/* Main NavLink for the item */}
+            <NavLink
+              to={item.path || "#"}
+              className={({ isActive }) =>
+                `flex items-center justify-between w-full px-4 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 
+                  ${
+                    isActive && !item.items?.length
+                      ? "bg-indigo-50 text-indigo-600"
+                      : "text-gray-700 hover:bg-indigo-50"
                   }
-                }}
-              >
-                <div className="flex items-center gap-3">
-                  {item.icon}
-                  <span className="font-semibold">{item.title}</span>
-                </div>
-                {item.items?.length > 0 && (
-                  <ChevronDown
-                    className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${
-                      expandedItems.includes(item.title) ? "rotate-180" : ""
-                    }`}
-                  />
-                )}
-              </NavLink>
-
-              {/* Sub-items */}
-              {expandedItems.includes(item.title) && item.items?.length > 0 && (
-                <div className="pl-8 space-y-1 mt-2">
-                  {item.items.map((subItem) => (
-                    <NavLink
-                      key={subItem.path}
-                      to={subItem.path}
-                      className={({ isActive }) =>
-                        `block px-4 py-2.5 text-sm duration-200 rounded-lg ${
-                          isActive
-                            ? "bg-indigo-50 text-indigo-600 font-medium"
-                            : "text-gray-600 hover:bg-indigo-50 hover:text-gray-900"
-                        }`
-                      }
-                      end
-                    >
-                      <span>{subItem.title}</span>
-                    </NavLink>
-                  ))}
-                </div>
+                }`
+              }
+              end={item.items?.length === 0}
+              onClick={() => {
+                if (item.items?.length) {
+                  toggleExpand(item.title);
+                }
+              }}
+            >
+              <div className="flex items-center gap-3">
+                {item.icon}
+                <span className="font-semibold">{item.title}</span>
+              </div>
+              {item.items?.length > 0 && (
+                <ChevronDown
+                  className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${
+                    expandedItems.includes(item.title) ? "rotate-180" : ""
+                  }`}
+                />
               )}
-            </div>
-          ))}
-        </nav>
+            </NavLink>
 
-        {/* Footer */}
-        <div className="p-4 border-t">
-          <button
-            className="flex items-center w-full px-4 py-2.5 text-sm font-medium text-red-600 rounded-lg hover:bg-red-50 transition-colors duration-200"
-            onClick={handleLogout}
-          >
-            <LogOut className="w-5 h-5 mr-3" />
-            Logout
-          </button>
-        </div>
+            {/* Sub-items */}
+            {expandedItems.includes(item.title) && item.items?.length > 0 && (
+              <div className="pl-8 space-y-1 mt-2">
+                {item.items.map((subItem) => (
+                  <NavLink
+                    key={subItem.path}
+                    to={subItem.path}
+                    className={({ isActive }) =>
+                      `block px-4 py-2.5 text-sm duration-200 rounded-lg ${
+                        isActive
+                          ? "bg-indigo-50 text-indigo-600 font-medium"
+                          : "text-gray-600 hover:bg-indigo-50 hover:text-gray-900"
+                      }`
+                    }
+                    end
+                  >
+                    <span>{subItem.title}</span>
+                  </NavLink>
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+      {/* Logout Button (Fixed at Bottom) */}
+      <div className="p-4 border-t mt-auto bg-white !sticky !bottom-0 !z-50">
+        {" "}
+        {/* mt-auto pushes it to the bottom */}
+        <button
+          className="flex items-center w-full px-4 py-2.5 text-sm font-medium text-red-600 rounded-lg hover:bg-red-50 transition-colors duration-200"
+          onClick={handleLogout}
+        >
+          <LogOut className="w-5 h-5 mr-3" />
+          Logout
+        </button>
       </div>
     </div>
   );
