@@ -13,8 +13,8 @@ export const viewRegisteredCourses = async () => {
 
 export const getAllQuizzes = async () => {
   try {
-    const { quizzes } = await api.get(`${BASE_URL}quiz/get-quizzes`);
-    return quizzes;
+    const { data } = await api.get(`${BASE_URL}quiz/get-quizzes`);
+    return data;
   } catch (error) {
     console.error(error);
     toast.error(error?.response?.data?.message);
