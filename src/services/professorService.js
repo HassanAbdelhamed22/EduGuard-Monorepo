@@ -25,10 +25,10 @@ export const viewCourseQuizzes = async (courseId) => {
 
 export const viewCourseMaterials = async (courseId) => {
   try {
-    const { data } = await api.get(
+    const response = await api.get(
       `${BASE_URL}professor/materials/${courseId}`
     );
-    return data;
+    return response.data.data;
   } catch (error) {
     console.error(error);
     toast.error(error?.response?.data?.message);
