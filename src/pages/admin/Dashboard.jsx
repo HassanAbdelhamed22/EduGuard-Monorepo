@@ -8,7 +8,7 @@ import {
   Settings,
   Users,
 } from "lucide-react";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   getResentActivities,
   getStatistics,
@@ -31,25 +31,25 @@ const Dashboard = () => {
   useEffect(() => {
     handleGetStatistics();
     handleGetActivities();
-  }, []);
+  }, [handleGetStatistics, handleGetActivities]);
 
-  const handleGetStatistics = async () => {
+  const handleGetStatistics = useCallback(async () => {
     try {
       const data = await getStatistics();
       setStatistics(data);
     } catch (error) {
       toast.error(error);
     }
-  };
+  }, []);
 
-  const handleGetActivities = async () => {
+  const handleGetActivities = useCallback(async () => {
     try {
       const response = await getResentActivities();
       setActivities(response.activities);
     } catch (error) {
       toast.error(error);
     }
-  };
+  }, []);
 
   const quickActions = useMemo(
     () => [
