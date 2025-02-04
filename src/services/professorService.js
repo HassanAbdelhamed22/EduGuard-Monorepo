@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import api from "../config/api";
 import { BASE_URL } from "../constants";
 
@@ -13,10 +14,10 @@ export const viewRegisteredCourses = async () => {
 
 export const viewCourseQuizzes = async (courseId) => {
   try {
-    const { data } = await api.get(
+    const response = await api.get(
       `${BASE_URL}quiz/course-quizzes/${courseId}`
     );
-    return data;
+    return response.data.quizzes;
   } catch (error) {
     console.error(error);
     toast.error(error?.response?.data?.message);
