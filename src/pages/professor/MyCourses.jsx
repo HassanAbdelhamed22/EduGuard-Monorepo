@@ -32,7 +32,7 @@ const CourseList = () => {
         {courses.map((course) => (
           <div
             key={course.CourseID}
-            className="p-4 transition-shadow border rounded-lg shadow-sm hover:shadow-lg "
+            className="p-4 transition-shadow border rounded-lg shadow-sm hover:shadow-lg bg-white"
           >
             <div className="flex items-center justify-between mb-2">
               <h3 className="text-lg font-bold">{course.CourseCode}</h3>
