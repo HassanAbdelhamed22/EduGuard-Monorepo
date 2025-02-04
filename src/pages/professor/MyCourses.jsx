@@ -164,7 +164,12 @@ const CourseList = () => {
                   disabled={materials.total === 0}
                   className="flex-1"
                   onClick={() =>
-                    navigate(`/professor/materials/${course.CourseID}`)
+                    navigate(`/professor/materials/${course.CourseID}`, {
+                      state: {
+                        courseName: course.CourseName,
+                        courseCode: course.CourseCode,
+                      },
+                    })
                   }
                 >
                   View Materials
