@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useMemo } from "react";
 import useCourses from "../../hooks/allCourses/useCourses";
 import useModal from "./../../hooks/allCourses/useModal";
 import Loading from "../../components/ui/Loading";
@@ -14,17 +14,20 @@ const AllCourses = () => {
   const { courses, pagination, isLoading, fetchCourses } = useCourses();
   const { modal, openModal, closeModal } = useModal();
 
-  const handlePageChange = (page) => {
-    if (
-      page !== pagination.current_page &&
-      page > 0 &&
-      page <= pagination.total_pages
-    ) {
-      fetchCourses(page);
-    }
-  };
+  const handlePageChange = useCallback(
+    (page) => {
+      if (
+        page !== pagination.current_page &&
+        page > 0 &&
+        page <= pagination.total_pages
+      ) {
+        fetchCourses(page);
+      }
+    },
+    [pagination, fetchCourses]
+  );
 
-  const handleDelete = async () => {
+  const handleDelete = useCallback(async () => {
     try {
       await deleteCourse(modal.courseId);
       toast.success("Course deleted successfully");
@@ -33,39 +36,49 @@ const AllCourses = () => {
     } catch (error) {
       toast.error(error.message);
     }
-  };
+  }, [modal.courseId, closeModal, fetchCourses, pagination.current_page]);
 
-  const handleUpdate = async (values) => {
-    const updatedFields = {};
-      for (const key in values) {
-        if (values[key] !== modal.courseData[key] && values[key] !== "") {
-          updatedFields[key] = values[key];
-        }
-      }
+  const handleUpdate = useCallback(
+    async (values) => {
+      const updatedFields = Object.fromEntries(
+        Object.entries(values).filter(
+          ([key, value]) => value !== modal.courseData[key] && value !== ""
+        )
+      );
 
       if (Object.keys(updatedFields).length === 0) {
         toast.error("No fields have been updated.");
         return;
       }
 
-    try {
-      const { data, status } = await updateCourse(modal.courseId, updatedFields);
-      if (status === 200) {
-        toast.success("Course updated successfully");
-        closeModal();
-        fetchCourses(pagination.current_page);
-      } else {
-        toast.error("Failed to update course");
+      try {
+        const { data, status } = await updateCourse(
+          modal.courseId,
+          updatedFields
+        );
+        if (status === 200) {
+          toast.success("Course updated successfully");
+          closeModal();
+          fetchCourses(pagination.current_page);
+        } else {
+          toast.error("Failed to update course");
+        }
+      } catch (err) {
+        toast.error(
+          err?.response?.data?.message || "An error occurred during update."
+        );
       }
-    } catch (err) {
-      console.error("Update error:", err);
-      toast.error(
-        err?.response?.data?.message || "An error occurred during update."
-      );
-    }
-  };
+    },
+    [
+      modal.courseId,
+      modal.courseData,
+      closeModal,
+      fetchCourses,
+      pagination.current_page,
+    ]
+  );
 
-  const renderModalContent = () => {
+  const renderModalContent = useMemo(() => {
     if (modal.type === "delete") {
       return (
         <div className="flex justify-end gap-2 mt-5">
@@ -89,7 +102,8 @@ const AllCourses = () => {
         />
       );
     }
-  };
+    return null;
+  }, [modal, handleDelete, handleUpdate, closeModal, isLoading]);
 
   if (isLoading && courses.length === 0) {
     return <Loading />;
@@ -131,7 +145,7 @@ const AllCourses = () => {
             : ""
         }
       >
-        {renderModalContent()}
+        {renderModalContent}
       </Modal>
     </div>
   );

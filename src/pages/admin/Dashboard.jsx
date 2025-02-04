@@ -8,13 +8,14 @@ import {
   Settings,
   Users,
 } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   getResentActivities,
   getStatistics,
 } from "../../services/adminService";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
+import Loading from "../../components/ui/Loading";
 
 const initialStatistics = {
   totalUsers: 0,
@@ -27,56 +28,119 @@ const Dashboard = () => {
   const [statistics, setStatistics] = useState(initialStatistics);
 
   const [activities, setActivities] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    handleGetStatistics();
-    handleGetActivities();
-  }, []);
-
-  const handleGetStatistics = async () => {
+  const handleGetStatistics = useCallback(async () => {
+    setIsLoading(true);
     try {
       const data = await getStatistics();
       setStatistics(data);
     } catch (error) {
       toast.error(error);
+    } finally {
+      setIsLoading(false);
     }
-  };
+  }, []);
 
-  const handleGetActivities = async () => {
+  const handleGetActivities = useCallback(async () => {
+    setIsLoading(true);
     try {
       const response = await getResentActivities();
       setActivities(response.activities);
     } catch (error) {
       toast.error(error);
+    } finally {
+      setIsLoading(false);
     }
-  };
+  }, []);
 
-  const quickActions = [
-    {
-      id: 1,
-      name: "Create User",
-      icon: <Users className="w-6 h-6" />,
-      path: "/admin/users/create",
-    },
-    {
-      id: 2,
-      name: "Create Course",
-      icon: <BookOpen className="w-6 h-6" />,
-      path: "/admin/courses/create",
-    },
-    {
-      id: 3,
-      name: "Profile Settings",
-      icon: <Settings className="w-6 h-6" />,
-      path: "/admin/profile",
-    },
-    {
-      id: 4,
-      name: "View Reports",
-      icon: <File className="w-6 h-6" />,
-      path: "#",
-    },
-  ];
+  useEffect(() => {
+    handleGetStatistics();
+    handleGetActivities();
+  }, [handleGetStatistics, handleGetActivities]);
+
+  const quickActions = useMemo(
+    () => [
+      {
+        id: 1,
+        name: "Create User",
+        icon: <Users className="w-6 h-6" />,
+        path: "/admin/users/create",
+      },
+      {
+        id: 2,
+        name: "Create Course",
+        icon: <BookOpen className="w-6 h-6" />,
+        path: "/admin/courses/create",
+      },
+      {
+        id: 3,
+        name: "Profile Settings",
+        icon: <Settings className="w-6 h-6" />,
+        path: "/admin/profile",
+      },
+      {
+        id: 4,
+        name: "View Reports",
+        icon: <File className="w-6 h-6" />,
+        path: "#",
+      },
+    ],
+    []
+  );
+
+  const formattedActivities = useMemo(
+    () =>
+      activities.map((activity) => ({
+        ...activity,
+        formattedDate: new Date(activity.created_at).toLocaleDateString(
+          "en-US",
+          {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          }
+        ),
+        formattedTime: new Date(activity.created_at).toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+      })),
+    [activities]
+  );
+
+  const statisticsCards = useMemo(() => {
+    return [
+      {
+        title: "Total Users",
+        value: statistics.totalUsers,
+        color: "from-indigo-500 to-blue-500",
+        icon: <Users className="h-6 w-6 text-indigo-500" />,
+      },
+      {
+        title: "Professors",
+        value: statistics.totalProfessors,
+        color: "from-red-500 to-pink-500",
+        icon: <School className="h-6 w-6 text-red-500" />,
+      },
+      {
+        title: "Students",
+        value: statistics.totalStudents,
+        color: "from-yellow-500 to-orange-500",
+        icon: <GraduationCap className="h-6 w-6 text-yellow-500" />,
+      },
+      {
+        title: "Active Courses",
+        value: statistics.totalCourses,
+        color: "from-green-500 to-teal-500",
+        icon: <BookOpen className="h-6 w-6 text-green-500" />,
+      },
+    ];
+  }, [statistics]);
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <div className="min-h-screen py-6">
@@ -93,67 +157,22 @@ const Dashboard = () => {
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* Total Users */}
-          <div className="bg-gradient-to-r from-indigo-500 to-blue-500 overflow-hidden shadow-lg rounded-lg hover:scale-105 transition-transform duration-300">
-            <div className="p-5 flex items-center">
-              <div className="bg-white p-3 rounded-full">
-                <Users className="h-6 w-6 text-indigo-500" />
-              </div>
-              <div className="ml-5">
-                <h3 className="text-white text-lg font-medium">Total Users</h3>
-                <p className="text-3xl font-bold text-white">
-                  {statistics.totalUsers}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Total Professors */}
-          <div className="bg-gradient-to-r from-red-500 to-pink-500 shadow-lg rounded-lg p-5 hover:scale-105 transition-transform duration-300">
-            <div className="flex items-center">
-              <div className="bg-white p-3 rounded-full">
-                <School className="h-6 w-6 text-red-500" />
-              </div>
-              <div className="ml-5">
-                <h3 className="text-white text-lg font-medium">Professors</h3>
-                <p className="text-3xl font-bold text-white">
-                  {statistics.totalProfessors}
-                </p>
+          {statisticsCards.map((stat, index) => (
+            <div
+              key={index}
+              className={`bg-gradient-to-r ${stat.color} overflow-hidden shadow-lg rounded-lg hover:scale-105 transition-transform duration-300`}
+            >
+              <div className="p-5 flex items-center">
+                <div className="bg-white p-3 rounded-full">{stat.icon}</div>
+                <div className="ml-5">
+                  <h3 className="text-white text-lg font-medium">
+                    {stat.title}
+                  </h3>
+                  <p className="text-3xl font-bold text-white">{stat.value}</p>
+                </div>
               </div>
             </div>
-          </div>
-
-          {/* Total Students */}
-          <div className="bg-gradient-to-r from-yellow-500 to-orange-500 shadow-lg rounded-lg p-5 hover:scale-105 transition-transform duration-300">
-            <div className="flex items-center">
-              <div className="bg-white p-3 rounded-full">
-                <GraduationCap className="h-6 w-6 text-yellow-500" />
-              </div>
-              <div className="ml-5">
-                <h3 className="text-white text-lg font-medium">Students</h3>
-                <p className="text-3xl font-bold text-white">
-                  {statistics.totalStudents}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Total Courses */}
-          <div className="bg-gradient-to-r from-green-500 to-teal-500 shadow-lg rounded-lg p-5 hover:scale-105 transition-transform duration-300">
-            <div className="flex items-center">
-              <div className="bg-white p-3 rounded-full">
-                <BookOpen className="h-6 w-6 text-green-500" />
-              </div>
-              <div className="ml-5">
-                <h3 className="text-white text-lg font-medium">
-                  Active Courses
-                </h3>
-                <p className="text-3xl font-bold text-white">
-                  {statistics.totalCourses}
-                </p>
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
 
         {/* Quick Actions */}
@@ -188,7 +207,7 @@ const Dashboard = () => {
           </h2>
           <div className=" shadow-lg rounded-lg overflow-hidden">
             <ul className="divide-y divide-gray-200">
-              {activities.map((activity) => (
+              {formattedActivities.map((activity) => (
                 <li
                   key={activity.id}
                   className="hover:bg-gray-50 transition duration-200"
@@ -205,22 +224,7 @@ const Dashboard = () => {
                         <div className="ml-2 flex-shrink-0 flex items-center">
                           <Clock className="h-4 w-4 text-gray-400 mr-1" />
                           <p className="text-sm text-gray-500">
-                            {/* Format the date for better readability */}
-                            {new Date(activity.created_at).toLocaleDateString(
-                              "en-US",
-                              {
-                                year: "numeric",
-                                month: "short",
-                                day: "numeric",
-                              }
-                            )}
-                            {/* Format the time in hours and minutes */}
-                            {` ${new Date(
-                              activity.created_at
-                            ).toLocaleTimeString([], {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}`}
+                            {activity.formattedDate} {activity.formattedTime}
                           </p>
                         </div>
                       </div>

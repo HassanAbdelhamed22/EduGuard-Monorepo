@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { username } from "../../constants";
 import img from "../../assets/undraw_questions_g2px.svg";
 import { AlertCircle, Book, Clock } from "lucide-react";
@@ -22,21 +22,29 @@ const Dashboard = () => {
   const [courses, setCourses] = useState([]);
   const [quizzes, setQuizzes] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const colors = [
-    "bg-gradient-to-r from-pink-500 to-red-500",
-    "bg-gradient-to-r from-indigo-500 to-purple-500",
-    "bg-gradient-to-r from-teal-500 to-green-500",
-    "bg-gradient-to-r from-yellow-500 to-orange-500",
-    "bg-gradient-to-r from-blue-500 to-cyan-500",
-  ];
 
-  const iconColors = [
-    "text-red-500", // Corresponds to from-red-500 to-pink-500
-    "text-purple-500", // Corresponds to from-purple-500 to-indigo-500
-    "text-green-500", // Corresponds to from-green-500 to-teal-500
-    "text-yellow-500", // Corresponds to from-yellow-500 to-orange-500
-    "text-blue-500", // Corresponds to from-blue-500 to-cyan-500
-  ];
+  // Memoize static data
+  const colors = useMemo(
+    () => [
+      "bg-gradient-to-r from-pink-500 to-red-500",
+      "bg-gradient-to-r from-indigo-500 to-purple-500",
+      "bg-gradient-to-r from-teal-500 to-green-500",
+      "bg-gradient-to-r from-yellow-500 to-orange-500",
+      "bg-gradient-to-r from-blue-500 to-cyan-500",
+    ],
+    []
+  );
+
+  const iconColors = useMemo(
+    () => [
+      "text-red-500",
+      "text-purple-500",
+      "text-green-500",
+      "text-yellow-500",
+      "text-blue-500",
+    ],
+    []
+  );
 
   const fetchData = async () => {
     setIsLoading(true);
@@ -56,6 +64,15 @@ const Dashboard = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  // Memoize derived data (if needed)
+  const filteredQuizzes = useMemo(() => {
+    return quizzes.filter((quiz) => new Date(quiz.QuizDate) > new Date());
+  }, [quizzes]);
+
+  if (isLoading) {
+    return <Loading />;
+  }
   return (
     <div className="p-6 min-h-screen grid grid-cols-1 md:grid-cols-6 gap-4">
       {/* First Div (Takes 3 columns on desktop, full width on mobile) */}
@@ -176,7 +193,7 @@ const Dashboard = () => {
             </h3>
             {isLoading ? (
               <Loading />
-            ) : quizzes.length === 0 ? (
+            ) : filteredQuizzes.length === 0 ? (
               <div className="flex items-center justify-center p-6 bg-gray-50 rounded-lg shadow-sm">
                 <AlertCircle className="w-6 h-6 text-gray-400 mr-2" />
                 <p className="text-gray-600">No quizzes found.</p>
