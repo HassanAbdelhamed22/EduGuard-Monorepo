@@ -23,6 +23,18 @@ export const viewCourseQuizzes = async (courseId) => {
   }
 };
 
+export const viewCourseMaterials = async (courseId) => {
+  try {
+    const { data } = await api.get(
+      `${BASE_URL}professor/materials/${courseId}`
+    );
+    return data;
+  } catch (error) {
+    console.error(error);
+    toast.error(error?.response?.data?.message);
+  }
+};
+
 export const getAllQuizzes = async () => {
   try {
     const { data } = await api.get(`${BASE_URL}quiz/get-quizzes`);
