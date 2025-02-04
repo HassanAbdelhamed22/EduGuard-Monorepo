@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { viewCourseQuizzes } from "../../services/professorService";
+import { deleteQuiz, viewCourseQuizzes } from "../../services/professorService";
 import Loading from "../../components/ui/Loading";
 import { FileQuestion } from "lucide-react";
 import Button from "../../components/ui/Button";
+import useModal from "../../hooks/CourseQuizzes/useModal";
+import toast from "react-hot-toast";
 
 const CourseQuizzes = () => {
   const { courseId } = useParams();
@@ -11,6 +13,7 @@ const CourseQuizzes = () => {
   const [loading, setLoading] = useState(true);
   const location = useLocation();
   const navigate = useNavigate();
+  const { modal, openModal, closeModal } = useModal();
 
   const { courseName, courseCode } = location.state || {
     courseName: "Unknown Course",
@@ -31,6 +34,17 @@ const CourseQuizzes = () => {
   useEffect(() => {
     fetchQuizzes();
   }, [courseId]);
+
+  const handleDeleteQuiz = async () => {
+    try {
+      await deleteQuiz(modal.quizId);
+      toast.success("Quiz deleted successfully");
+      closeModal();
+      fetchQuizzes();
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   if (loading) {
     return <Loading />;
