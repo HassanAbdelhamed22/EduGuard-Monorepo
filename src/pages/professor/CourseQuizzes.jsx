@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { viewCourseQuizzes } from "../../services/professorService";
 import Loading from "../../components/ui/Loading";
 import { FileQuestion } from "lucide-react";
@@ -8,6 +8,12 @@ const CourseQuizzes = () => {
   const { courseId } = useParams();
   const [quizzes, setQuizzes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const location = useLocation();
+
+  const { courseName, courseCode } = location.state || {
+    courseName: "Unknown Course",
+    courseCode: "N/A",
+  };
 
   const fetchQuizzes = async () => {
     try {
@@ -30,7 +36,12 @@ const CourseQuizzes = () => {
 
   return (
     <div className="container p-4 mx-auto">
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">Quizzes</h1>
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-gray-800">
+          {courseName} ({courseCode})
+        </h1>
+        <p className="text-lg text-gray-600">Quizzes</p>
+      </div>
       {quizzes.length === 0 ? (
         <p className="text-gray-600">No quizzes available for this course.</p>
       ) : (
