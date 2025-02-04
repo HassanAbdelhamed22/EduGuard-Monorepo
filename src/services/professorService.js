@@ -46,4 +46,7 @@ export const getAllQuizzes = async () => {
   }
 };
 
-
+export const createQuiz = async(quizData) =>{
+  const { data , status } = api.post(`${BASE_URL}quiz/create-quiz` , quizData);
+  return {data , status};
+};

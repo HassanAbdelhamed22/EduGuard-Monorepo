@@ -103,3 +103,4 @@ const CreateQuizForm = ({
 
     )
 }
+export default CreateQuizForm;
