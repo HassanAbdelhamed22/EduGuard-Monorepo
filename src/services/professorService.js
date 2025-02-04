@@ -45,3 +45,13 @@ export const getAllQuizzes = async () => {
     toast.error(error?.response?.data?.message);
   }
 };
+
+export const deleteQuiz = async (quizId) => {
+  try {
+    const data = await api.delete(`${BASE_URL}quiz/delete-quiz/${quizId}`);
+    return data;
+  } catch (error) {
+    console.error(error);
+    toast.error(error?.response?.data?.message);
+  }
+};
