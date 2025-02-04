@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import useCourses from "../../hooks/allCourses/useCourses";
 import useModal from "./../../hooks/allCourses/useModal";
 import Loading from "../../components/ui/Loading";
@@ -78,7 +78,7 @@ const AllCourses = () => {
     ]
   );
 
-  const renderModalContent = () => {
+  const renderModalContent = useMemo(() => {
     if (modal.type === "delete") {
       return (
         <div className="flex justify-end gap-2 mt-5">
@@ -102,7 +102,8 @@ const AllCourses = () => {
         />
       );
     }
-  };
+    return null;
+  }, [modal, handleDelete, handleUpdate, closeModal, isLoading]);
 
   if (isLoading && courses.length === 0) {
     return <Loading />;
@@ -144,7 +145,7 @@ const AllCourses = () => {
             : ""
         }
       >
-        {renderModalContent()}
+        {renderModalContent}
       </Modal>
     </div>
   );
