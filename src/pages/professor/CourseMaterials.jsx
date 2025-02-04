@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { viewCourseMaterials } from "../../services/professorService";
+import Loading from "../../components/ui/Loading";
 
 const CourseMaterials = () => {
   const { courseId } = useParams();
@@ -27,6 +28,17 @@ const CourseMaterials = () => {
   useEffect(() => {
     fetchMaterials();
   }, [courseId]);
+
+  // Categorize materials by type
+  const categorizedMaterials = {
+    pdf: materials.filter((material) => material.MaterialType === "pdf"),
+    video: materials.filter((material) => material.MaterialType === "video"),
+    notes: materials.filter((material) => material.MaterialType === "notes"),
+  };
+
+  if (loading) {
+    return <Loading />;
+  }
   return (
     <div className="container p-4 mx-auto">
       <div className="mb-6">
