@@ -115,9 +115,9 @@ const CreateUserAccountForm = ({
                   className="absolute inset-y-0 right-0 pr-3 flex items-center"
                 >
                   {showPassword ? (
-                    <EyeOff className="h-5 w-5 text-gray-400" />
+                  <Eye className="h-5 w-5 text-gray-400" />
                   ) : (
-                    <Eye className="h-5 w-5 text-gray-400" />
+                    <EyeOff className="h-5 w-5 text-gray-400" />
                   )}
                 </button>
               </div>
@@ -154,9 +154,9 @@ const CreateUserAccountForm = ({
                   className="absolute inset-y-0 right-0 pr-3 flex items-center"
                 >
                   {showPasswordConfirmation ? (
-                    <EyeOff className="h-5 w-5 text-gray-400" />
-                  ) : (
                     <Eye className="h-5 w-5 text-gray-400" />
+                    ) : (
+                      <EyeOff className="h-5 w-5 text-gray-400" />
                   )}
                 </button>
               </div>

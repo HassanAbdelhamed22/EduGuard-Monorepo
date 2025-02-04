@@ -8,6 +8,7 @@ import ErrorHandler from "../components/errors/ErrorHandler";
 import PageNotFound from "../pages/PageNotFound";
 import Profile from "../pages/auth/Profile";
 import UpdatePassword from "../pages/auth/UpdatePassword";
+import CourseList from "../pages/professor/MyCourses";
 
 const ProfessorRoutes = () => {
   return (
@@ -18,7 +19,7 @@ const ProfessorRoutes = () => {
       >
         <Route element={<ProfessorLayout />}>
           <Route path="dashboard" element={<Dashboard />} />
-          <Route path="courses" element={<div>My Courses</div>} />
+          <Route path="courses" element={<CourseList></CourseList>} />
           <Route
             path="courses/upload-material"
             element={<div>Upload Material</div>}
