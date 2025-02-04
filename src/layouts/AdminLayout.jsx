@@ -20,7 +20,7 @@ const AdminLayout = () => {
           </div>
 
           {/* Scrollable Outlet Content */}
-          <div className="flex-1 px-6 py-4 overflow-y-auto">
+          <div className="flex-1 px-6 py-4 overflow-y-auto bg-gray-100/50">
             <Outlet />
           </div>
         </div>
