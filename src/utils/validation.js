@@ -147,3 +147,25 @@ export const courseValidationSchema = Yup.object().shape({
       "The course code must contain only letters and numbers."
     ),
 });
+
+
+export  const CreateQuizValditionSchema = Yup.object().shape({
+  title:Yup.string()
+  .required("The Quiz Title filed is required. ")
+  .max(50 ,"The Quiz Title must not exceed 50 characters. "),
+  description:Yup.string()
+  .required(" The Description of Quiz is required. ")
+  .max(150, "The Description of Quiz must not exceed 150 characters."),
+  quiz_date:Yup.date()
+  .required(" The Quiz date is required."),
+  start_time: Yup.string().required('Start time is required'),
+  end_time: Yup.string()
+    .required('End time is required')
+    .test('is-after-start', 'End time must be after start time', function (value) {
+      const { start_time } = this.parent;
+      return start_time && value > start_time;
+    }),
+    course_id: Yup.string().required('Course selection is required')
+
+
+})

@@ -45,3 +45,5 @@ export const getAllQuizzes = async () => {
     toast.error(error?.response?.data?.message);
   }
 };
+
+

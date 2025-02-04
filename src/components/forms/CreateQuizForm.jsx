@@ -1,0 +1,105 @@
+import React from "react";
+import { Formik, Form } from "formik";
+import Button from "../ui/Button";
+import Input from "../ui/Input";
+import { CreateQuizValditionSchema } from "../../utils/validation";
+
+const CreateQuizForm = ({
+    initialValues,
+    onSubmit,
+    isLoading,
+}) => {
+    return (
+        <div className=" container  mx-auto  p-4 max-w-2xl" >
+            <h2 className="  text-xl  font-bold  mb-4">Create New Quiz</h2>
+            <Formik
+                initialValues={initialValues}
+                validationSchema={CreateQuizValditionSchema}
+                onSubmit={onSubmit}
+
+            >
+                {({ errors, touched, isSubmitting, getFieldProps }) => (
+                    <Form className=" space-y-4 bg-white shadow-md rounded-lg p-6">
+                        <div>
+                            <label htmlFor="title "> Quiz Title </label>
+                            <Input
+                                id="title"
+                                type="text"
+                                placeholder="Enter quiz title"
+                                erorr={!!(errors.title && touched.title)}
+                                {...getFieldProps("title")}
+                            />
+                            {errors.title && touched.title && (
+                                <p className="mt-2 text-sm text-red-600" >
+                                    {errors.title}
+                                </p>
+                            )}
+                        </div>
+                        <div>
+                            <label htmlFor="description">Description</label>
+                            <Input
+                                id="description"
+                                type="text"
+                                placeholder="Quiz description"
+                                errors={!!(errors.description && touched.description)}
+                                {...getFieldProps("description")}
+                            />
+                            {errors.description && touched.description && (
+                                <p className="mt-2 text-sm text-red-600">
+                                    {errors.description}
+                                </p>
+                            )}
+                        </div>
+                        <div className=" grid  grid-cols-2 gap-4">
+                            <div>
+                                <label htmlFor="quiz_date"> Quiz Date </label>
+                                <Input
+                                    id="quiz_date"
+                                    name="quiz_date"
+                                    type="date"
+                                />
+                            </div>
+                            <div>
+                                <label htmlFor="course_id">Select Course</label>
+                                <select name="course_id" id="course_id" {...getFieldProps("course_id")} className="w-full p-2 border rounded">
+                                    <option value="">Choose a course</option>
+                                    <option disabled>No courses available</option>
+
+                                </select>
+                            </div>                    </div>
+                        <div className=" grid  grid-cols-2 gap-4">
+                            <div>
+                                <label htmlFor="start_time"> Start Time</label>
+                                <Input
+                                    id="start_time"
+                                    name="start_time"
+                                    type="time"
+                                    {...getFieldProps("start_time")}
+                                />
+
+                            </div>
+                            <div>
+                                <label htmlFor="end_time">
+                                    End Time
+                                </label>
+                                <Input
+                                    id="end_time"
+                                    name="end_time"
+                                    type="time"
+                                    {...getFieldProps('end_time')}
+                                />
+
+                            </div>
+
+                        </div>
+                        <Button type="submit" fullWidth isLoading={isSubmitting || isLoading}> {isSubmitting || isLoading ? "Creating..." : "Create Quiz"} </Button>
+
+
+                    </Form>
+
+                )}
+            </Formik>
+        </div>
+
+    )
+}
