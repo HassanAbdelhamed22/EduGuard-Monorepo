@@ -6,6 +6,7 @@ import { FileQuestion } from "lucide-react";
 import Button from "../../components/ui/Button";
 import useModal from "../../hooks/CourseQuizzes/useModal";
 import toast from "react-hot-toast";
+import Modal from "../../components/ui/Modal";
 
 const CourseQuizzes = () => {
   const { courseId } = useParams();
@@ -46,6 +47,33 @@ const CourseQuizzes = () => {
     }
   };
 
+  const renderModalContent = () => {
+    if (modal.type === "delete") {
+      return (
+        <div className="flex justify-end gap-2 mt-5">
+          <Button variant="cancel" onClick={closeModal}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={handleDeleteQuiz}>
+            Delete
+          </Button>
+        </div>
+      );
+    }
+
+    if (modal.type === "edit" && modal.userData) {
+      return (
+        <div>Edit</div>
+        // <UpdateUserAccountForm
+        //   initialValues={modal.userData} // Ensure this receives data
+        //   onSubmit={handleUpdate}
+        //   isLoading={loading}
+        //   closeModal={closeModal}
+        // />
+      );
+    }
+  };
+
   if (loading) {
     return <Loading />;
   }
@@ -66,12 +94,14 @@ const CourseQuizzes = () => {
             <div
               key={quiz.QuizID}
               className="p-6 border rounded-lg shadow-sm hover:shadow-lg transition-shadow bg-white cursor-pointer"
-              onClick={() => {
-                navigate(`/professor/quiz/${quiz.QuizID}`);
-              }}
-              title="View Quiz Details"
             >
-              <div className="flex items-center gap-4">
+              <div
+                className="flex items-center gap-4"
+                onClick={() => {
+                  navigate(`/professor/quiz/${quiz.QuizID}`);
+                }}
+                title="View Quiz Details"
+              >
                 <div className="p-3 bg-indigo-50 rounded-full">
                   <FileQuestion className="w-6 h-6 text-primary" />
                 </div>
@@ -117,7 +147,7 @@ const CourseQuizzes = () => {
                 <Button
                   variant="danger"
                   onClick={() => {
-                    console.log("Delete Quiz");
+                    openModal("delete", quiz.QuizID);
                   }}
                   fullWidth
                 >
@@ -128,6 +158,27 @@ const CourseQuizzes = () => {
           ))}
         </div>
       )}
+
+      <Modal
+        isOpen={modal.isOpen}
+        closeModal={closeModal}
+        title={
+          modal.type === "delete"
+            ? "Delete Quiz"
+            : modal.type === "edit"
+            ? "Edit Quiz"
+            : ""
+        }
+        description={
+          modal.type === "delete"
+            ? "Are you sure you want to delete this quiz? This action cannot be undone."
+            : modal.type === "edit"
+            ? "Update quiz information"
+            : ""
+        }
+      >
+        {renderModalContent()}
+      </Modal>
     </div>
   );
 };
