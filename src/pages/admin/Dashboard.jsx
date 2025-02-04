@@ -109,6 +109,35 @@ const Dashboard = () => {
     [activities]
   );
 
+  const statisticsCards = useMemo(() => {
+    return [
+      {
+        title: "Total Users",
+        value: statistics.totalUsers,
+        color: "from-indigo-500 to-blue-500",
+        icon: <Users className="h-6 w-6 text-indigo-500" />,
+      },
+      {
+        title: "Professors",
+        value: statistics.totalProfessors,
+        color: "from-red-500 to-pink-500",
+        icon: <School className="h-6 w-6 text-red-500" />,
+      },
+      {
+        title: "Students",
+        value: statistics.totalStudents,
+        color: "from-yellow-500 to-orange-500",
+        icon: <GraduationCap className="h-6 w-6 text-yellow-500" />,
+      },
+      {
+        title: "Active Courses",
+        value: statistics.totalCourses,
+        color: "from-green-500 to-teal-500",
+        icon: <BookOpen className="h-6 w-6 text-green-500" />,
+      },
+    ];
+  }, [statistics]);
+
   if (isLoading) {
     return <Loading />;
   }
@@ -128,67 +157,22 @@ const Dashboard = () => {
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* Total Users */}
-          <div className="bg-gradient-to-r from-indigo-500 to-blue-500 overflow-hidden shadow-lg rounded-lg hover:scale-105 transition-transform duration-300">
-            <div className="p-5 flex items-center">
-              <div className="bg-white p-3 rounded-full">
-                <Users className="h-6 w-6 text-indigo-500" />
-              </div>
-              <div className="ml-5">
-                <h3 className="text-white text-lg font-medium">Total Users</h3>
-                <p className="text-3xl font-bold text-white">
-                  {statistics.totalUsers}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Total Professors */}
-          <div className="bg-gradient-to-r from-red-500 to-pink-500 shadow-lg rounded-lg p-5 hover:scale-105 transition-transform duration-300">
-            <div className="flex items-center">
-              <div className="bg-white p-3 rounded-full">
-                <School className="h-6 w-6 text-red-500" />
-              </div>
-              <div className="ml-5">
-                <h3 className="text-white text-lg font-medium">Professors</h3>
-                <p className="text-3xl font-bold text-white">
-                  {statistics.totalProfessors}
-                </p>
+          {statisticsCards.map((stat, index) => (
+            <div
+              key={index}
+              className={`bg-gradient-to-r ${stat.color} overflow-hidden shadow-lg rounded-lg hover:scale-105 transition-transform duration-300`}
+            >
+              <div className="p-5 flex items-center">
+                <div className="bg-white p-3 rounded-full">{stat.icon}</div>
+                <div className="ml-5">
+                  <h3 className="text-white text-lg font-medium">
+                    {stat.title}
+                  </h3>
+                  <p className="text-3xl font-bold text-white">{stat.value}</p>
+                </div>
               </div>
             </div>
-          </div>
-
-          {/* Total Students */}
-          <div className="bg-gradient-to-r from-yellow-500 to-orange-500 shadow-lg rounded-lg p-5 hover:scale-105 transition-transform duration-300">
-            <div className="flex items-center">
-              <div className="bg-white p-3 rounded-full">
-                <GraduationCap className="h-6 w-6 text-yellow-500" />
-              </div>
-              <div className="ml-5">
-                <h3 className="text-white text-lg font-medium">Students</h3>
-                <p className="text-3xl font-bold text-white">
-                  {statistics.totalStudents}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Total Courses */}
-          <div className="bg-gradient-to-r from-green-500 to-teal-500 shadow-lg rounded-lg p-5 hover:scale-105 transition-transform duration-300">
-            <div className="flex items-center">
-              <div className="bg-white p-3 rounded-full">
-                <BookOpen className="h-6 w-6 text-green-500" />
-              </div>
-              <div className="ml-5">
-                <h3 className="text-white text-lg font-medium">
-                  Active Courses
-                </h3>
-                <p className="text-3xl font-bold text-white">
-                  {statistics.totalCourses}
-                </p>
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
 
         {/* Quick Actions */}
