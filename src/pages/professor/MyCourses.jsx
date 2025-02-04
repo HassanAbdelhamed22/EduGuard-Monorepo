@@ -7,7 +7,7 @@ import {
 } from "../../services/professorService";
 import Loading from "./../../components/ui/Loading";
 import { FileQuestion, FileText, NotebookPen, Video } from "lucide-react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 const CourseList = () => {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -21,28 +21,37 @@ const CourseList = () => {
       const { data } = await viewRegisteredCourses();
       setCourses(data);
 
-      // Fetch materials and quizzes count for each course
-      data.forEach(async (course) => {
-        const materials = await viewCourseMaterials(course.CourseID);
-        const quizzes = await viewCourseQuizzes(course.CourseID);
+      const materialPromises = data.map((course) =>
+        viewCourseMaterials(course.CourseID)
+      );
+      const quizPromises = data.map((course) =>
+        viewCourseQuizzes(course.CourseID)
+      );
 
-        // Count materials by type
-        const materialStats = {
+      // Fetch all data in parallel
+      const materialsArray = await Promise.all(materialPromises);
+      const quizzesArray = await Promise.all(quizPromises);
+
+      // Process materials and quizzes counts
+      const newMaterialsCount = {};
+      const newQuizzesCount = {};
+
+      data.forEach((course, index) => {
+        const materials = materialsArray[index] || [];
+        const quizzes = quizzesArray[index] || [];
+
+        newMaterialsCount[course.CourseID] = {
           pdf: materials.filter((m) => m.MaterialType === "pdf").length,
           video: materials.filter((m) => m.MaterialType === "video").length,
           notes: materials.filter((m) => m.MaterialType === "notes").length,
           total: materials.length,
         };
-        
-        setMaterialsCount((prev) => ({
-          ...prev,
-          [course.CourseID]: materialStats,
-        }));
-        setQuizzesCount((prev) => ({
-          ...prev,
-          [course.CourseID]: quizzes.length,
-        }));
+        newQuizzesCount[course.CourseID] = quizzes.length;
       });
+
+      // Update state only once
+      setMaterialsCount(newMaterialsCount);
+      setQuizzesCount(newQuizzesCount);
     } catch (error) {
       console.log(error);
     } finally {
@@ -60,7 +69,7 @@ const CourseList = () => {
 
   return (
     <div className="container p-4 mx-auto">
-      <div className="flex items-center gap-4">
+      <div className="flex flex-wrap items-center gap-4">
         {courses.map((course) => {
           const materials = materialsCount[course.CourseID] || {
             pdf: 0,
@@ -138,7 +147,9 @@ const CourseList = () => {
                   variant={"default"}
                   disabled={quizzes === 0}
                   className="flex-1"
-                  onClick={() => navigate(`/professor/quizzes/${course.CourseID}`)}
+                  onClick={() =>
+                    navigate(`/professor/quizzes/${course.CourseID}`)
+                  }
                 >
                   View Quizzes
                 </Button>
@@ -146,7 +157,9 @@ const CourseList = () => {
                   variant={"outline"}
                   disabled={materials.total === 0}
                   className="flex-1"
-                  onClick={() => navigate(`/professor/materials/${course.CourseID}`)}
+                  onClick={() =>
+                    navigate(`/professor/materials/${course.CourseID}`)
+                  }
                 >
                   View Materials
                 </Button>
