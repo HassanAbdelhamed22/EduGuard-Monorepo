@@ -5,12 +5,37 @@ import Loading from "./../../components/ui/Loading";
 const CourseList = () => {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [materialsCount, setMaterialsCount] = useState({});
+  const [quizzesCount, setQuizzesCount] = useState({});
 
   const fetchCourses = async () => {
     setLoading(true);
     try {
       const { data } = await viewRegisteredCourses();
       setCourses(data);
+
+      // Fetch materials and quizzes count for each course
+      data.forEach(async (course) => {
+        const materials = await viewCourseMaterials(course.CourseID);
+        const quizzes = await viewCourseQuizzes(course.CourseID);
+
+        // Count materials by type
+        const materialStats = {
+          pdf: materials.filter((m) => m.MaterialType === "pdf").length,
+          video: materials.filter((m) => m.MaterialType === "video").length,
+          notes: materials.filter((m) => m.MaterialType === "notes").length,
+          total: materials.length,
+        };
+
+        setMaterialsCount((prev) => ({
+          ...prev,
+          [course.CourseID]: materialStats,
+        }));
+        setQuizzesCount((prev) => ({
+          ...prev,
+          [course.CourseID]: quizzes.length,
+        }));
+      });
     } catch (error) {
       console.log(error);
     } finally {
