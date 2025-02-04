@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { viewCourseMaterials } from "../../services/professorService";
 import Loading from "../../components/ui/Loading";
+import Section from "../../components/ui/Section";
+import { FileText, NotebookPen, Video } from "lucide-react";
 
 const CourseMaterials = () => {
   const { courseId } = useParams();
@@ -47,6 +49,30 @@ const CourseMaterials = () => {
         </h1>
         <p className="text-lg text-gray-600">Materials</p>
       </div>
+
+      {/* PDF Materials Section */}
+      <Section
+        title="PDFs"
+        materials={categorizedMaterials.pdf}
+        icon={FileText}
+        iconColor="text-red-500"
+      />
+
+      {/* Video Materials Section */}
+      <Section
+        title="Videos"
+        materials={categorizedMaterials.video}
+        icon={Video}
+        iconColor="text-blue-500"
+      />
+
+      {/* Notes Materials Section */}
+      <Section
+        title="Notes"
+        materials={categorizedMaterials.notes}
+        icon={NotebookPen}
+        iconColor="text-yellow-500"
+      />
     </div>
   );
 };
