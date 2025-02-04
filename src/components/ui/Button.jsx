@@ -7,8 +7,7 @@ export const buttonVariants = cva(
     variants: {
       variant: {
         // ** FILLED
-        default:
-          "bg-slate-900 dark:bg-indigo-600 dark:text-white dark:hover:bg-primaryHover",
+        default: "bg-primary hover:bg-primaryHover dark:text-white disabled:cursor-not-allowed",
         danger:
           "bg-red-900 dark:bg-[#c2344d] dark:text-white dark:hover:bg-red-700",
         cancel:
@@ -16,7 +15,7 @@ export const buttonVariants = cva(
 
         // ** OUTLINE
         outline:
-          "border border-indigo-400 hover:text-white bg-transparent text-black hover:border-transparent hover:bg-indigo-600 dark:text-gray-700 dark:hover:text-white",
+          "border border-indigo-400 hover:text-white bg-transparent text-black hover:border-transparent hover:bg-indigo-600  disabled:cursor-not-allowed hover:disabled:bg-transparent disabled:bg-transparent hover:disabled:border-indigo-400 disabled:text-gray-400 hover:disabled:text-gray-400",
         ghost: "text-gray-600 hover:bg-gray-100",
       },
       size: {
@@ -50,7 +49,7 @@ const Button = ({
       type={type}
       className={cn(buttonVariants({ variant, size, fullWidth, className }))}
       {...props}
-      disabled={isLoading}
+      disabled={isLoading || props.disabled}
     >
       {isLoading ? (
         <svg
