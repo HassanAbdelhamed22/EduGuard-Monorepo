@@ -3,7 +3,8 @@ import { Formik, Form } from "formik";
 import Button from "../ui/Button";
 import Input from "../ui/Input";
 import { CreateQuizValditionSchema } from "../../utils/validation";
-
+import toast from "react-hot-toast";
+import CustomSelect from "../ui/CustomSelect";
 const CreateQuizForm = ({
     initialValues,
     onSubmit,
@@ -61,7 +62,13 @@ const CreateQuizForm = ({
                             </div>
                             <div>
                                 <label htmlFor="course_id">Select Course</label>
-                                <select name="course_id" id="course_id" {...getFieldProps("course_id")} className="w-full p-2 border rounded">
+                                {/* <CustomSelect  
+                                options=''
+
+
+                                ></CustomSelect> */}
+
+                                <select name="course_id"  id="course_id" {...getFieldProps("course_id")} className="border-[1px] border-borderLight dark:border-borderDark shadow-lg focus:border-indigo-600 focus:outline-none focus:ring-1 focus:ring-indigo-600 rounded-lg px-3 py-3 text-md w-full bg-transparent text-secondaryLightText dark:text-secondaryDarkText ">
                                     <option value="">Choose a course</option>
                                     <option disabled>No courses available</option>
 
@@ -75,7 +82,9 @@ const CreateQuizForm = ({
                                     name="start_time"
                                     type="time"
                                     {...getFieldProps("start_time")}
+                                
                                 />
+                                
 
                             </div>
                             <div>

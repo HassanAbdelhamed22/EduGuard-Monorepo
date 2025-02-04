@@ -9,6 +9,7 @@ import PageNotFound from "../pages/PageNotFound";
 import Profile from "../pages/auth/Profile";
 import UpdatePassword from "../pages/auth/UpdatePassword";
 import CourseList from "../pages/professor/MyCourses";
+import CreateQuiz from "../pages/professor/CreateQuiz";
 
 const ProfessorRoutes = () => {
   return (
@@ -30,7 +31,7 @@ const ProfessorRoutes = () => {
           />
 
           <Route path="quizzes" element={<div>My Quizzes</div>} />
-          <Route path="quizzes/create" element={<div>Create Quiz</div>} />
+          <Route path="quizzes/create" element={<CreateQuiz></CreateQuiz>} />
           <Route
             path="quizzes/add-questions"
             element={<div>Add Questions</div>}
