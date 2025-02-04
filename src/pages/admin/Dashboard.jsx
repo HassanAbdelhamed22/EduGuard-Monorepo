@@ -15,6 +15,7 @@ import {
 } from "../../services/adminService";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
+import Loading from "../../components/ui/Loading";
 
 const initialStatistics = {
   totalUsers: 0,
@@ -27,29 +28,36 @@ const Dashboard = () => {
   const [statistics, setStatistics] = useState(initialStatistics);
 
   const [activities, setActivities] = useState([]);
-
-  useEffect(() => {
-    handleGetStatistics();
-    handleGetActivities();
-  }, [handleGetStatistics, handleGetActivities]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleGetStatistics = useCallback(async () => {
+    setIsLoading(true);
     try {
       const data = await getStatistics();
       setStatistics(data);
     } catch (error) {
       toast.error(error);
+    } finally {
+      setIsLoading(false);
     }
   }, []);
 
   const handleGetActivities = useCallback(async () => {
+    setIsLoading(true);
     try {
       const response = await getResentActivities();
       setActivities(response.activities);
     } catch (error) {
       toast.error(error);
+    } finally {
+      setIsLoading(false);
     }
   }, []);
+
+  useEffect(() => {
+    handleGetStatistics();
+    handleGetActivities();
+  }, [handleGetStatistics, handleGetActivities]);
 
   const quickActions = useMemo(
     () => [
@@ -80,6 +88,30 @@ const Dashboard = () => {
     ],
     []
   );
+
+  const formattedActivities = useMemo(
+    () =>
+      activities.map((activity) => ({
+        ...activity,
+        formattedDate: new Date(activity.created_at).toLocaleDateString(
+          "en-US",
+          {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          }
+        ),
+        formattedTime: new Date(activity.created_at).toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+      })),
+    [activities]
+  );
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <div className="min-h-screen py-6">
@@ -191,7 +223,7 @@ const Dashboard = () => {
           </h2>
           <div className=" shadow-lg rounded-lg overflow-hidden">
             <ul className="divide-y divide-gray-200">
-              {activities.map((activity) => (
+              {formattedActivities.map((activity) => (
                 <li
                   key={activity.id}
                   className="hover:bg-gray-50 transition duration-200"
@@ -208,22 +240,7 @@ const Dashboard = () => {
                         <div className="ml-2 flex-shrink-0 flex items-center">
                           <Clock className="h-4 w-4 text-gray-400 mr-1" />
                           <p className="text-sm text-gray-500">
-                            {/* Format the date for better readability */}
-                            {new Date(activity.created_at).toLocaleDateString(
-                              "en-US",
-                              {
-                                year: "numeric",
-                                month: "short",
-                                day: "numeric",
-                              }
-                            )}
-                            {/* Format the time in hours and minutes */}
-                            {` ${new Date(
-                              activity.created_at
-                            ).toLocaleTimeString([], {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}`}
+                            {activity.formattedDate} {activity.formattedTime}
                           </p>
                         </div>
                       </div>
