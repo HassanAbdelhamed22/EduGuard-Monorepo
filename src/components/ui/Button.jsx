@@ -7,7 +7,7 @@ export const buttonVariants = cva(
     variants: {
       variant: {
         // ** FILLED
-        default: "bg-primary dark:text-white disabled:cursor-not-allowed",
+        default: "bg-primary hover:bg-primaryHover dark:text-white disabled:cursor-not-allowed",
         danger:
           "bg-red-900 dark:bg-[#c2344d] dark:text-white dark:hover:bg-red-700",
         cancel:
