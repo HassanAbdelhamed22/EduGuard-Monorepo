@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { viewCourseQuizzes } from "../../services/professorService";
 import Loading from "../../components/ui/Loading";
 import { FileQuestion } from "lucide-react";
+import Button from "../../components/ui/Button";
 
 const CourseQuizzes = () => {
   const { courseId } = useParams();
   const [quizzes, setQuizzes] = useState([]);
   const [loading, setLoading] = useState(true);
   const location = useLocation();
+  const navigate = useNavigate();
 
   const { courseName, courseCode } = location.state || {
     courseName: "Unknown Course",
@@ -49,7 +51,11 @@ const CourseQuizzes = () => {
           {quizzes.map((quiz) => (
             <div
               key={quiz.QuizID}
-              className="p-6 border rounded-lg shadow-sm hover:shadow-lg transition-shadow bg-white"
+              className="p-6 border rounded-lg shadow-sm hover:shadow-lg transition-shadow bg-white cursor-pointer"
+              onClick={() => {
+                navigate(`/professor/quiz/${quiz.QuizID}`);
+              }}
+              title="View Quiz Details"
             >
               <div className="flex items-center gap-4">
                 <div className="p-3 bg-indigo-50 rounded-full">
@@ -81,6 +87,28 @@ const CourseQuizzes = () => {
                     <p>Duration: {quiz.Duration} minutes</p>
                   </div>
                 </div>
+              </div>
+
+              <div className="flex gap-4 mt-6">
+                <Button
+                  variant="cancel"
+                  onClick={() => {
+                    console.log("Edit Quiz");
+                  }}
+                  fullWidth
+                >
+                  Edit
+                </Button>
+
+                <Button
+                  variant="danger"
+                  onClick={() => {
+                    console.log("Delete Quiz");
+                  }}
+                  fullWidth
+                >
+                  Delete
+                </Button>
               </div>
             </div>
           ))}
