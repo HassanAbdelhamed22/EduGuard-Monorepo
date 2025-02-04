@@ -8,7 +8,7 @@ import {
   Settings,
   Users,
 } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   getResentActivities,
   getStatistics,
@@ -51,32 +51,35 @@ const Dashboard = () => {
     }
   };
 
-  const quickActions = [
-    {
-      id: 1,
-      name: "Create User",
-      icon: <Users className="w-6 h-6" />,
-      path: "/admin/users/create",
-    },
-    {
-      id: 2,
-      name: "Create Course",
-      icon: <BookOpen className="w-6 h-6" />,
-      path: "/admin/courses/create",
-    },
-    {
-      id: 3,
-      name: "Profile Settings",
-      icon: <Settings className="w-6 h-6" />,
-      path: "/admin/profile",
-    },
-    {
-      id: 4,
-      name: "View Reports",
-      icon: <File className="w-6 h-6" />,
-      path: "#",
-    },
-  ];
+  const quickActions = useMemo(
+    () => [
+      {
+        id: 1,
+        name: "Create User",
+        icon: <Users className="w-6 h-6" />,
+        path: "/admin/users/create",
+      },
+      {
+        id: 2,
+        name: "Create Course",
+        icon: <BookOpen className="w-6 h-6" />,
+        path: "/admin/courses/create",
+      },
+      {
+        id: 3,
+        name: "Profile Settings",
+        icon: <Settings className="w-6 h-6" />,
+        path: "/admin/profile",
+      },
+      {
+        id: 4,
+        name: "View Reports",
+        icon: <File className="w-6 h-6" />,
+        path: "#",
+      },
+    ],
+    []
+  );
 
   return (
     <div className="min-h-screen py-6">
