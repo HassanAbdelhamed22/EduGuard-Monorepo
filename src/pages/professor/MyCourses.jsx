@@ -149,7 +149,12 @@ const CourseList = () => {
                   disabled={quizzes === 0}
                   className="flex-1"
                   onClick={() =>
-                    navigate(`/professor/quizzes/${course.CourseID}`)
+                    navigate(`/professor/quizzes/${course.CourseID}`, {
+                      state: {
+                        courseName: course.CourseName,
+                        courseCode: course.CourseCode,
+                      },
+                    })
                   }
                 >
                   View Quizzes
