@@ -114,30 +114,31 @@ const CourseList = () => {
 
               {/* Materials and Quizzes Count */}
               <div className="mb-6">
-                <div className="flex items-center gap-4 text-gray-700">
-                  {/* PDF Materials */}
-                  <div className="flex items-center gap-1">
-                    <FileText className="w-5 h-5 text-red-500" />
-                    <span>{materials.pdf} PDFs</span>
-                  </div>
-
-                  {/* Video Materials */}
-                  <div className="flex items-center gap-1">
-                    <Video className="w-5 h-5 text-blue-500" />
-                    <span>{materials.video} Videos</span>
-                  </div>
-
-                  {/* Notes Materials */}
-                  <div className="flex items-center gap-1">
-                    <NotebookPen className="w-5 h-5 text-yellow-500" />
-                    <span>{materials.notes} Notes</span>
-                  </div>
-
-                  {/* Quizzes */}
-                  <div className="flex items-center gap-1">
-                    <FileQuestion className="w-5 h-5 text-purple-500" />
-                    <span>{quizzes} Quizzes</span>
-                  </div>
+                <div className="flex flex-wrap gap-4 text-gray-700">
+                  <MaterialIcon
+                    icon={FileText}
+                    count={materials.pdf}
+                    label="PDFs"
+                    color="text-red-500"
+                  />
+                  <MaterialIcon
+                    icon={Video}
+                    count={materials.video}
+                    label="Videos"
+                    color="text-blue-500"
+                  />
+                  <MaterialIcon
+                    icon={NotebookPen}
+                    count={materials.notes}
+                    label="Notes"
+                    color="text-yellow-500"
+                  />
+                  <MaterialIcon
+                    icon={FileQuestion}
+                    count={quizzes}
+                    label="Quizzes"
+                    color="text-purple-500"
+                  />
                 </div>
               </div>
 
@@ -171,5 +172,15 @@ const CourseList = () => {
     </div>
   );
 };
+
+// Memoized Component for Material Icons
+const MaterialIcon = React.memo(({ icon: Icon, count, label, color }) => (
+  <div className="flex items-center gap-1">
+    <Icon className={`w-5 h-5 ${color}`} />
+    <span>
+      {count} {label}
+    </span>
+  </div>
+));
 
 export default CourseList;
