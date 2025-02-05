@@ -43,7 +43,7 @@ const CourseList = () => {
         newMaterialsCount[course.CourseID] = {
           pdf: materials.filter((m) => m.MaterialType === "pdf").length,
           video: materials.filter((m) => m.MaterialType === "video").length,
-          notes: materials.filter((m) => m.MaterialType === "notes").length,
+          notes: materials.filter((m) => m.MaterialType === "text").length,
           total: materials.length,
         };
         newQuizzesCount[course.CourseID] = quizzes.length;
