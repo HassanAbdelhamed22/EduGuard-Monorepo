@@ -58,7 +58,23 @@ export const deleteQuiz = async (quizId) => {
 
 export const updateQuiz = async (quizId, quizData) => {
   try {
-    const {data, status} = await api.patch(`${BASE_URL}quiz/update-quiz/${quizId}`, quizData);
+    const { data, status } = await api.patch(
+      `${BASE_URL}quiz/update-quiz/${quizId}`,
+      quizData
+    );
+    return { data, status };
+  } catch (error) {
+    console.error(error);
+    toast.error(error?.response?.data?.message);
+  }
+};
+
+export const updateMaterial = async (materialId, materialData) => {
+  try {
+    const { data, status } = await api.patch(
+      `${BASE_URL}professor/materials/${materialId}`,
+      materialData
+    );
     return { data, status };
   } catch (error) {
     console.error(error);
@@ -68,7 +84,9 @@ export const updateQuiz = async (quizId, quizData) => {
 
 export const deleteMaterial = async (materialId) => {
   try {
-    const data = await api.delete(`${BASE_URL}professor/materials/${materialId}`);
+    const data = await api.delete(
+      `${BASE_URL}professor/materials/${materialId}`
+    );
     return data;
   } catch (error) {
     console.error(error);
