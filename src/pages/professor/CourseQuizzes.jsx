@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { deleteQuiz, viewCourseQuizzes } from "../../services/professorService";
+import { deleteQuiz, updateQuiz, viewCourseQuizzes } from "../../services/professorService";
 import Loading from "../../components/ui/Loading";
 import { FileQuestion } from "lucide-react";
 import Button from "../../components/ui/Button";
 import useModal from "../../hooks/CourseQuizzes/useModal";
 import toast from "react-hot-toast";
 import Modal from "../../components/ui/Modal";
+import UpdateQuizForm from "../../components/forms/UpdateQuizForm";
 
 const CourseQuizzes = () => {
   const { courseId } = useParams();
@@ -47,6 +48,59 @@ const CourseQuizzes = () => {
     }
   };
 
+  const handleUpdate = async (values) => {
+    const updatedFields = Object.fromEntries(
+      Object.entries(values).filter(
+        ([key, value]) => value !== modal.quizData[key] && value !== ""
+      )
+    );
+
+    if (Object.keys(updatedFields).length === 0) {
+      toast.error("No fields have been updated.");
+      return;
+    }
+
+    try {
+      const { data, status } = await updateQuiz(
+        modal.quizId,
+        updatedFields
+      );
+      if (status === 200) {
+        toast.success("Course updated successfully");
+        closeModal();
+        fetchQuizzes();
+      } else {
+        toast.error("Failed to update course");
+      }
+    } catch (err) {
+      toast.error(
+        err?.response?.data?.message || "An error occurred during update."
+      );
+    }
+  };
+
+  const initialValues = {
+    title: modal.quizData?.Title || "",
+    description: modal.quizData?.Description || "",
+    quiz_date: modal.quizData?.QuizDate
+      ? new Date(modal.quizData.QuizDate).toISOString().split("T")[0]
+      : "",
+    start_time: modal.quizData?.StartTime
+      ? new Date(modal.quizData.StartTime).toLocaleTimeString("en-US", {
+          hour12: false,
+          hour: "2-digit",
+          minute: "2-digit",
+        })
+      : "",
+    end_time: modal.quizData?.EndTime
+      ? new Date(modal.quizData.EndTime).toLocaleTimeString("en-US", {
+          hour12: false,
+          hour: "2-digit",
+          minute: "2-digit",
+        })
+      : "",
+  };
+
   const renderModalContent = () => {
     if (modal.type === "delete") {
       return (
@@ -61,18 +115,18 @@ const CourseQuizzes = () => {
       );
     }
 
-    if (modal.type === "edit" && modal.userData) {
+    if (modal.type === "edit") {
       return (
-        <div>Edit</div>
-        // <UpdateUserAccountForm
-        //   initialValues={modal.userData} // Ensure this receives data
-        //   onSubmit={handleUpdate}
-        //   isLoading={loading}
-        //   closeModal={closeModal}
-        // />
+        <UpdateQuizForm
+          initialValues={modal.quizData}
+          onSubmit={handleUpdate}
+          isLoading={loading}
+          closeModal={closeModal}
+        />
       );
     }
   };
+  
 
   if (loading) {
     return <Loading />;
@@ -137,7 +191,7 @@ const CourseQuizzes = () => {
                 <Button
                   variant="cancel"
                   onClick={() => {
-                    console.log("Edit Quiz");
+                    openModal("edit", quiz.QuizID, quiz);
                   }}
                   fullWidth
                 >
