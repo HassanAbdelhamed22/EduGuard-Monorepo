@@ -17,7 +17,7 @@ const CreateQuiz = () => {
       if (data) {
         // Transform the courses data for the combobox
         const transformedCourses = data.map((course) => ({
-        course_id: course.CourseID,
+          course_id: course.CourseID,
           name: `${course.CourseName} (${course.CourseCode})`,
         }));
         setCourses(transformedCourses);
@@ -40,10 +40,10 @@ const CreateQuiz = () => {
     course_id: selectedCourse?.id || "",
   };
 
-  const handleSubmit = async (values) => {
+  const handleSubmit = async (values, formikHelpers) => {
     setIsLoading(true);
     try {
-      // Include the selected course ID in the request body
+      const { resetForm } = formikHelpers;
       const payload = {
         ...values,
         course_id: selectedCourse?.course_id || "",
@@ -54,16 +54,12 @@ const CreateQuiz = () => {
         setIsLoading(false);
         return;
       }
-      const response  = await createQuiz(payload);
+      const response = await createQuiz(payload);
       const { data, status } = response;
       if (status === 201) {
         toast.success(data.message);
-        // Reset form values
-        initialValues.title = "";
-        initialValues.description = "";
-        initialValues.start_time = "";
-        initialValues.end_time = "";
-        initialValues.quiz_date = "";
+        resetForm();
+        setSelectedCourse(null);
       } else {
         toast.error("Unexpected server response. Please try again.");
       }

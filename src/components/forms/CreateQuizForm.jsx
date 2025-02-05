@@ -19,8 +19,8 @@ const CreateQuizForm = ({
       <Formik
         initialValues={initialValues}
         validationSchema={CreateQuizValidationSchema}
-        onSubmit={(values) => {
-          onSubmit(values);
+        onSubmit={(values, helpers) => {
+          onSubmit(values, helpers);
         }}
       >
         {({ errors, touched, isSubmitting, getFieldProps }) => (
