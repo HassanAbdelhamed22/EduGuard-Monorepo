@@ -22,12 +22,12 @@ const CreateQuizForm = ({
                 {({ errors, touched, isSubmitting, getFieldProps }) => (
                     <Form className=" space-y-4 bg-white shadow-md rounded-lg p-6">
                         <div>
-                            <label htmlFor="title "> Quiz Title </label>
+                            <label htmlFor="title"> Quiz Title </label>
                             <Input
                                 id="title"
                                 type="text"
                                 placeholder="Enter quiz title"
-                                erorr={!!(errors.title && touched.title)}
+                                error={!!(errors.title && touched.title)}
                                 {...getFieldProps("title")}
                             />
                             {errors.title && touched.title && (
@@ -42,7 +42,7 @@ const CreateQuizForm = ({
                                 id="description"
                                 type="text"
                                 placeholder="Quiz description"
-                                errors={!!(errors.description && touched.description)}
+                                error={!!(errors.description && touched.description)}
                                 {...getFieldProps("description")}
                             />
                             {errors.description && touched.description && (
