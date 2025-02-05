@@ -169,6 +169,7 @@ const Profile = () => {
                       src={profile.profile_picture}
                       alt={profile.name}
                       className="h-28 w-28 rounded-full object-cover border-4 border-white shadow-lg"
+                      loading="lazy"
                     />
                   ) : (
                     <div

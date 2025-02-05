@@ -42,6 +42,7 @@ const Header = () => {
                 src={profile.profile_picture}
                 alt={`${username}'s avatar`}
                 className="w-14 h-14 ml-2 rounded-full"
+                loading="lazy"
               />
             ) : (
               <div

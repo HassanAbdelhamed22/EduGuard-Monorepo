@@ -43,7 +43,7 @@ const CourseList = () => {
         newMaterialsCount[course.CourseID] = {
           pdf: materials.filter((m) => m.MaterialType === "pdf").length,
           video: materials.filter((m) => m.MaterialType === "video").length,
-          notes: materials.filter((m) => m.MaterialType === "notes").length,
+          notes: materials.filter((m) => m.MaterialType === "text").length,
           total: materials.length,
         };
         newQuizzesCount[course.CourseID] = quizzes.length;
@@ -164,7 +164,12 @@ const CourseList = () => {
                   disabled={materials.total === 0}
                   className="flex-1"
                   onClick={() =>
-                    navigate(`/professor/materials/${course.CourseID}`)
+                    navigate(`/professor/materials/${course.CourseID}`, {
+                      state: {
+                        courseName: course.CourseName,
+                        courseCode: course.CourseCode,
+                      },
+                    })
                   }
                 >
                   View Materials
