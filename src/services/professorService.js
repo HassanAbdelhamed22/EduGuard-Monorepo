@@ -84,10 +84,10 @@ export const updateMaterial = async (materialId, materialData) => {
 
 export const deleteMaterial = async (materialId) => {
   try {
-    const data = await api.delete(
+    const response  = await api.delete(
       `${BASE_URL}professor/materials/${materialId}`
     );
-    return data;
+    return response.data;
   } catch (error) {
     console.error(error);
     toast.error(error?.response?.data?.message);
