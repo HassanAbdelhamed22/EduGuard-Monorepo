@@ -35,7 +35,7 @@ const CourseMaterials = () => {
   const categorizedMaterials = {
     pdf: materials.filter((material) => material.MaterialType === "pdf"),
     video: materials.filter((material) => material.MaterialType === "video"),
-    notes: materials.filter((material) => material.MaterialType === "notes"),
+    notes: materials.filter((material) => material.MaterialType === "text"),
   };
 
   if (loading) {
