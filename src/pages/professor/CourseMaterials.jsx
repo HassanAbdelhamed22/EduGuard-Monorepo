@@ -4,11 +4,13 @@ import { viewCourseMaterials } from "../../services/professorService";
 import Loading from "../../components/ui/Loading";
 import Section from "../../components/ui/Section";
 import { FileText, NotebookPen, Video } from "lucide-react";
+import useModal from "../../hooks/courseMaterials/useModal";
 
 const CourseMaterials = () => {
   const { courseId } = useParams();
   const [materials, setMaterials] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { modal, closeModal, openModal } = useModal();
 
   const location = useLocation();
   const { courseName, courseCode } = location.state || {
@@ -30,6 +32,17 @@ const CourseMaterials = () => {
   useEffect(() => {
     fetchMaterials();
   }, [courseId]);
+
+  const handleDelete = async () => {
+    try {
+      await deleteQuiz(modal.materialId);
+      toast.success("Material deleted successfully");
+      closeModal();
+      fetchMaterials();
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   // Categorize materials by type
   const categorizedMaterials = {
