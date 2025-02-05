@@ -41,8 +41,6 @@ const CreateQuiz = () => {
   };
 
   const handleSubmit = async (values) => {
-    console.log("Form values:", values);
-    console.log("Selected Course:", selectedCourse);
     setIsLoading(true);
     try {
       // Include the selected course ID in the request body
@@ -50,7 +48,6 @@ const CreateQuiz = () => {
         ...values,
         course_id: selectedCourse?.course_id || "",
       };
-      console.log("Payload:", payload);
 
       if (!selectedCourse) {
         toast.error("Please select a course");
@@ -59,7 +56,6 @@ const CreateQuiz = () => {
       }
       const response  = await createQuiz(payload);
       const { data, status } = response;
-      console.log("API Response:", data);
       if (status === 201) {
         toast.success(data.message);
         // Reset form values

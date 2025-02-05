@@ -20,7 +20,6 @@ const CreateQuizForm = ({
         initialValues={initialValues}
         validationSchema={CreateQuizValidationSchema}
         onSubmit={(values) => {
-          console.log("Formik onSubmit Triggered", values);
           onSubmit(values);
         }}
       >
@@ -70,7 +69,6 @@ const CreateQuizForm = ({
                   options={courses}
                   selected={selectedCourse}
                   setSelected={(course) => {
-                    console.log("Selected course:", course); // Add this line
                     setSelectedCourse(course);
                   }}
                   placeholder="Choose a course"
