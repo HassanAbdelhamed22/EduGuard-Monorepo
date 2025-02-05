@@ -1,4 +1,5 @@
 import React from "react";
+import Button from "./ui/Button";
 
 const MaterialCard = ({ material }) => {
   // Construct the full URL for the video
@@ -43,6 +44,14 @@ const MaterialCard = ({ material }) => {
             View Notes
           </a>
         )}
+      </div>
+      <div className="flex mt-4 gap-4">
+        <Button variant="danger" fullWidth>
+          Delete
+        </Button>
+        <Button variant="cancel" fullWidth>
+          Edit
+        </Button>
       </div>
     </div>
   );
