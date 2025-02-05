@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
-import { viewCourseMaterials } from "../../services/professorService";
+import { deleteMaterial, viewCourseMaterials } from "../../services/professorService";
 import Loading from "../../components/ui/Loading";
 import Section from "../../components/ui/Section";
 import { FileText, NotebookPen, Video } from "lucide-react";
 import useModal from "../../hooks/courseMaterials/useModal";
+import Modal from "../../components/ui/Modal";
+import Button from "../../components/ui/Button";
+import toast from "react-hot-toast";
 
 const CourseMaterials = () => {
   const { courseId } = useParams();
@@ -35,7 +38,7 @@ const CourseMaterials = () => {
 
   const handleDelete = async () => {
     try {
-      await deleteQuiz(modal.materialId);
+      await deleteMaterial(modal.materialId);
       toast.success("Material deleted successfully");
       closeModal();
       fetchMaterials();
@@ -49,6 +52,33 @@ const CourseMaterials = () => {
     pdf: materials.filter((material) => material.MaterialType === "pdf"),
     video: materials.filter((material) => material.MaterialType === "video"),
     notes: materials.filter((material) => material.MaterialType === "text"),
+  };
+
+  const renderModalContent = () => {
+    if (modal.type === "delete") {
+      return (
+        <div className="flex justify-end gap-2 mt-5">
+          <Button variant="cancel" onClick={closeModal}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={handleDelete}>
+            Delete
+          </Button>
+        </div>
+      );
+    }
+
+    if (modal.type === "edit") {
+      return (
+        <div>edit</div>
+        //   <UpdateQuizForm
+        //     initialValues={modal.quizData}
+        //     onSubmit={handleUpdate}
+        //     isLoading={loading}
+        //     closeModal={closeModal}
+        //   />
+      );
+    }
   };
 
   if (loading) {
@@ -69,6 +99,7 @@ const CourseMaterials = () => {
         materials={categorizedMaterials.pdf}
         icon={FileText}
         iconColor="text-red-500"
+        openModal={openModal}
       />
 
       {/* Video Materials Section */}
@@ -77,6 +108,7 @@ const CourseMaterials = () => {
         materials={categorizedMaterials.video}
         icon={Video}
         iconColor="text-blue-500"
+        openModal={openModal}
       />
 
       {/* Notes Materials Section */}
@@ -85,7 +117,29 @@ const CourseMaterials = () => {
         materials={categorizedMaterials.notes}
         icon={NotebookPen}
         iconColor="text-yellow-500"
+        openModal={openModal}
       />
+
+      <Modal
+        isOpen={modal.isOpen}
+        closeModal={closeModal}
+        title={
+          modal.type === "delete"
+            ? "Delete Quiz"
+            : modal.type === "edit"
+            ? "Edit Quiz"
+            : ""
+        }
+        description={
+          modal.type === "delete"
+            ? "Are you sure you want to delete this quiz? This action cannot be undone."
+            : modal.type === "edit"
+            ? "Update quiz information"
+            : ""
+        }
+      >
+        {renderModalContent()}
+      </Modal>
     </div>
   );
 };
