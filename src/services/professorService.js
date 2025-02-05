@@ -45,3 +45,13 @@ export const getAllQuizzes = async () => {
     toast.error(error?.response?.data?.message);
   }
 };
+
+export const createQuiz = async (quizData) => {
+  try {
+    const response = await api.post(`${BASE_URL}quiz/create-quiz`, quizData);
+    return response;
+  } catch (error) {
+    console.error(error);
+    toast.error(error?.response?.data?.message);
+  }
+};

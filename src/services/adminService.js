@@ -85,7 +85,6 @@ export const getAllCourses = async (page) => {
   const { data, pagination } = response.data;
   return { data, pagination };
 };
-
 export const createCourse = async (courseData) => {
   const { data, status } = await api.post(
     `${BASE_URL}admin/courses`,
@@ -93,6 +92,7 @@ export const createCourse = async (courseData) => {
   );
   return { data, status };
 };
+
 
 export const updateCourse = async (id, courseData) => {
   const { data, status } = await api.patch(

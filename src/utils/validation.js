@@ -147,3 +147,27 @@ export const courseValidationSchema = Yup.object().shape({
       "The course code must contain only letters and numbers."
     ),
 });
+
+export const CreateQuizValidationSchema = Yup.object().shape({
+  title: Yup.string()
+    .required("The Quiz Title filed is required. ")
+    .max(50, "The Quiz Title must not exceed 50 characters. "),
+  description: Yup.string()
+    .nullable()
+    .max(150, "The Description of Quiz must not exceed 150 characters."),
+  quiz_date: Yup.date().required(" The Quiz date is required."),
+  start_time: Yup.string()
+    .matches(/^([01]\d|2[0-3]):([0-5]\d)$/, "Invalid time format. Use HH:mm")
+    .required("Start time is required"),
+  end_time: Yup.string()
+    .matches(/^([01]\d|2[0-3]):([0-5]\d)$/, "Invalid time format. Use HH:mm")
+    .required("End time is required")
+    .test(
+      "is-after-start",
+      "End time must be after start time",
+      function (value) {
+        const { start_time } = this.parent;
+        return start_time && value > start_time;
+      }
+    ),
+});
