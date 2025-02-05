@@ -2,8 +2,8 @@ import React from "react";
 import { Formik, Form } from "formik";
 import Button from "../ui/Button";
 import Input from "../ui/Input";
-import { CreateQuizValidationSchema } from "../../utils/validation";
 import CustomCombobox from "../ui/Combobox";
+import { CreateQuizValidationSchema } from "../../utils/validation";
 
 const CreateQuizForm = ({
   initialValues,
@@ -19,7 +19,10 @@ const CreateQuizForm = ({
       <Formik
         initialValues={initialValues}
         validationSchema={CreateQuizValidationSchema}
-        onSubmit={onSubmit}
+        onSubmit={(values) => {
+          console.log("Formik onSubmit Triggered", values);
+          onSubmit(values);
+        }}
       >
         {({ errors, touched, isSubmitting, getFieldProps }) => (
           <Form className="space-y-4 bg-white shadow-md rounded-lg p-6">
@@ -54,14 +57,22 @@ const CreateQuizForm = ({
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label htmlFor="quiz_date">Quiz Date</label>
-                <Input id="quiz_date" name="quiz_date" type="date" />
+                <Input
+                  id="quiz_date"
+                  name="quiz_date"
+                  type="date"
+                  {...getFieldProps("quiz_date")}
+                />
               </div>
               <div>
                 <label htmlFor="course_id">Select Course</label>
                 <CustomCombobox
                   options={courses}
                   selected={selectedCourse}
-                  setSelected={setSelectedCourse}
+                  setSelected={(course) => {
+                    console.log("Selected course:", course); // Add this line
+                    setSelectedCourse(course);
+                  }}
                   placeholder="Choose a course"
                 />
               </div>
@@ -75,6 +86,9 @@ const CreateQuizForm = ({
                   type="time"
                   {...getFieldProps("start_time")}
                 />
+                {errors.start_time && touched.start_time && (
+                  <div className="text-red-500">{errors.start_time}</div>
+                )}
               </div>
               <div>
                 <label htmlFor="end_time">End Time</label>
@@ -84,6 +98,9 @@ const CreateQuizForm = ({
                   type="time"
                   {...getFieldProps("end_time")}
                 />
+                {errors.end_time && touched.end_time && (
+                  <div className="text-red-500">{errors.end_time}</div>
+                )}
               </div>
             </div>
             <Button
