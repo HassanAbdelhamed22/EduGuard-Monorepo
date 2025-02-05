@@ -156,8 +156,11 @@ export const CreateQuizValidationSchema = Yup.object().shape({
     .nullable()
     .max(150, "The Description of Quiz must not exceed 150 characters."),
   quiz_date: Yup.date().required(" The Quiz date is required."),
-  start_time: Yup.string().required("Start time is required"),
+  start_time: Yup.string()
+    .matches(/^([01]\d|2[0-3]):([0-5]\d)$/, "Invalid time format. Use HH:mm")
+    .required("Start time is required"),
   end_time: Yup.string()
+    .matches(/^([01]\d|2[0-3]):([0-5]\d)$/, "Invalid time format. Use HH:mm")
     .required("End time is required")
     .test(
       "is-after-start",
@@ -167,5 +170,4 @@ export const CreateQuizValidationSchema = Yup.object().shape({
         return start_time && value > start_time;
       }
     ),
-  course_id: Yup.string().required("Course selection is required"),
 });
