@@ -65,3 +65,13 @@ export const updateQuiz = async (quizId, quizData) => {
     toast.error(error?.response?.data?.message);
   }
 };
+
+export const deleteMaterial = async (materialId) => {
+  try {
+    const data = await api.delete(`${BASE_URL}professor/materials/${materialId}`);
+    return data;
+  } catch (error) {
+    console.error(error);
+    toast.error(error?.response?.data?.message);
+  }
+};
