@@ -83,6 +83,7 @@ const Dashboard = () => {
             src={img}
             alt="Questions Illustration"
             className="w-1/2 md:w-1/3"
+            loading="lazy"
           />
           <div>
             <h2 className="text-2xl md:text-3xl font-bold">
