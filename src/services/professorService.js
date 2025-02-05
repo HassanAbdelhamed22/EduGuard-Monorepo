@@ -55,3 +55,13 @@ export const deleteQuiz = async (quizId) => {
     toast.error(error?.response?.data?.message);
   }
 };
+
+export const updateQuiz = async (quizId, quizData) => {
+  try {
+    const {data, status} = await api.patch(`${BASE_URL}quiz/update-quiz/${quizId}`, quizData);
+    return { data, status };
+  } catch (error) {
+    console.error(error);
+    toast.error(error?.response?.data?.message);
+  }
+};
