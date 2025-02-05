@@ -2,7 +2,7 @@ import React from "react";
 import { Formik, Form } from "formik";
 import Button from "../ui/Button";
 import Input from "../ui/Input";
-import { CreateQuizValditionSchema } from "../../utils/validation";
+import { CreateQuizValidationSchema } from "../../utils/validation";
 import CustomCombobox from "../ui/Combobox";
 
 const CreateQuizForm = ({
@@ -18,7 +18,7 @@ const CreateQuizForm = ({
       <h2 className="text-xl font-bold mb-4">Create New Quiz</h2>
       <Formik
         initialValues={initialValues}
-        validationSchema={CreateQuizValditionSchema}
+        validationSchema={CreateQuizValidationSchema}
         onSubmit={onSubmit}
       >
         {({ errors, touched, isSubmitting, getFieldProps }) => (
