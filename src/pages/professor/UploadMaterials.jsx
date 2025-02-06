@@ -70,11 +70,6 @@ const UploadMaterials = () => {
         return;
       }
 
-      // Log FormData to ensure file is attached
-      for (let [key, value] of formData.entries()) {
-        console.log(`${key}:`, value);
-      }
-
       const response = await uploadMaterials(formData);
 
         toast.success('Material uploaded successfully');

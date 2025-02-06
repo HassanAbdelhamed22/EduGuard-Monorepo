@@ -103,7 +103,6 @@ export const updateMaterial = async (materialId, materialData) => {
       `${BASE_URL}professor/materials/${materialId}`,
       materialData
     );
-    console.log("API Response:", data);
     return { data, status };
   } catch (error) {
     console.error(error);

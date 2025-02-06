@@ -200,7 +200,6 @@ export const UploadMaterialsValidationSchema = Yup.object().shape({
             if (!value || !value.name) return false;
             const allowedExtensions = ["pdf", "docx", "txt", "ppt", "pptx"];
             const fileExtension = value.name.split(".").pop().toLowerCase();
-            console.log(value.type);
             return allowedExtensions.includes(fileExtension);
           }
         )

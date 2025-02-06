@@ -29,7 +29,6 @@ const CourseMaterials = () => {
   const fetchMaterials = async () => {
     try {
       const data = await viewCourseMaterials(courseId);
-      console.log("Fetched Materials:", data);
       setMaterials(data);
     } catch (error) {
       console.error("Error fetching materials:", error);
