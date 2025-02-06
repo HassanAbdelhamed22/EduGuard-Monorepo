@@ -232,9 +232,9 @@ export const UploadMaterialsValidationSchema = Yup.object().shape({
         ),
     otherwise: (schema) => schema.nullable(),
   }),
-  course_id: Yup.number()
-    .required("Course ID is required")
-    .integer("Course ID must be an integer"),
+  // course_id: Yup.number()
+  //   .required("Course ID is required")
+  //   .integer("Course ID must be an integer"),
 });
 
 export const materialsValidationSchema = Yup.object().shape({
