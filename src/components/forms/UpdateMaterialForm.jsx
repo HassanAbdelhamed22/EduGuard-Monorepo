@@ -1,30 +1,19 @@
 import { Field, Form, Formik } from "formik";
 import React from "react";
-import { materialsValidationSchema } from "../../utils/validation";
+import { updateMaterialsValidationSchema } from "../../utils/validation";
 import Textarea from "./../ui/Textarea";
-import CustomSelect from "./../ui/CustomSelect";
 import Button from "../ui/Button";
 
 const UpdateMaterialForm = ({ initialValues, closeModal, onSubmit }) => {
-  const materialTypeOptions = [
-    { value: "pdf", label: "PDF" },
-    { value: "video", label: "Video" },
-    { value: "text", label: "Text" },
-  ];
-
   return (
     <Formik
       initialValues={{
-        title: initialValues.Title || "",
-        description: initialValues.Description || "",
-        material_type: initialValues.MaterialType || "pdf",
-        file: null,
-        video: null,
+        title: initialValues?.Title || "",
+        description: initialValues?.Description || "",
       }}
-      //validationSchema={materialsValidationSchema}
-      onSubmit={(values, { setSubmitting }) => {
+      validationSchema={updateMaterialsValidationSchema}
+      onSubmit={(values) => {
         onSubmit(values);
-        setSubmitting(false);
       }}
     >
       {({
@@ -76,62 +65,11 @@ const UpdateMaterialForm = ({ initialValues, closeModal, onSubmit }) => {
             )}
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Material Type
-            </label>
-            <CustomSelect
-              //label="Role"
-              options={materialTypeOptions}
-              value={values.material_type}
-              onChange={(value) => setFieldValue("material_type", value)}
-              className="w-full"
-            />
-            {errors.material_type && touched.material_type && (
-              <p className="mt-1 text-sm text-red-600">{errors.material_type}</p>
-            )}
-          </div>
-
-          {values.material_type === "pdf" && (
-            <div>
-              <label className="block font-medium">Upload PDF</label>
-              <input
-                type="file"
-                name="file"
-                className="w-full p-2 border rounded"
-                accept="application/pdf"
-                onChange={(event) =>
-                  setFieldValue("file", event.currentTarget.files[0])
-                }
-              />
-              {errors.file && <p className="text-red-500">{errors.file}</p>}
-            </div>
-          )}
-
-          {values.material_type === "video" && (
-            <div>
-              <label className="block font-medium">Upload Video</label>
-              <input
-                type="file"
-                name="video"
-                className="w-full p-2 border rounded"
-                accept="video/*"
-                onChange={(event) =>
-                  setFieldValue("video", event.currentTarget.files[0])
-                }
-              />
-              {errors.video && <p className="text-red-500">{errors.video}</p>}
-            </div>
-          )}
-
           <div className="flex justify-end gap-2">
             <Button type="button" variant="cancel" onClick={closeModal}>
               Cancel
             </Button>
-            <Button
-              type="submit"
-              isLoading={isLoading || isSubmitting}
-            >
+            <Button type="submit" isLoading={isLoading || isSubmitting}>
               {isLoading || isSubmitting ? "Updating..." : "Update Material"}
             </Button>
           </div>
