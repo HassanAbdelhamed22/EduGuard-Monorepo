@@ -79,13 +79,18 @@ export const updateQuiz = async (quizId, quizData) => {
   }
 };
 
-export const uploadMaterials = async (materialData) => {
+export const uploadMaterials = async (formData) => {
   try {
     const response = await api.post(
       `${BASE_URL}professor/materials`,
-      materialData
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
     );
-    return response;
+    return response.data;
   } catch (error) {
     console.error(error);
     toast.error(error?.response?.data?.message);
