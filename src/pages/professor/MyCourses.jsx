@@ -13,6 +13,7 @@ const CourseList = () => {
   const [loading, setLoading] = useState(false);
   const [materialsCount, setMaterialsCount] = useState({});
   const [quizzesCount, setQuizzesCount] = useState({});
+  const [selectedCourse, setSelectedCourse] = useState(null);
   const navigate = useNavigate();
 
   const fetchCourses = async () => {
@@ -66,6 +67,16 @@ const CourseList = () => {
   if (loading) {
     return <Loading />;
   }
+
+  // Handle course card click
+  const handleCourseClick = (course) => {
+    setSelectedCourse(course);
+  };
+
+  // Close the student table
+  const closeStudentTable = () => {
+    setSelectedCourse(null);
+  };
 
   return (
     <div className="container p-4 mx-auto">
