@@ -149,76 +149,17 @@ export const courseValidationSchema = Yup.object().shape({
 });
 
 export const materialsValidationSchema = Yup.object().shape({
-  title: Yup.string().required("The title is required").max(255),
-  description: Yup.string()
-    .max(1000, "Description must be at most 1000 characters")
-    .when("material_type", {
-      is: "text",
-      then: (schema) =>
-        schema.required("Description is required for text materials"),
-      otherwise: (schema) => schema.notRequired(),
-    }),
+  title: Yup.string().required("Title is required"),
+  description: Yup.string(),
   material_type: Yup.string()
-    .oneOf(
-      ["pdf", "video", "text"],
-      "The material type must be pdf, video, or text"
-    )
+    .oneOf(["pdf", "video", "text"], "Invalid material type")
     .required("Material type is required"),
-  file: Yup.mixed()
-    .test(
-      "fileRequired",
-      "You must upload a file when the material type is pdf",
-      function (value) {
-        const materialType = this.parent.material_type;
-        if (materialType === "pdf") {
-          return value instanceof File;
-        }
-        return true;
-      }
-    )
-    .test(
-      "fileFormat",
-      "Invalid file format. Allowed: pdf, docx, txt, ppt, pptx",
-      function (value) {
-        if (!value) return true;
-        return [
-          "application/pdf",
-          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-          "text/plain",
-          "application/vnd.ms-powerpoint",
-          "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-        ].includes(value.type);
-      }
-    )
-    .test("fileSize", "File must be less than 10MB", function (value) {
-      if (!value) return true;
-      return value.size <= 10 * 1024 * 1024; // 10MB limit
-    }),
-  video: Yup.mixed()
-    .test(
-      "videoRequired",
-      "You must upload a video when the material type is video",
-      function (value) {
-        const materialType = this.parent.material_type;
-        if (materialType === "video") {
-          return value instanceof File;
-        }
-        return true;
-      }
-    )
-    .test(
-      "videoFormat",
-      "Invalid video format. Allowed: mp4",
-      function (value) {
-        if (!value) return true;
-        return value.type === "video/mp4";
-      }
-    )
-    .test("videoSize", "Video must be less than 10MB", function (value) {
-      if (!value) return true;
-      return value.size <= 10 * 1024 * 1024; // 10MB limit
-    }),
-  course_id: Yup.number()
-    .integer("Course ID must be an integer")
-    .required("Course ID is required"),
+  file: Yup.mixed().when("material_type", {
+    is: "pdf",
+    then: (schema) => schema.required("File is required"),
+  }),
+  video: Yup.mixed().when("material_type", {
+    is: "video",
+    then: (schema) => schema.required("Video is required"),
+  }),
 });
