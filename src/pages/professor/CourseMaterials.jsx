@@ -17,7 +17,7 @@ import UpdateMaterialForm from "../../components/forms/UpdateMaterialForm";
 const CourseMaterials = () => {
   const { courseId } = useParams();
   const [materials, setMaterials] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const { modal, closeModal, openModal } = useModal();
 
   const location = useLocation();
@@ -29,6 +29,7 @@ const CourseMaterials = () => {
   const fetchMaterials = async () => {
     try {
       const data = await viewCourseMaterials(courseId);
+      console.log("Fetched Materials:", data);
       setMaterials(data);
     } catch (error) {
       console.error("Error fetching materials:", error);
@@ -53,56 +54,42 @@ const CourseMaterials = () => {
   };
 
   const handleUpdate = async (values) => {
-    console.log("Update Values:", values);
-
-    const updatedFields = Object.fromEntries(
-      Object.entries(values).filter(
-        ([key, value]) =>
-          value !== modal.materialData[key] &&
-          value !== "" &&
-          value !== undefined
-      )
-    );
-
-    console.log("Updated Fields:", updatedFields);
-
-    if (Object.keys(updatedFields).length === 0) {
-      toast.error("No fields have been updated.");
-      return;
-    }
-
-    if (values.file && values.video) {
-      toast.error("You can upload either a file or a video, not both.");
-      return;
-    }
-
+    setLoading(true);
     try {
-      const formData = new FormData();
-      for (const key in updatedFields) {
-        if (updatedFields[key] !== null && updatedFields[key] !== undefined) {
-          formData.append(key, updatedFields[key]);
-        }
-      }
+      const payload = {
+        title: values.title,
+        description: values.description,
+      };
 
-      const {data, status} = await updateMaterial(modal.materialId, formData);
-      console.log("API Response:", data);
+      const { data, status } = await updateMaterial(modal.materialId, payload);
 
       if (status === 200) {
-        toast.success("Course updated successfully");
+        toast.success("Material updated successfully");
+        // Update the local state
+        setMaterials((prevMaterials) =>
+          prevMaterials.map((material) =>
+            material.MaterialID === modal.materialId
+              ? {
+                  ...material,
+                  Title: values.title,
+                  Description: values.description,
+                }
+              : material
+          )
+        );
         closeModal();
-        fetchMaterials();
+        //fetchMaterials();
       } else {
-        toast.error("Failed to update course");
+        toast.error("Failed to update material");
       }
     } catch (err) {
       console.error("Update Error:", err);
-      if (err.response?.status === 422) {
-        toast.error("Validation error: Please check your input.");
-      } else {
-        toast.error(
-          err.response?.data?.message || "An error occurred during update."
-        );
-      }
+      toast.error(
+        err.response?.data?.message ||
+          "An error occurred during update. Please check your input."
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
