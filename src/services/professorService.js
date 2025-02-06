@@ -97,16 +97,11 @@ export const uploadMaterials = async (formData) => {
   }
 };
 
-export const updateMaterial = async (materialId, formData) => {
+export const updateMaterial = async (materialId, materialData) => {
   try {
     const { data, status } = await api.patch(
       `${BASE_URL}professor/materials/${materialId}`,
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
+      materialData
     );
     return { data, status };
   } catch (error) {
