@@ -13,7 +13,6 @@ const CourseList = () => {
   const [loading, setLoading] = useState(false);
   const [materialsCount, setMaterialsCount] = useState({});
   const [quizzesCount, setQuizzesCount] = useState({});
-  const [selectedCourse, setSelectedCourse] = useState(null);
   const navigate = useNavigate();
 
   const fetchCourses = async () => {
@@ -68,16 +67,6 @@ const CourseList = () => {
     return <Loading />;
   }
 
-  // Handle course card click
-  const handleCourseClick = (course) => {
-    setSelectedCourse(course);
-  };
-
-  // Close the student table
-  const closeStudentTable = () => {
-    setSelectedCourse(null);
-  };
-
   return (
     <div className="container p-4 mx-auto">
       <div className="flex flex-wrap items-center gap-4">
@@ -93,7 +82,16 @@ const CourseList = () => {
           return (
             <div
               key={course.CourseID}
-              className="p-6 transition-shadow border rounded-lg shadow-sm hover:shadow-lg bg-white"
+              className="p-6 transition-shadow border rounded-lg shadow-sm hover:shadow-lg bg-white cursor-pointer"
+              onClick={() =>
+                navigate(`/professor/course/${course.CourseID}/students`, {
+                  state: {
+                    courseName: course.CourseName,
+                    courseCode: course.CourseCode,
+                  },
+                })
+              }
+              title="Click to view students"
             >
               {/* Course Code and Students Count */}
               <div className="flex flex-wrap items-center justify-between mb-4">
