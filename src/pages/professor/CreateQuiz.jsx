@@ -70,7 +70,11 @@ const CreateQuiz = () => {
     }
   };
   return (
-    <CreateQuizForm
+      <div className=" mx-auto p-4 rounded-lg shadow-md bg-white mt-10 max-w-xl ">  
+         <h2 className="text-2xl font-semibold mb-3 pb-4 text-center border-b text-primary">
+        Create New Quiz
+      </h2>
+            <CreateQuizForm
       initialValues={initialValues}
       onSubmit={handleSubmit}
       isLoading={isLoading}
@@ -78,6 +82,10 @@ const CreateQuiz = () => {
       selectedCourse={selectedCourse}
       setSelectedCourse={setSelectedCourse}
     />
+
+      </div>
+
+
   );
 };
 export default CreateQuiz;

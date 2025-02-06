@@ -47,7 +47,7 @@ const CreateUserAccountForm = ({
               <Input
                 id="name"
                 type="name"
-                placeholder="Enter your name"
+                placeholder="Enter full name"
                 error={!!(errors.name && touched.name)}
                 {...getFieldProps("name")}
               />
@@ -66,7 +66,7 @@ const CreateUserAccountForm = ({
               <Input
                 id="email"
                 type="email"
-                placeholder="Enter your email"
+                placeholder="Enter  email"
                 error={!!(errors.email && touched.email)}
                 {...getFieldProps("email")}
               />

@@ -33,7 +33,7 @@ const CreateCourse = () => {
   return (
     <div className="max-w-xl mx-auto p-6 rounded-lg shadow-md bg-white mt-20">
       <h2 className="text-2xl font-semibold mb-6 pb-4 text-center border-b text-primary">
-        Create User Account
+        Create New Course
       </h2>
 
       <CreateCourseForm

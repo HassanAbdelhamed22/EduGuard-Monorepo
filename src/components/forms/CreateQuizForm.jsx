@@ -15,7 +15,6 @@ const CreateQuizForm = ({
 }) => {
   return (
     <div className="container mx-auto p-4 max-w-2xl">
-      <h2 className="text-xl font-bold mb-4">Create New Quiz</h2>
       <Formik
         initialValues={initialValues}
         validationSchema={CreateQuizValidationSchema}
@@ -24,7 +23,8 @@ const CreateQuizForm = ({
         }}
       >
         {({ errors, touched, isSubmitting, getFieldProps }) => (
-          <Form className="space-y-4 bg-white shadow-md rounded-lg p-6">
+       
+       <Form className="space-y-4 ">
             <div>
               <label htmlFor="title">Quiz Title</label>
               <Input
