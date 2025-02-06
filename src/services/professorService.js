@@ -12,6 +12,12 @@ export const viewRegisteredCourses = async () => {
   }
 };
 
+export const fetchCourseRegistrations = async (courseId, page) => {
+  const response = await api.get(`${BASE_URL}course/${courseId}/students?page=${page}`);
+  const { data, pagination } = response.data;
+  return { data, pagination };
+};
+
 export const viewCourseQuizzes = async (courseId) => {
   try {
     const response = await api.get(
