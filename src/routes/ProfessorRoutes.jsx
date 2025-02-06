@@ -13,6 +13,7 @@ import CreateQuiz from "../pages/professor/CreateQuiz";
 import CourseQuizzes from "../pages/professor/CourseQuizzes";
 import CourseMaterials from "../pages/professor/CourseMaterials";
 import UploadMaterials from "../pages/professor/UploadMaterials";
+import RegisteredStudent from "../pages/professor/RegisteredStudent";
 
 const ProfessorRoutes = () => {
   return (
@@ -27,6 +28,10 @@ const ProfessorRoutes = () => {
           <Route path="quizzes/:courseId" element={<CourseQuizzes />} />
           <Route path="materials/:courseId" element={<CourseMaterials />} />
           <Route path="courses/upload-material" element={<UploadMaterials />} />
+          <Route
+            path="course/:courseId/students"
+            element={<RegisteredStudent />}
+          />
           <Route
             path="courses/manage-material"
             element={<div>Manage Course Material</div>}
