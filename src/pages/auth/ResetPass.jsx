@@ -156,6 +156,7 @@ const ResetPass = () => {
                 src={img}
                 alt="Security Illustration"
                 className="w-full h-auto "
+                loading="lazy"
               />
             </div>
           </div>

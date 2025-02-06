@@ -10,6 +10,8 @@ import Profile from "../pages/auth/Profile";
 import UpdatePassword from "../pages/auth/UpdatePassword";
 import CourseList from "../pages/professor/MyCourses";
 import CreateQuiz from "../pages/professor/CreateQuiz";
+import CourseQuizzes from "../pages/professor/CourseQuizzes";
+import CourseMaterials from "../pages/professor/CourseMaterials";
 
 const ProfessorRoutes = () => {
   return (
@@ -21,6 +23,8 @@ const ProfessorRoutes = () => {
         <Route element={<ProfessorLayout />}>
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="courses" element={<CourseList></CourseList>} />
+          <Route path="quizzes/:courseId" element={<CourseQuizzes />} />
+          <Route path="materials/:courseId" element={<CourseMaterials />} />
           <Route
             path="courses/upload-material"
             element={<div>Upload Material</div>}
