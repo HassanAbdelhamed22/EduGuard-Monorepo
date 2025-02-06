@@ -172,6 +172,71 @@ export const CreateQuizValidationSchema = Yup.object().shape({
     ),
 });
 
+export const UploadMaterialsValidationSchema = Yup.object().shape({
+  title: Yup.string()
+    .required("Title is required")
+    .max(255, "Title must not exceed 255 characters"),
+  description: Yup.string().when("material_type", {
+    is: "text",
+    then: (schema) =>
+      schema
+        .required("Description is required for text materials")
+        .max(1000, "Description must be at most 1000 characters"),
+    otherwise: (schema) =>
+      schema.nullable().max(255, "Description must be at most 255 characters"),
+  }),
+  material_type: Yup.string()
+    .oneOf(["pdf", "video", "text"], "Invalid material type")
+    .required("Material type is required"),
+  file: Yup.mixed().when("material_type", {
+    is: "pdf",
+    then: (schema) =>
+      schema
+        .required("File is required for PDF materials")
+        .test(
+          "fileType",
+          "The file must be one of the following types: pdf, docx, txt, ppt, pptx",
+          (value) => {
+            if (!value) return false; // No file provided
+            const allowedTypes = [
+              "application/pdf",
+              "application/msword",
+              "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+              "text/plain",
+              "application/vnd.ms-powerpoint",
+              "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+            ];
+            return allowedTypes.includes(value.type);
+          }
+        )
+        .test(
+          "fileSize",
+          "File size must be less than 10MB",
+          (value) => value && value.size <= 10 * 1024 * 1024
+        ),
+    otherwise: (schema) => schema.nullable(),
+  }),
+  video: Yup.mixed().when("material_type", {
+    is: "video",
+    then: (schema) =>
+      schema
+        .required("Video is required for video materials")
+        .test("fileType", "The video must be in mp4 format", (value) => {
+          if (!value) return false; // No file provided
+          return value.type === "video/mp4";
+        })
+        .test(
+          "fileSize",
+          "Video size must be less than 10MB",
+          (value) => value && value.size <= 10 * 1024 * 1024
+        ),
+    otherwise: (schema) => schema.nullable(),
+  }),
+  course_id: Yup.number()
+    .required("Course ID is required")
+    .integer("Course ID must be an integer"),
+});
+
 export const materialsValidationSchema = Yup.object().shape({
   title: Yup.string().required("Title is required"),
   description: Yup.string(),
