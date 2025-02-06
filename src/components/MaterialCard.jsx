@@ -9,10 +9,10 @@ const MaterialCard = ({ material, openModal }) => {
   const pdfUrl = `http://127.0.0.1:8000${material.FilePath}`;
 
   return (
-    <div className="p-4 border rounded-lg shadow-sm hover:shadow-lg transition-shadow bg-white">
+    <div className="p-4 border rounded-lg shadow-sm hover:shadow-lg transition-shadow bg-white flex flex-col h-full">
       <h3 className="text-lg font-semibold text-gray-800">{material.Title}</h3>
       <p className="text-sm text-gray-600 mt-2">{material.Description}</p>
-      <div className="mt-4 text-sm text-gray-500">
+      <div className="mt-4 text-sm text-gray-500 flex-grow">
         <p>Uploaded: {new Date(material.created_at).toLocaleDateString()}</p>
         {material.MaterialType === "video" && (
           <a
