@@ -69,11 +69,16 @@ export const updateQuiz = async (quizId, quizData) => {
   }
 };
 
-export const updateMaterial = async (materialId, materialData) => {
+export const updateMaterial = async (materialId, formData) => {
   try {
     const { data, status } = await api.patch(
       `${BASE_URL}professor/materials/${materialId}`,
-      materialData
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
     );
     return { data, status };
   } catch (error) {
@@ -84,7 +89,7 @@ export const updateMaterial = async (materialId, materialData) => {
 
 export const deleteMaterial = async (materialId) => {
   try {
-    const response  = await api.delete(
+    const response = await api.delete(
       `${BASE_URL}professor/materials/${materialId}`
     );
     return response.data;
