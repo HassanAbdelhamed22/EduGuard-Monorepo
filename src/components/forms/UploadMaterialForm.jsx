@@ -24,9 +24,8 @@ const UploadMaterialForm = ({
     <Formik
       initialValues={initialValues}
       validationSchema={UploadMaterialsValidationSchema}
-      onSubmit={(values, helpers, { setSubmitting }) => {
-        onSubmit(values, helpers, setSubmitting);
-        setSubmitting(false);
+      onSubmit={(values, helpers) => {
+        onSubmit(values, helpers);
       }}
     >
       {({
@@ -38,7 +37,7 @@ const UploadMaterialForm = ({
         setFieldValue,
         getFieldProps,
       }) => (
-        <Form className="space-y-4 bg-white shadow-md rounded-lg p-6">
+        <Form className="space-y-4">
           <div>
             <label htmlFor="title">Material Title</label>
             <Input
@@ -88,15 +87,20 @@ const UploadMaterialForm = ({
           {values.material_type === "pdf" && (
             <div>
               <label htmlFor="file">Upload PDF File</label>
-              <Input
+              <input
                 id="file"
                 type="file"
                 name="file"
-                onChange={(event) =>
-                  setFieldValue("file", event.currentTarget.files[0])
-                }
+                className="w-full border rounded-lg p-2"
+                accept=".pdf,.docx,.txt,.ppt,.pptx"
+                onChange={(event) => {
+                  const file = event.currentTarget.files?.[0];
+                  if (file) {
+                    setFieldValue("file", file);
+                  }
+                }}
                 error={!!(errors.file && touched.file)}
-                {...getFieldProps("file")}
+                //{...getFieldProps("file")}
               />
               {errors.file && touched.file && (
                 <p className="mt-2 text-sm text-red-600">{errors.file}</p>
@@ -108,15 +112,18 @@ const UploadMaterialForm = ({
           {values.material_type === "video" && (
             <div>
               <label htmlFor="video">Upload Video</label>
-              <Input
+              <input
                 id="video"
-                type="text"
                 name="video"
-                onChange={(event) =>
-                  setFieldValue("video", event.currentTarget.files[0])
-                }
-                error={!!(errors.video && touched.video)}
-                {...getFieldProps("video")}
+                type="file"
+                className="w-full border rounded-lg p-2"
+                accept="video/mp4"
+                onChange={(event) => {
+                  const file = event.currentTarget.files?.[0];
+                  if (file) {
+                    setFieldValue("video", file);
+                  }
+                }}
               />
               {errors.video && touched.video && (
                 <p className="mt-2 text-sm text-red-600">{errors.video}</p>
@@ -124,7 +131,7 @@ const UploadMaterialForm = ({
             </div>
           )}
 
-          <div>
+          <div className="w-full">
             <label htmlFor="course_id">Select Course</label>
             <CustomCombobox
               options={courses}
@@ -136,7 +143,7 @@ const UploadMaterialForm = ({
             />
           </div>
 
-          <Button type="submit" isLoading={isLoading || isSubmitting}>
+          <Button type="submit" isLoading={isLoading || isSubmitting} fullWidth>
             {isLoading || isSubmitting ? "Updating..." : "Update Material"}
           </Button>
         </Form>
