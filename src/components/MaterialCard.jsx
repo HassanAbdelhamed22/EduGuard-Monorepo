@@ -1,6 +1,7 @@
 import React from "react";
+import Button from "./ui/Button";
 
-const MaterialCard = ({ material }) => {
+const MaterialCard = ({ material, openModal }) => {
   // Construct the full URL for the video
   const videoUrl = `http://127.0.0.1:8000${material.VideoPath}`;
 
@@ -43,6 +44,22 @@ const MaterialCard = ({ material }) => {
             View Notes
           </a>
         )}
+      </div>
+      <div className="flex mt-4 gap-4">
+        <Button
+          variant="danger"
+          fullWidth
+          onClick={() => openModal("delete", material.MaterialID)}
+        >
+          Delete
+        </Button>
+        <Button
+          variant="cancel"
+          fullWidth
+          onClick={() => openModal("edit", material.MaterialID, material)}
+        >
+          Edit
+        </Button>
       </div>
     </div>
   );

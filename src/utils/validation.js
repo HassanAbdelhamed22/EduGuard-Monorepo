@@ -147,3 +147,19 @@ export const courseValidationSchema = Yup.object().shape({
       "The course code must contain only letters and numbers."
     ),
 });
+
+export const materialsValidationSchema = Yup.object().shape({
+  title: Yup.string().required("Title is required"),
+  description: Yup.string(),
+  material_type: Yup.string()
+    .oneOf(["pdf", "video", "text"], "Invalid material type")
+    .required("Material type is required"),
+  file: Yup.mixed().when("material_type", {
+    is: "pdf",
+    then: (schema) => schema.required("File is required"),
+  }),
+  video: Yup.mixed().when("material_type", {
+    is: "video",
+    then: (schema) => schema.required("Video is required"),
+  }),
+});
