@@ -79,6 +79,19 @@ export const updateQuiz = async (quizId, quizData) => {
   }
 };
 
+export const uploadMaterials = async (materialData) => {
+  try {
+    const response = await api.post(
+      `${BASE_URL}professor/materials`,
+      materialData
+    );
+    return response;
+  } catch (error) {
+    console.error(error);
+    toast.error(error?.response?.data?.message);
+  }
+};
+
 export const updateMaterial = async (materialId, formData) => {
   try {
     const { data, status } = await api.patch(
