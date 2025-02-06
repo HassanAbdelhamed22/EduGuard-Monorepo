@@ -3,6 +3,7 @@ import { Formik, Form, Field } from "formik";
 import Button from "../ui/Button";
 import Input from "../ui/Input";
 import CustomCombobox from "../ui/Combobox";
+import { CreateQuizValidationSchema } from "../../utils/validation";
 
 const UpdateQuizForm = ({ initialValues, onSubmit, isLoading, closeModal }) => {
   return (
@@ -20,7 +21,7 @@ const UpdateQuizForm = ({ initialValues, onSubmit, isLoading, closeModal }) => {
           ? new Date(initialValues?.EndTime).toTimeString().slice(0, 5)
           : "" || "",
       }}
-      //validationSchema={CreateQuizValidationSchema}
+      validationSchema={CreateQuizValidationSchema}
       onSubmit={(values, { setSubmitting }) => {
         onSubmit(values);
         setSubmitting(false);

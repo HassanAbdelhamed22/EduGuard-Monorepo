@@ -53,9 +53,9 @@ const CustomCombobox = ({
             "transition duration-100 ease-in data-[leave]:data-[closed]:opacity-0"
           )}
         >
-          {filteredOptions.map((option) => (
+          {filteredOptions.map((option, index) => (
             <ComboboxOption
-              key={option.id}
+              key={index}
               value={option}
               className="group flex cursor-default items-center gap-2 rounded-lg py-2 px-3 select-none data-[focus]:bg-lightGray"
             >
