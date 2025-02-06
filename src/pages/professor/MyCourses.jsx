@@ -82,11 +82,21 @@ const CourseList = () => {
           return (
             <div
               key={course.CourseID}
-              className="p-6 transition-shadow border rounded-lg shadow-sm hover:shadow-lg bg-white"
+              className="p-6 transition-shadow border rounded-lg shadow-sm hover:shadow-lg bg-white "
             >
               {/* Course Code and Students Count */}
               <div className="flex flex-wrap items-center justify-between mb-4">
-                <h3 className="text-xl font-bold text-gray-800">
+                <h3
+                  className="text-xl font-bold text-gray-800 cursor-pointer hover:text-indigo-600 duration-300 underline"
+                  onClick={() =>
+                    navigate(`/professor/course/${course.CourseID}/students`, {
+                      state: {
+                        courseName: course.CourseName,
+                        courseCode: course.CourseCode,
+                      },
+                    })
+                  }
+                >
                   {course.CourseCode}
                 </h3>
                 <span className="px-3 py-1 text-sm text-indigo-600 bg-indigo-100 rounded-full">
@@ -175,6 +185,22 @@ const CourseList = () => {
                   View Materials
                 </Button>
               </div>
+
+              <Button
+                variant={"cancel"}
+                className="w-full mt-2"
+                disabled={course.course_registrations?.length === 0}
+                onClick={() =>
+                  navigate(`/professor/course/${course.CourseID}/students`, {
+                    state: {
+                      courseName: course.CourseName,
+                      courseCode: course.CourseCode,
+                    },
+                  })
+                }
+              >
+                View Students
+              </Button>
             </div>
           );
         })}
