@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { uploadMaterials, viewRegisteredCourses } from "../../services/professorService";
+import {
+  uploadMaterials,
+  viewRegisteredCourses,
+} from "../../services/professorService";
 import toast from "react-hot-toast";
+import UploadMaterialForm from "./../../components/forms/UploadMaterialForm";
 
 const UploadMaterials = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -33,40 +37,75 @@ const UploadMaterials = () => {
     material_type: "pdf",
     file: null,
     video: null,
-    course_id: selectedCourse?.id || "",
+    course_id: "",
   };
 
-  const handleSubmit = async (values, formikHelpers) => {
+  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     setIsLoading(true);
-    try {
-      const { resetForm } = formikHelpers;
-      const payload = {
-        ...values,
-        course_id: selectedCourse?.course_id || "",
-      };
 
+    try {
       if (!selectedCourse) {
         toast.error("Please select a course");
         setIsLoading(false);
         return;
       }
-      const response = await uploadMaterials(payload);
-      const { data, status } = response;
-      if (status === 201) {
-        toast.success(data.message);
+
+      const formData = new FormData();
+      formData.append("title", values.title);
+      formData.append("description", values.description);
+      formData.append("material_type", values.material_type);
+      formData.append("course_id", selectedCourse?.course_id);
+
+      // Validate and append file
+      if (values.material_type === "pdf" && values.file) {
+        formData.append("file", values.file);
+      } else if (values.material_type === "video" && values.video) {
+        formData.append("video", values.video);
+      } else if (values.material_type === "text") {
+        // Do nothing
+      }
+       else {
+        toast.error("Invalid file. Please upload a valid file.");
+        setIsLoading(false);
+        return;
+      }
+
+      // Log FormData to ensure file is attached
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}:`, value);
+      }
+
+      const response = await uploadMaterials(formData);
+
+        toast.success('Material uploaded successfully');
         resetForm();
         setSelectedCourse(null);
-      } else {
-        toast.error("Unexpected server response. Please try again.");
-      }
+
     } catch (error) {
-      console.error("Error submitting quiz:", error);
+      console.error("Error submitting material:", error);
+      toast.error("Error submitting material. Please try again.");
     } finally {
       setIsLoading(false);
+      setSubmitting(false);
     }
   };
 
-  return <div>UploadMaterials</div>;
+  return (
+    <div className="max-w-xl mx-auto p-6 rounded-lg shadow-md bg-white mt-10">
+      <h2 className="text-2xl font-semibold mb-6 pb-4 text-center border-b text-primary">
+        Upload Course Materials
+      </h2>
+
+      <UploadMaterialForm
+        initialValues={initialValues}
+        onSubmit={handleSubmit}
+        isLoading={isLoading}
+        courses={courses}
+        selectedCourse={selectedCourse}
+        setSelectedCourse={setSelectedCourse}
+      />
+    </div>
+  );
 };
 
 export default UploadMaterials;
