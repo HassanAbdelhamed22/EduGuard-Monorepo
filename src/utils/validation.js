@@ -232,18 +232,17 @@ export const UploadMaterialsValidationSchema = Yup.object().shape({
   //   .integer("Course ID must be an integer"),
 });
 
-export const materialsValidationSchema = Yup.object().shape({
-  title: Yup.string().required("Title is required"),
-  description: Yup.string(),
-  material_type: Yup.string()
-    .oneOf(["pdf", "video", "text"], "Invalid material type")
-    .required("Material type is required"),
-  file: Yup.mixed().when("material_type", {
-    is: "pdf",
-    then: (schema) => schema.required("File is required"),
-  }),
-  video: Yup.mixed().when("material_type", {
-    is: "video",
-    then: (schema) => schema.required("Video is required"),
+export const updateMaterialsValidationSchema = Yup.object().shape({
+  title: Yup.string()
+    .required("Title is required")
+    .max(255, "Title must not exceed 255 characters"),
+  description: Yup.string().when("material_type", {
+    is: "text",
+    then: (schema) =>
+      schema
+        .required("Description is required for text materials")
+        .max(1000, "Description must be at most 1000 characters"),
+    otherwise: (schema) =>
+      schema.nullable().max(255, "Description must be at most 255 characters"),
   }),
 });
