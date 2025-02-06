@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { viewRegisteredCourses } from "../../services/professorService";
+import { uploadMaterials, viewRegisteredCourses } from "../../services/professorService";
+import toast from "react-hot-toast";
 
 const UploadMaterials = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -35,7 +36,36 @@ const UploadMaterials = () => {
     course_id: selectedCourse?.id || "",
   };
 
-  
+  const handleSubmit = async (values, formikHelpers) => {
+    setIsLoading(true);
+    try {
+      const { resetForm } = formikHelpers;
+      const payload = {
+        ...values,
+        course_id: selectedCourse?.course_id || "",
+      };
+
+      if (!selectedCourse) {
+        toast.error("Please select a course");
+        setIsLoading(false);
+        return;
+      }
+      const response = await uploadMaterials(payload);
+      const { data, status } = response;
+      if (status === 201) {
+        toast.success(data.message);
+        resetForm();
+        setSelectedCourse(null);
+      } else {
+        toast.error("Unexpected server response. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error submitting quiz:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return <div>UploadMaterials</div>;
 };
 
