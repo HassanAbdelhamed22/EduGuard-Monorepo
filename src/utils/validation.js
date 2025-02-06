@@ -197,16 +197,11 @@ export const UploadMaterialsValidationSchema = Yup.object().shape({
           "fileType",
           "The file must be one of the following types: pdf, docx, txt, ppt, pptx",
           (value) => {
-            if (!value) return false; // No file provided
-            const allowedTypes = [
-              "application/pdf",
-              "application/msword",
-              "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-              "text/plain",
-              "application/vnd.ms-powerpoint",
-              "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-            ];
-            return allowedTypes.includes(value.type);
+            if (!value || !value.name) return false;
+            const allowedExtensions = ["pdf", "docx", "txt", "ppt", "pptx"];
+            const fileExtension = value.name.split(".").pop().toLowerCase();
+            console.log(value.type);
+            return allowedExtensions.includes(fileExtension);
           }
         )
         .test(
