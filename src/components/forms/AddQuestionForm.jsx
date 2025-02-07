@@ -15,8 +15,8 @@ const AddQuestionForm = ({ initialValues, onSubmit, isLoading }) => {
   const fetchQuizzes = async () => {
     setLoading(true);
     try {
-      const { data } = await getAllQuizzes();
-      setQuizzes(data.quizzes);
+      const { quizzes } = await getAllQuizzes();
+      setQuizzes(quizzes);
     } catch (error) {
       toast.error(error.message);
     } finally {
@@ -27,6 +27,11 @@ const AddQuestionForm = ({ initialValues, onSubmit, isLoading }) => {
   useEffect(() => {
     fetchQuizzes();
   }, []);
+
+  const quizOptions = quizzes.map((quiz) => ({
+    value: quiz.QuizID,
+    label: `${quiz.CourseName} - ${quiz.Title}`,
+  }));
 
   const questionTypeOptions = [
     { value: "mcq", label: "Multiple Choice Question" },
@@ -46,13 +51,14 @@ const AddQuestionForm = ({ initialValues, onSubmit, isLoading }) => {
               htmlFor="quiz_id"
               className="block text-sm font-medium text-gray-700"
             >
-              Quiz ID
+              Quiz
             </label>
-            <Field
-              as={Input}
-              name="quiz_id"
-              type="text"
-              placeholder="Enter quiz ID"
+            <CustomSelect  
+              options={quizOptions}
+              value={values.quiz_id}
+              onChange={(value) => setFieldValue("quiz_id", value)}
+              isLoading={loading}
+              placeholder="Select a quiz"
             />
             <ErrorMessage
               name="quiz_id"
