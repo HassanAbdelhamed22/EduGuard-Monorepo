@@ -242,3 +242,33 @@ export const updateMaterialsValidationSchema = Yup.object().shape({
       schema.nullable().max(255, "Description must be at most 255 characters"),
   }),
 });
+
+export const addQuestionValidationSchema = Yup.object().shape({
+  quiz_id: Yup.string().required("Quiz ID is required"),
+  content: Yup.string().required("Question content is required"),
+  type: Yup.string()
+    .required("Question type is required")
+    .oneOf(["mcq", "true_false"], "Invalid question type"),
+  marks: Yup.number()
+    .required("Marks are required")
+    .positive("Marks must be a positive number"),
+
+  // options: Yup.array()
+  //   .of(Yup.string().required("Option is required"))
+  //   .when("type", {
+  //     is: "mcq",
+  //     then: (schema) =>
+  //       schema.min(2, "At least 2 options are required for MCQ"),
+  //     otherwise: (schema) => schema.notRequired(),
+  //   }),
+
+  // correct_option: Yup.string().when("type", (type, schema) => {
+  //   return type === "mcq"
+  //     ? schema.required("Correct option is required for MCQ")
+  //     : schema
+  //         .required("Correct option is required for True/False")
+  //         .oneOf(["true", "false", "1", "0"], "Invalid correct option");
+  // }),
+
+  image: Yup.mixed().nullable(),
+});

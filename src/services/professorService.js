@@ -127,3 +127,17 @@ export const deleteMaterial = async (materialId) => {
     toast.error(error?.response?.data?.message);
   }
 };
+
+export const createQuestion = async (questionData) => {
+  try {
+    const response = await api.post(`${BASE_URL}quiz/add-question`, questionData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response;
+  } catch (error) {
+    console.error(error);
+    toast.error(error?.response?.data?.message);
+  }
+}
