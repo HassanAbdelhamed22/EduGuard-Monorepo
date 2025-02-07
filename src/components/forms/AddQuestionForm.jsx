@@ -1,16 +1,33 @@
 import { ErrorMessage, Field, Form, Formik } from "formik";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { addQuestionValidationSchema } from "../../utils/validation";
 import Input from "../ui/Input";
 import Textarea from "./../ui/Textarea";
 import CustomSelect from "../ui/CustomSelect";
 import Button from "../ui/Button";
+import { getAllQuizzes } from "../../services/professorService";
+import toast from "react-hot-toast";
 
-const AddQuestionForm = ({
-  initialValues,
-  onSubmit,
-  isLoading,
-}) => {
+const AddQuestionForm = ({ initialValues, onSubmit, isLoading }) => {
+  const [quizzes, setQuizzes] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const fetchQuizzes = async () => {
+    setLoading(true);
+    try {
+      const { data } = await getAllQuizzes();
+      setQuizzes(data.quizzes);
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchQuizzes();
+  }, []);
+
   const questionTypeOptions = [
     { value: "mcq", label: "Multiple Choice Question" },
     { value: "true_false", label: "True/False Question" },
