@@ -87,7 +87,7 @@ const QuizView = () => {
         <h2 className="text-xl font-semibold">Quiz Details</h2>
         <button
           onClick={handleAddQuestion}
-          className="p-2 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center gap-1"
+          className="p-2 bg-primary text-white rounded hover:bg-primaryHover flex items-center gap-1 duration-300"
         >
           <Plus className="w-5 h-5" />
           <span>Add Question</span>
