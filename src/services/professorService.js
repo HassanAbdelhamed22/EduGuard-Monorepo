@@ -142,6 +142,15 @@ export const createQuestion = async (questionData) => {
   }
 }
 
+export const deleteQuestion = async (questionId) => {
+  try {
+    const { data } = await api.delete(`${BASE_URL}quiz/delete-question/${questionId}`);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const getQuiz = async (quizId) => {
   try {
     const response = await axios.get(`${BASE_URL}quiz/get-quiz/${quizId}`);

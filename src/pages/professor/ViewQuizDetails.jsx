@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { X, Edit2, Trash2, Plus } from "lucide-react";
 import Button from "../../components/ui/Button";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { getQuizDetails } from "../../services/professorService";
+import { deleteQuestion, getQuizDetails } from "../../services/professorService";
 import toast from "react-hot-toast";
 import Loading from "../../components/ui/Loading";
 import PaginationLogic from "../../components/PaginationLogic";
@@ -62,28 +62,6 @@ const QuizViewDetails = () => {
     [pagination, fetchQuiz]
   );
 
-  const handleAddQuestion = () => {
-    setQuiz((prevQuiz) => {
-      if (!prevQuiz) return prevQuiz;
-
-      const newQuestion = {
-        id: prevQuiz.questions.length + 1,
-        text: "Enter The Question?",
-        options: ["Option 1", "Option 2", "Option 3", "Option 4"],
-        correct: 0,
-      };
-
-      return { ...prevQuiz, questions: [...prevQuiz.questions, newQuestion] };
-    });
-
-    setTimeout(() => {
-      setEditingQuestion(quiz?.questions.length + 1);
-      setEditedText("Enter The Question?");
-      setEditedOptions(["Option 1", "Option 2", "Option 3", "Option 4"]);
-      setCorrectAnswer(0);
-    }, 0);
-  };
-
   const handleEdit = (question) => {
     setEditingQuestion(question.id);
     setEditedText(question.text);
@@ -112,11 +90,15 @@ const QuizViewDetails = () => {
     setEditingQuestion(null);
   };
 
-  const handleDelete = (id) => {
-    setQuiz((prevQuiz) => {
-      const updatedQuestions = prevQuiz.questions.filter((q) => q.id !== id);
-      return { ...prevQuiz, questions: updatedQuestions };
-    });
+  const handleDelete = async (id) => {
+    try {
+      await deleteQuestion(id);
+      toast.success("Question deleted successfully");
+      fetchQuiz(pagination.current_page);
+    } catch (error) {
+      console.error(error);
+      toast.error(error?.response?.data?.message);
+    }
   };
 
   if (loading) return <Loading />;
