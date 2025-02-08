@@ -2,7 +2,10 @@ import React, { useCallback, useEffect, useState } from "react";
 import { X, Edit2, Trash2, Plus } from "lucide-react";
 import Button from "../../components/ui/Button";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { deleteQuestion, getQuizDetails } from "../../services/professorService";
+import {
+  deleteQuestion,
+  getQuizDetails,
+} from "../../services/professorService";
 import toast from "react-hot-toast";
 import Loading from "../../components/ui/Loading";
 import PaginationLogic from "../../components/PaginationLogic";
@@ -120,7 +123,9 @@ const QuizViewDetails = () => {
         <div className="space-y-2 mb-6">
           <div className="flex">
             <span className="font-medium w-32">Course:</span>
-            <span>{courseName} - {courseCode}</span>
+            <span>
+              {courseName} - {courseCode}
+            </span>
           </div>
           <div className="flex">
             <span className="font-medium w-32">Title:</span>
@@ -219,7 +224,7 @@ const QuizViewDetails = () => {
                   )}
                   <div className="font-medium border-b pb-2 mb-2 flex items-center gap-5">
                     <p>{question.Content}</p>
-                    <p className="text-sm text-mediumGray">
+                    <p className="text-sm text-mediumGray w-1/6">
                       ({question.Marks} marks)
                     </p>
                   </div>
@@ -244,13 +249,13 @@ const QuizViewDetails = () => {
               <div className="flex gap-2">
                 <button
                   onClick={() => handleEdit(question)}
-                  className="p-2 hover:bg-blue-100 rounded duration-300"
+                  className="p-2 hover:bg-indigo-50 rounded duration-300"
                 >
-                  <Edit2 className="w-4 h-4 text-blue-600" />
+                  <Edit2 className="w-4 h-4 text-primary" />
                 </button>
                 <button
                   onClick={() => handleDelete(question.QuestionID)}
-                  className="p-2 hover:bg-red-100 rounded duration-300"
+                  className="p-2 hover:bg-red-50 rounded duration-300"
                 >
                   <Trash2 className="w-4 h-4 text-red-600" />
                 </button>
