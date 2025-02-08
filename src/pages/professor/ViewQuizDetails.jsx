@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { X, Edit2, Trash2, Plus } from "lucide-react";
 import Button from "../../components/ui/Button";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { getQuizDetails } from "../../services/professorService";
 import toast from "react-hot-toast";
 import Loading from "../../components/ui/Loading";
@@ -22,6 +22,11 @@ const QuizViewDetails = () => {
     total_items: 0,
   });
   const navigate = useNavigate();
+  const location = useLocation();
+  const { courseName, courseCode } = location.state || {
+    courseName: "Unknown Course",
+    courseCode: "N/A",
+  };
 
   const fetchQuiz = async (page) => {
     try {
@@ -132,6 +137,10 @@ const QuizViewDetails = () => {
       <div className="mb-4 pb-2 border-b flex justify-between items-center">
         <div className="space-y-2 mb-6">
           <div className="flex">
+            <span className="font-medium w-32">Course:</span>
+            <span>{courseName} - {courseCode}</span>
+          </div>
+          <div className="flex">
             <span className="font-medium w-32">Title:</span>
             <span>{quiz.Title}</span>
           </div>
@@ -219,16 +228,19 @@ const QuizViewDetails = () => {
                 </div>
               ) : (
                 <>
-                {question.image && (
-                  <img
-                    src={`http://127.0.0.1:8000/storage/${question.image}`}
-                    alt={question.Content}
-                    className="w-full rounded-lg mb-3"
-                  />
-                )}
-                  <p className="font-medium border-b pb-2 mb-2">
-                    {question.Content}
-                  </p>
+                  {question.image && (
+                    <img
+                      src={`http://127.0.0.1:8000/storage/${question.image}`}
+                      alt={question.Content}
+                      className="w-full rounded-lg mb-3"
+                    />
+                  )}
+                  <div className="font-medium border-b pb-2 mb-2 flex items-center gap-5">
+                    <p>{question.Content}</p>
+                    <p className="text-sm text-mediumGray">
+                      ({question.Marks} marks)
+                    </p>
+                  </div>
                   <ul className="list-decimal md:list-inside m-2">
                     {question.answers.map((option) => (
                       <li
@@ -250,13 +262,13 @@ const QuizViewDetails = () => {
               <div className="flex gap-2">
                 <button
                   onClick={() => handleEdit(question)}
-                  className="p-2 hover:bg-blue-100 rounded"
+                  className="p-2 hover:bg-blue-100 rounded duration-300"
                 >
                   <Edit2 className="w-4 h-4 text-blue-600" />
                 </button>
                 <button
                   onClick={() => handleDelete(question.QuestionID)}
-                  className="p-2 hover:bg-red-100 rounded"
+                  className="p-2 hover:bg-red-100 rounded duration-300"
                 >
                   <Trash2 className="w-4 h-4 text-red-600" />
                 </button>

@@ -213,7 +213,12 @@ const CourseQuizzes = () => {
                 variant="default"
                 className="w-full mt-2"
                 onClick={() => {
-                  navigate(`/professor/quiz/${quiz.QuizID}`);
+                  navigate(`/professor/quiz/${quiz.QuizID}`, {
+                    state: {
+                      courseName: courseName,
+                      courseCode: courseCode,
+                    },
+                  });
                 }}
               >
                 View Details
