@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { X, Edit2, Trash2, Plus } from "lucide-react";
 import Button from "../../components/ui/Button";
+import { useParams } from "react-router";
+import { getQuizDetails } from "../../services/professorService";
+import toast from "react-hot-toast";
 
 const QuizViewDetails = () => {
+  const { quizId } = useParams();
   const [quiz, setQuiz] = useState(null);
   const [loading, setLoading] = useState(true);
   const [editingQuestion, setEditingQuestion] = useState(null);
@@ -10,33 +14,21 @@ const QuizViewDetails = () => {
   const [editedOptions, setEditedOptions] = useState([]);
   const [correctAnswer, setCorrectAnswer] = useState(null);
 
-  useEffect(() => {
-    const staticQuiz = {
-      Title: "CS Quiz",
-      Description: "This is a sample quiz for demonstration purposes.",
-      Duration: 30,
-      StartTime: "2023-10-01T09:00:00",
-      EndTime: "2023-10-01T10:00:00",
-      CourseID: 101,
-      questions: [
-        {
-          id: 1,
-          text: "What is your name?",
-          options: ["Omar", "Hassan", "Youssef", "Ahmed"],
-          correct: 0,
-        },
-        {
-          id: 2,
-          text: "What is your department?",
-          options: ["CS", "IS", "AI", "IT"],
-          correct: 1,
-        },
-      ],
-    };
+  const fetchQuiz = async () => {
+    try {
+      const data = await getQuizDetails(quizId);
+      setQuiz(data);
+    } catch (error) {
+      console.error(error);
+      toast.error(error?.response?.data?.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    setQuiz(staticQuiz);
-    setLoading(false);
-  }, []);
+  useEffect(() => {
+    fetchQuiz();
+  }, [quizId]);
 
   const handleAddQuestion = () => {
     setQuiz((prevQuiz) => {
@@ -137,11 +129,11 @@ const QuizViewDetails = () => {
       <div className="space-y-4">
         {quiz.questions.map((question) => (
           <div
-            key={question.id}
+            key={question.QuestionID}
             className="border rounded-lg p-4 flex justify-between items-start mb-3"
           >
             <div className="w-full">
-              {editingQuestion === question.id ? (
+              {editingQuestion === question.QuestionID ? (
                 <div>
                   <input
                     type="text"
@@ -187,26 +179,26 @@ const QuizViewDetails = () => {
               ) : (
                 <>
                   <p className="font-medium border-b pb-2 mb-2">
-                    {question.text}
+                    {question.Content}
                   </p>
                   <ul className="list-decimal md:list-inside m-2">
-                    {question.options.map((option, index) => (
+                    {question.answers.map((option) => (
                       <li
-                        key={index}
+                        key={option.AnswerID}
                         className={`m-2 p-2 border rounded w-full ${
-                          index === question.correct
+                          option.IsCorrect === 1
                             ? "border-green-500 bg-green-100"
                             : ""
                         }`}
                       >
-                        {option}
+                        {option.AnswerText}
                       </li>
                     ))}
                   </ul>
                 </>
               )}
             </div>
-            {editingQuestion !== question.id && (
+            {editingQuestion !== question.QuestionID && (
               <div className="flex gap-2">
                 <button
                   onClick={() => handleEdit(question)}
@@ -215,7 +207,7 @@ const QuizViewDetails = () => {
                   <Edit2 className="w-4 h-4 text-blue-600" />
                 </button>
                 <button
-                  onClick={() => handleDelete(question.id)}
+                  onClick={() => handleDelete(question.QuestionID)}
                   className="p-2 hover:bg-red-100 rounded"
                 >
                   <Trash2 className="w-4 h-4 text-red-600" />
