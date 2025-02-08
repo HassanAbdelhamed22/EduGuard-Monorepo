@@ -151,3 +151,13 @@ export const getQuiz = async (quizId) => {
     return null;
   }
 };
+
+export const getQuizDetails = async (quizId) => {
+  try {
+    const response = await api.get(`${BASE_URL}quiz/get-quiz/${quizId}`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    toast.error(error?.response?.data?.message);
+  }
+};
