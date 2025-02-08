@@ -46,7 +46,7 @@ const ProfessorRoutes = () => {
             path="quizzes/manage-questions"
             element={<div>Manage Questions</div>}
           />
-          <Route path="quizzes/view-list" element={<QuizView></QuizView>} />
+          <Route path="quiz/:quizId" element={<QuizView></QuizView>} />
 
           <Route path="/profile" element={<Profile />} />
           <Route path="/update-password" element={<UpdatePassword />} />
