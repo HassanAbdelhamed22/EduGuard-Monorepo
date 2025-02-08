@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { deleteQuiz, updateQuiz, viewCourseQuizzes } from "../../services/professorService";
+import {
+  deleteQuiz,
+  updateQuiz,
+  viewCourseQuizzes,
+} from "../../services/professorService";
 import Loading from "../../components/ui/Loading";
 import { FileQuestion } from "lucide-react";
 import Button from "../../components/ui/Button";
@@ -61,10 +65,7 @@ const CourseQuizzes = () => {
     }
 
     try {
-      const { data, status } = await updateQuiz(
-        modal.quizId,
-        updatedFields
-      );
+      const { data, status } = await updateQuiz(modal.quizId, updatedFields);
       if (status === 200) {
         toast.success("Course updated successfully");
         closeModal();
@@ -126,7 +127,6 @@ const CourseQuizzes = () => {
       );
     }
   };
-  
 
   if (loading) {
     return <Loading />;
@@ -208,6 +208,16 @@ const CourseQuizzes = () => {
                   Delete
                 </Button>
               </div>
+
+              <Button
+                variant="default"
+                className="w-full mt-2"
+                onClick={() => {
+                  navigate(`/professor/quiz/${quiz.QuizID}`);
+                }}
+              >
+                View Details
+              </Button>
             </div>
           ))}
         </div>
