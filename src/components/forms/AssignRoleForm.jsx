@@ -28,7 +28,7 @@ const AssignRoleForm = ({ onSubmit, onCancel, initialRole }) => {
           </div>
           <div className="flex justify-end gap-2 mt-5">
             <Button variant="cancel" type="button" onClick={onCancel}>
-              Cancel
+                Cancel
             </Button>
             <Button variant="default" type="submit">
               Assign Role

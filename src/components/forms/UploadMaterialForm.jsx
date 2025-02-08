@@ -144,7 +144,7 @@ const UploadMaterialForm = ({
           </div>
 
           <Button type="submit" isLoading={isLoading || isSubmitting} fullWidth>
-            {isLoading || isSubmitting ? "Updating..." : "Update Material"}
+            {isLoading || isSubmitting ? "Uploading..." : "Upload Material"}
           </Button>
         </Form>
       )}

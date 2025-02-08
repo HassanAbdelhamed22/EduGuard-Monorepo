@@ -141,3 +141,13 @@ export const createQuestion = async (questionData) => {
     toast.error(error?.response?.data?.message);
   }
 }
+
+export const getQuiz = async (quizId) => {
+  try {
+    const response = await axios.get(`${BASE_URL}quiz/get-quiz/${quizId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching quiz:", error.message);
+    return null;
+  }
+};
