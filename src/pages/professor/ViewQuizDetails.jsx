@@ -26,6 +26,7 @@ const QuizViewDetails = () => {
   const fetchQuiz = async (page) => {
     try {
       const { quiz, pagination } = await getQuizDetails(quizId, page);
+
       setQuiz(quiz);
       setPagination({
         ...pagination,
@@ -40,7 +41,7 @@ const QuizViewDetails = () => {
   };
 
   useEffect(() => {
-    fetchQuiz(1);
+    fetchQuiz(pagination.current_page);
   }, [quizId]);
 
   const handlePageChange = useCallback(
@@ -218,6 +219,13 @@ const QuizViewDetails = () => {
                 </div>
               ) : (
                 <>
+                {question.image && (
+                  <img
+                    src={`http://127.0.0.1:8000/storage/${question.image}`}
+                    alt={question.Content}
+                    className="w-full rounded-lg mb-3"
+                  />
+                )}
                   <p className="font-medium border-b pb-2 mb-2">
                     {question.Content}
                   </p>
