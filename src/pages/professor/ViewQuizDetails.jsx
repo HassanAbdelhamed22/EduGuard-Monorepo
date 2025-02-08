@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { X, Edit2, Trash2, Plus } from "lucide-react";
 import Button from "../../components/ui/Button";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router-dom";
 import { getQuizDetails } from "../../services/professorService";
 import toast from "react-hot-toast";
+import Loading from "../../components/ui/Loading";
+import PaginationLogic from "../../components/PaginationLogic";
 
 const QuizViewDetails = () => {
   const { quizId } = useParams();
@@ -14,10 +16,21 @@ const QuizViewDetails = () => {
   const [editedOptions, setEditedOptions] = useState([]);
   const [correctAnswer, setCorrectAnswer] = useState(null);
 
-  const fetchQuiz = async () => {
+  const [pagination, setPagination] = useState({
+    current_page: 1,
+    total_pages: 1,
+    total_items: 0,
+  });
+  const navigate = useNavigate();
+
+  const fetchQuiz = async (page) => {
     try {
-      const data = await getQuizDetails(quizId);
-      setQuiz(data);
+      const { quiz, pagination } = await getQuizDetails(quizId, page);
+      setQuiz(quiz);
+      setPagination({
+        ...pagination,
+        current_page: page,
+      });
     } catch (error) {
       console.error(error);
       toast.error(error?.response?.data?.message);
@@ -27,8 +40,21 @@ const QuizViewDetails = () => {
   };
 
   useEffect(() => {
-    fetchQuiz();
+    fetchQuiz(1);
   }, [quizId]);
+
+  const handlePageChange = useCallback(
+    (page) => {
+      if (
+        page !== pagination.current_page &&
+        page > 0 &&
+        page <= pagination.total_pages
+      ) {
+        fetchQuiz(page);
+      }
+    },
+    [pagination, fetchQuiz]
+  );
 
   const handleAddQuestion = () => {
     setQuiz((prevQuiz) => {
@@ -87,7 +113,7 @@ const QuizViewDetails = () => {
     });
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <Loading />;
   if (!quiz) return <p>Failed to load quiz.</p>;
 
   return (
@@ -95,7 +121,7 @@ const QuizViewDetails = () => {
       <div className="flex items-center justify-between mb-4 pb-2 border-b">
         <h2 className="text-xl font-semibold">Quiz Details</h2>
         <button
-          onClick={handleAddQuestion}
+          onClick={() => navigate("/professor/quizzes/add-questions")}
           className="p-2 bg-primary text-white rounded hover:bg-primaryHover flex items-center gap-1 duration-300"
         >
           <Plus className="w-5 h-5" />
@@ -113,16 +139,30 @@ const QuizViewDetails = () => {
             <span>{quiz.Description}</span>
           </div>
           <div className="flex">
-            <span className="font-medium w-32">Duration:</span>
-            <span>{quiz.Duration} minutes</span>
+            <span className="font-medium w-32">Date:</span>
+            <span>{quiz.QuizDate}</span>
           </div>
           <div className="flex">
             <span className="font-medium w-32">Start Time:</span>
-            <span>{quiz.StartTime}</span>
+            <span>
+              {new Date(quiz.StartTime).toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+            </span>
           </div>
           <div className="flex">
             <span className="font-medium w-32">End Time:</span>
-            <span>{quiz.EndTime}</span>
+            <span>
+              {new Date(quiz.EndTime).toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+            </span>
+          </div>
+          <div className="flex">
+            <span className="font-medium w-32">Duration:</span>
+            <span>{quiz.Duration} minutes</span>
           </div>
         </div>
       </div>
@@ -217,14 +257,19 @@ const QuizViewDetails = () => {
           </div>
         ))}
       </div>
-      <Button
+
+      <PaginationLogic
+        pagination={pagination}
+        handlePageChange={handlePageChange}
+      />
+      {/* <Button
         type="submit"
         fullWidth
         className={"my-5 mx-auto"}
         variant="default"
       >
         Save
-      </Button>
+      </Button> */}
     </div>
   );
 };

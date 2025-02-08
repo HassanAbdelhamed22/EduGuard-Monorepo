@@ -152,10 +152,10 @@ export const getQuiz = async (quizId) => {
   }
 };
 
-export const getQuizDetails = async (quizId) => {
+export const getQuizDetails = async (quizId, page) => {
   try {
-    const response = await api.get(`${BASE_URL}quiz/get-quiz/${quizId}`);
-    return response.data.quiz;
+    const response = await api.get(`${BASE_URL}quiz/get-quiz/${quizId}?page=${page}`);
+    return response.data;
   } catch (error) {
     console.error(error);
     toast.error(error?.response?.data?.message);
