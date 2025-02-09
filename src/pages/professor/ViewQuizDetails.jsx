@@ -5,6 +5,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   deleteQuestion,
   getQuizDetails,
+  updateQuestion,
 } from "../../services/professorService";
 import toast from "react-hot-toast";
 import Loading from "../../components/ui/Loading";
@@ -18,6 +19,7 @@ const QuizViewDetails = () => {
   const [editedText, setEditedText] = useState("");
   const [editedOptions, setEditedOptions] = useState([]);
   const [correctAnswer, setCorrectAnswer] = useState(null);
+  const [editedMarks, setEditedMarks] = useState(0);
 
   const [pagination, setPagination] = useState({
     current_page: 1,
@@ -66,27 +68,35 @@ const QuizViewDetails = () => {
   );
 
   const handleEdit = (question) => {
-    setEditingQuestion(question.id);
-    setEditedText(question.text);
-    setEditedOptions([...question.options]);
-    setCorrectAnswer(question.correct);
+    setEditingQuestion(question.QuestionID);
+    setEditedText(question.Content);
+    setEditedOptions([...question.answers]);
+    setCorrectAnswer(question.answers.findIndex((answer) => answer.IsCorrect));
+    setEditedMarks(question.Marks);
   };
 
-  const handleSave = () => {
-    setQuiz((prevQuiz) => {
-      const updatedQuestions = prevQuiz.questions.map((q) =>
-        q.id === editingQuestion
-          ? {
-              ...q,
-              text: editedText,
-              options: editedOptions,
-              correct: correctAnswer,
-            }
-          : q
-      );
-      return { ...prevQuiz, questions: updatedQuestions };
-    });
-    setEditingQuestion(null);
+  const handleSave = async () => {
+    try {
+      const correctAnswerText = editedOptions[correctAnswer].AnswerText;
+      
+      const updatedQuestion = {
+        question_id: editingQuestion,
+        content: editedText,
+        marks: parseInt(editedMarks),
+        type: quiz.questions.find((q) => q.QuestionID === editingQuestion).Type,
+        options: editedOptions.map((option) => option.AnswerText), // Array of answer texts
+        correct_option: correctAnswerText, // The text of the correct answer
+      };
+      
+      console.log("Attempting to update with:", updatedQuestion);
+      await updateQuestion(editingQuestion, updatedQuestion);
+      toast.success("Question updated successfully");
+      setEditingQuestion(null);
+      await fetchQuiz(pagination.current_page);
+    } catch (error) {
+      console.error(error);
+      toast.error(error?.response?.data?.message);
+    }
   };
 
   const handleCancelEdit = () => {
@@ -172,21 +182,33 @@ const QuizViewDetails = () => {
             <div className="w-full">
               {editingQuestion === question.QuestionID ? (
                 <div>
+                  {/* Question Content */}
                   <input
                     type="text"
                     className="w-full p-2 border rounded mb-2"
                     value={editedText}
                     onChange={(e) => setEditedText(e.target.value)}
                   />
+
+                  {/* Marks */}
+                  <input
+                    type="number"
+                    className="w-full p-2 border rounded mb-2"
+                    value={editedMarks}
+                    onChange={(e) => setEditedMarks(e.target.value)}
+                    placeholder="Enter marks"
+                  />
+
+                  {/* Options */}
                   {editedOptions.map((option, index) => (
                     <div key={index} className="flex items-center gap-2">
                       <input
                         type="text"
                         className="w-full p-2 border rounded mb-1"
-                        value={option}
+                        value={option.AnswerText}
                         onChange={(e) => {
                           const newOptions = [...editedOptions];
-                          newOptions[index] = e.target.value;
+                          newOptions[index].AnswerText = e.target.value;
                           setEditedOptions(newOptions);
                         }}
                       />
@@ -199,18 +221,16 @@ const QuizViewDetails = () => {
                     </div>
                   ))}
                   <div className="flex gap-2 mt-2">
-                    <button
+                    <Button
                       onClick={handleCancelEdit}
-                      className="p-2 bg-gray-400 text-white rounded"
+                      variant={"cancel"}
+                      fullWidth
                     >
                       Cancel
-                    </button>
-                    <button
-                      onClick={handleSave}
-                      className="p-2  bg-green-600 text-white rounded"
-                    >
+                    </Button>
+                    <Button onClick={handleSave} variant={"default"} fullWidth>
                       Save
-                    </button>
+                    </Button>
                   </div>
                 </div>
               ) : (
