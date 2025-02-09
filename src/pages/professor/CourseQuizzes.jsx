@@ -183,6 +183,7 @@ const CourseQuizzes = () => {
                       </p>
                     </div>
                     <p>Duration: {quiz.Duration} minutes</p>
+                    <p>Total Marks: {quiz.TotalMarks} marks</p>
                   </div>
                 </div>
               </div>
@@ -220,6 +221,7 @@ const CourseQuizzes = () => {
                     },
                   });
                 }}
+                disabled={quiz.TotalMarks === 0}
               >
                 View Details
               </Button>
