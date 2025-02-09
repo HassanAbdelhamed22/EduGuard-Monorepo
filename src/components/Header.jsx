@@ -1,14 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { Bell } from "lucide-react";
+import React, { useEffect } from "react";
+import { Bell, Menu } from "lucide-react";
 import { username, userRole } from "../constants";
 import SearchBar from "./ui/SearchBar";
-import toast from "react-hot-toast";
 import { getInitials } from "../utils/functions";
-import { getProfile } from "../services/authService";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProfile } from "../redux/slices/profileSlice";
 
-const Header = () => {
+const Header = ({ toggleSidebar, isSidebarOpen }) => {
   const dispatch = useDispatch();
 
   // Select profile data from Redux
@@ -25,8 +23,18 @@ const Header = () => {
 
   return (
     <header className="flex items-center justify-between px-5 py-3 bg-white shadow-sm sticky top-0">
-      {/* Search Bar*/}
-      <SearchBar />
+      <div className="flex items-center gap-4">
+        <button
+          onClick={toggleSidebar}
+          className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+          aria-label="Toggle Sidebar"
+        >
+          <Menu className="w-6 h-6 text-gray-600" />
+        </button>
+        <div className="hidden md:block">
+          <SearchBar />
+        </div>
+      </div>
 
       {/* User Info*/}
       <div className="flex items-center gap-4">

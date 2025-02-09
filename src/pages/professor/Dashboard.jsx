@@ -69,7 +69,7 @@ const Dashboard = () => {
   const nearestQuizzes = useMemo(() => {
     const now = new Date();
     return quizzes
-      .filter(quiz => new Date(quiz.QuizDate) > now)
+      .filter((quiz) => new Date(quiz.QuizDate) > now)
       .sort((a, b) => new Date(a.QuizDate) - new Date(b.QuizDate))
       .slice(0, 2);
   }, [quizzes]);
@@ -78,7 +78,7 @@ const Dashboard = () => {
     return <Loading />;
   }
   return (
-    <div className="p-6 min-h-screen grid grid-cols-1 md:grid-cols-6 gap-4">
+    <div className="p-2 md:p-6 min-h-screen grid grid-cols-1 lg:grid-cols-6 gap-4">
       {/* First Div (Takes 3 columns on desktop, full width on mobile) */}
       <div className="md:col-span-4">
         {/* Welcome Section */}
@@ -182,17 +182,17 @@ const Dashboard = () => {
 
       {/* Second Div (Takes 1 column on desktop, full width on mobile) */}
       <div className="md:col-span-2">
-        <div className="bg-white p-4 rounded-lg shadow-md">
+        <div className="bg-white p-2 rounded-lg shadow-md grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-4">
           <DayPicker
             mode="single"
-            className="border border-gray-300 rounded-lg p-4 bg-gray-50"
+            className="border border-gray-300 rounded-lg p-2 md:p-4 bg-gray-50 sm:w-[21rem] lg:w-full h-full"
             classNames={{
               today: "bg-indigo-600 text-white rounded-full",
             }}
           />
 
           {/* Quizzes Section */}
-          <div className="mt-8">
+          <div className="mt-8 md:mt-0 lg:mt-8">
             <h3 className="text-xl font-semibold text-gray-800 mb-4">
               Upcoming Quizzes
             </h3>
@@ -204,7 +204,7 @@ const Dashboard = () => {
                 <p className="text-gray-600">No quizzes found.</p>
               </div>
             ) : (
-              <div className="flex flex-col gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 gap-4">
                 {nearestQuizzes?.map((quiz) => (
                   <div
                     key={quiz.QuizID}
