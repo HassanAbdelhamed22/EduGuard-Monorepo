@@ -3,6 +3,7 @@ import { X, Edit2, Trash2, Plus } from "lucide-react";
 import Button from "../../components/ui/Button";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
+  createQuestion,
   deleteQuestion,
   getQuizDetails,
   updateQuestion,
@@ -10,6 +11,8 @@ import {
 import toast from "react-hot-toast";
 import Loading from "../../components/ui/Loading";
 import PaginationLogic from "../../components/PaginationLogic";
+import Modal from "./../../components/ui/Modal";
+import AddQuestionForm from "../../components/forms/AddQuestionForm";
 
 const QuizViewDetails = () => {
   const { quizId } = useParams();
@@ -21,6 +24,7 @@ const QuizViewDetails = () => {
   const [correctAnswer, setCorrectAnswer] = useState(null);
   const [editedMarks, setEditedMarks] = useState(0);
   const [isSaving, setIsSaving] = useState(false);
+  const [isAddQuestionModalOpen, setIsAddQuestionModalOpen] = useState(false);
 
   const [pagination, setPagination] = useState({
     current_page: 1,
@@ -81,16 +85,16 @@ const QuizViewDetails = () => {
       setIsSaving(true);
 
       const correctAnswerText = editedOptions[correctAnswer].AnswerText;
-      
+
       const updatedQuestion = {
         question_id: editingQuestion,
         content: editedText,
         marks: parseInt(editedMarks),
         type: quiz.questions.find((q) => q.QuestionID === editingQuestion).Type,
-        options: editedOptions.map((option) => option.AnswerText), // Array of answer texts
-        correct_option: correctAnswerText, // The text of the correct answer
+        options: editedOptions.map((option) => option.AnswerText),
+        correct_option: correctAnswerText,
       };
-      
+
       console.log("Attempting to update with:", updatedQuestion);
       await updateQuestion(editingQuestion, updatedQuestion);
       toast.success("Question updated successfully");
@@ -119,6 +123,52 @@ const QuizViewDetails = () => {
     }
   };
 
+  const handleAddQuestionSubmit = async (
+    values,
+    { setSubmitting, resetForm }
+  ) => {
+    try {
+      const formData = new FormData();
+      formData.append("quiz_id", values.quiz_id);
+      formData.append("content", values.content);
+      formData.append("type", values.type);
+      formData.append("marks", values.marks);
+      if (values.type === "mcq") {
+        formData.append(
+          "correct_option",
+          values.options[values.correct_option]
+        );
+      } else {
+        formData.append("correct_option", values.correct_option);
+      }
+
+      if (values.type === "mcq") {
+        values.options.forEach((option) => {
+          formData.append("options[]", option);
+        });
+      }
+
+      if (values.image) {
+        formData.append("image", values.image);
+      }
+
+      const response = await createQuestion(formData);
+      if (response.status === 201) {
+        toast.success(response.data.message);
+        resetForm();
+        setIsAddQuestionModalOpen(false);
+        await fetchQuiz(pagination.current_page);
+      } else {
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error Response:", error?.response?.data?.message);
+      toast.error(error?.response?.data?.message);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   if (loading) return <Loading />;
   if (!quiz) return <p>Failed to load quiz.</p>;
 
@@ -127,7 +177,7 @@ const QuizViewDetails = () => {
       <div className="flex items-center justify-between mb-4 pb-2 border-b">
         <h2 className="text-xl font-semibold">Quiz Details</h2>
         <button
-          onClick={() => navigate("/professor/quizzes/add-questions")}
+          onClick={() => setIsAddQuestionModalOpen(true)}
           className="p-2 bg-primary text-white rounded hover:bg-primaryHover flex items-center gap-1 duration-300"
         >
           <Plus className="w-5 h-5" />
@@ -233,7 +283,12 @@ const QuizViewDetails = () => {
                     >
                       Cancel
                     </Button>
-                    <Button onClick={handleSave} variant={"default"} fullWidth isLoading={isSaving}>
+                    <Button
+                      onClick={handleSave}
+                      variant={"default"}
+                      fullWidth
+                      isLoading={isSaving}
+                    >
                       Save
                     </Button>
                   </div>
@@ -244,7 +299,7 @@ const QuizViewDetails = () => {
                     <img
                       src={`http://127.0.0.1:8000/storage/${question.image}`}
                       alt={question.Content}
-                      className="w-full rounded-lg mb-3"
+                      className="w-1/2 rounded-lg mb-3"
                     />
                   )}
                   <div className="font-medium border-b pb-2 mb-2 flex items-center gap-5">
@@ -294,14 +349,28 @@ const QuizViewDetails = () => {
         pagination={pagination}
         handlePageChange={handlePageChange}
       />
-      {/* <Button
-        type="submit"
-        fullWidth
-        className={"my-5 mx-auto"}
-        variant="default"
+
+      {/* Add Question Modal */}
+      <Modal
+        isOpen={isAddQuestionModalOpen}
+        closeModal={() => setIsAddQuestionModalOpen(false)}
+        title="Add Question"
+        description="Please fill in the form below to add a new question."
       >
-        Save
-      </Button> */}
+        <AddQuestionForm
+          initialValues={{
+            quiz_id: quizId,
+            content: "",
+            type: "mcq",
+            marks: "",
+            options: ["", ""],
+            correct_option: "",
+            image: null,
+          }}
+          onSubmit={handleAddQuestionSubmit}
+          hideQuizSelect={true}
+        />
+      </Modal>
     </div>
   );
 };
