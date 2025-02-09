@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { X, Edit2, Trash2, Plus } from "lucide-react";
-import Button from "../../components/ui/Button";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { Edit2, Trash2, Plus } from "lucide-react";
+import { useLocation, useParams } from "react-router-dom";
 import {
   createQuestion,
   deleteQuestion,
@@ -13,6 +12,9 @@ import Loading from "../../components/ui/Loading";
 import PaginationLogic from "../../components/PaginationLogic";
 import Modal from "./../../components/ui/Modal";
 import AddQuestionForm from "../../components/forms/AddQuestionForm";
+import QuizInfo from "../../components/quiz view details/QuizInfo";
+import EditQuestionForm from "../../components/quiz view details/EditQuestionForm";
+import QuestionDisplay from "../../components/quiz view details/QuestionDisplay";
 
 const QuizViewDetails = () => {
   const { quizId } = useParams();
@@ -31,33 +33,34 @@ const QuizViewDetails = () => {
     total_pages: 1,
     total_items: 0,
   });
-  const navigate = useNavigate();
   const location = useLocation();
   const { courseName, courseCode } = location.state || {
     courseName: "Unknown Course",
     courseCode: "N/A",
   };
 
-  const fetchQuiz = async (page) => {
-    try {
-      const { quiz, pagination } = await getQuizDetails(quizId, page);
-
-      setQuiz(quiz);
-      setPagination({
-        ...pagination,
-        current_page: page,
-      });
-    } catch (error) {
-      console.error(error);
-      toast.error(error?.response?.data?.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const fetchQuiz = useCallback(
+    async (page) => {
+      try {
+        const { quiz, pagination } = await getQuizDetails(quizId, page);
+        setQuiz(quiz);
+        setPagination({
+          ...pagination,
+          current_page: page,
+        });
+      } catch (error) {
+        console.error(error);
+        toast.error(error?.response?.data?.message);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [quizId]
+  );
 
   useEffect(() => {
     fetchQuiz(pagination.current_page);
-  }, [quizId]);
+  }, [pagination.current_page, fetchQuiz]);
 
   const handlePageChange = useCallback(
     (page) => {
@@ -72,13 +75,13 @@ const QuizViewDetails = () => {
     [pagination, fetchQuiz]
   );
 
-  const handleEdit = (question) => {
+  const handleEdit = useCallback((question) => {
     setEditingQuestion(question.QuestionID);
     setEditedText(question.Content);
     setEditedOptions([...question.answers]);
     setCorrectAnswer(question.answers.findIndex((answer) => answer.IsCorrect));
     setEditedMarks(question.Marks);
-  };
+  }, []);
 
   const handleSave = async () => {
     try {
@@ -95,7 +98,6 @@ const QuizViewDetails = () => {
         correct_option: correctAnswerText,
       };
 
-      console.log("Attempting to update with:", updatedQuestion);
       await updateQuestion(editingQuestion, updatedQuestion);
       toast.success("Question updated successfully");
       setEditingQuestion(null);
@@ -184,50 +186,11 @@ const QuizViewDetails = () => {
           <span>Add Question</span>
         </button>
       </div>
+
       <div className="mb-4 pb-2 border-b flex justify-between items-center">
-        <div className="space-y-2 mb-6">
-          <div className="flex">
-            <span className="font-medium w-32">Course:</span>
-            <span>
-              {courseName} - {courseCode}
-            </span>
-          </div>
-          <div className="flex">
-            <span className="font-medium w-32">Title:</span>
-            <span>{quiz.Title}</span>
-          </div>
-          <div className="flex">
-            <span className="font-medium w-32">Description:</span>
-            <span>{quiz.Description}</span>
-          </div>
-          <div className="flex">
-            <span className="font-medium w-32">Date:</span>
-            <span>{quiz.QuizDate}</span>
-          </div>
-          <div className="flex">
-            <span className="font-medium w-32">Start Time:</span>
-            <span>
-              {new Date(quiz.StartTime).toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
-            </span>
-          </div>
-          <div className="flex">
-            <span className="font-medium w-32">End Time:</span>
-            <span>
-              {new Date(quiz.EndTime).toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
-            </span>
-          </div>
-          <div className="flex">
-            <span className="font-medium w-32">Duration:</span>
-            <span>{quiz.Duration} minutes</span>
-          </div>
-        </div>
+        <QuizInfo quiz={quiz} courseName={courseName} courseCode={courseCode} />
       </div>
+
       <div className="space-y-4">
         {quiz.questions.map((question) => (
           <div
@@ -236,93 +199,21 @@ const QuizViewDetails = () => {
           >
             <div className="w-full">
               {editingQuestion === question.QuestionID ? (
-                <div>
-                  {/* Question Content */}
-                  <input
-                    type="text"
-                    className="w-full p-2 border rounded mb-2"
-                    value={editedText}
-                    onChange={(e) => setEditedText(e.target.value)}
-                  />
-
-                  {/* Marks */}
-                  <input
-                    type="number"
-                    className="w-full p-2 border rounded mb-2"
-                    value={editedMarks}
-                    onChange={(e) => setEditedMarks(e.target.value)}
-                    placeholder="Enter marks"
-                  />
-
-                  {/* Options */}
-                  {editedOptions.map((option, index) => (
-                    <div key={index} className="flex items-center gap-2">
-                      <input
-                        type="text"
-                        className="w-full p-2 border rounded mb-1"
-                        value={option.AnswerText}
-                        onChange={(e) => {
-                          const newOptions = [...editedOptions];
-                          newOptions[index].AnswerText = e.target.value;
-                          setEditedOptions(newOptions);
-                        }}
-                      />
-                      <input
-                        type="radio"
-                        name="correctAnswer"
-                        checked={correctAnswer === index}
-                        onChange={() => setCorrectAnswer(index)}
-                      />
-                    </div>
-                  ))}
-                  <div className="flex gap-2 mt-2">
-                    <Button
-                      onClick={handleCancelEdit}
-                      variant={"cancel"}
-                      fullWidth
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      onClick={handleSave}
-                      variant={"default"}
-                      fullWidth
-                      isLoading={isSaving}
-                    >
-                      Save
-                    </Button>
-                  </div>
-                </div>
+                <EditQuestionForm
+                  editedText={editedText}
+                  setEditedText={setEditedText}
+                  editedMarks={editedMarks}
+                  setEditedMarks={setEditedMarks}
+                  editedOptions={editedOptions}
+                  setEditedOptions={setEditedOptions}
+                  correctAnswer={correctAnswer}
+                  setCorrectAnswer={setCorrectAnswer}
+                  handleSave={handleSave}
+                  handleCancelEdit={handleCancelEdit}
+                  isSaving={isSaving}
+                />
               ) : (
-                <>
-                  {question.image && (
-                    <img
-                      src={`http://127.0.0.1:8000/storage/${question.image}`}
-                      alt={question.Content}
-                      className="w-1/2 rounded-lg mb-3"
-                    />
-                  )}
-                  <div className="font-medium border-b pb-2 mb-2 flex items-center gap-5">
-                    <p>{question.Content}</p>
-                    <p className="text-sm text-mediumGray w-1/6">
-                      ({question.Marks} marks)
-                    </p>
-                  </div>
-                  <ul className="list-decimal md:list-inside m-2">
-                    {question.answers.map((option) => (
-                      <li
-                        key={option.AnswerID}
-                        className={`m-2 p-2 border rounded w-full ${
-                          option.IsCorrect === 1
-                            ? "border-green-500 bg-green-100"
-                            : ""
-                        }`}
-                      >
-                        {option.AnswerText}
-                      </li>
-                    ))}
-                  </ul>
-                </>
+                <QuestionDisplay question={question} />
               )}
             </div>
             {editingQuestion !== question.QuestionID && (
