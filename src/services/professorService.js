@@ -142,6 +142,26 @@ export const createQuestion = async (questionData) => {
   }
 }
 
+export const updateQuestion = async (questionId, updatedQuestion) => {
+  try {
+    console.log('Sending update request with data:', updatedQuestion);
+    const { data } = await api.patch(`${BASE_URL}quiz/update-question/${questionId}`, updatedQuestion);
+    console.log('Response from server:', data);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const deleteQuestion = async (questionId) => {
+  try {
+    const { data } = await api.delete(`${BASE_URL}quiz/delete-question/${questionId}`);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const getQuiz = async (quizId) => {
   try {
     const response = await axios.get(`${BASE_URL}quiz/get-quiz/${quizId}`);
@@ -149,5 +169,15 @@ export const getQuiz = async (quizId) => {
   } catch (error) {
     console.error("Error fetching quiz:", error.message);
     return null;
+  }
+};
+
+export const getQuizDetails = async (quizId, page) => {
+  try {
+    const response = await api.get(`${BASE_URL}quiz/get-quiz/${quizId}?page=${page}`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    toast.error(error?.response?.data?.message);
   }
 };

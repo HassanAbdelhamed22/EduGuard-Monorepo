@@ -8,7 +8,12 @@ import Button from "../ui/Button";
 import { getAllQuizzes } from "../../services/professorService";
 import toast from "react-hot-toast";
 
-const AddQuestionForm = ({ initialValues, onSubmit, isLoading }) => {
+const AddQuestionForm = ({
+  initialValues,
+  onSubmit,
+  isLoading,
+  hideQuizSelect = false,
+}) => {
   const [quizzes, setQuizzes] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -25,8 +30,10 @@ const AddQuestionForm = ({ initialValues, onSubmit, isLoading }) => {
   };
 
   useEffect(() => {
-    fetchQuizzes();
-  }, []);
+    if (!hideQuizSelect) {
+      fetchQuizzes();
+    }
+  }, [hideQuizSelect]);
 
   const quizOptions = quizzes.map((quiz) => ({
     value: quiz.QuizID,
@@ -45,27 +52,29 @@ const AddQuestionForm = ({ initialValues, onSubmit, isLoading }) => {
     >
       {({ values, setFieldValue, isSubmitting }) => (
         <Form className="space-y-4">
-          {/* Quiz ID */}
-          <div>
-            <label
-              htmlFor="quiz_id"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Quiz
-            </label>
-            <CustomSelect  
-              options={quizOptions}
-              value={values.quiz_id}
-              onChange={(value) => setFieldValue("quiz_id", value)}
-              isLoading={loading}
-              placeholder="Select a quiz"
-            />
-            <ErrorMessage
-              name="quiz_id"
-              component="p"
-              className="text-red-500 text-sm"
-            />
-          </div>
+          {/* Quiz ID - Only show if not hidden */}
+          {!hideQuizSelect && (
+            <div>
+              <label
+                htmlFor="quiz_id"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Quiz
+              </label>
+              <CustomSelect
+                options={quizOptions}
+                value={values.quiz_id}
+                onChange={(value) => setFieldValue("quiz_id", value)}
+                isLoading={loading}
+                placeholder="Select a quiz"
+              />
+              <ErrorMessage
+                name="quiz_id"
+                component="p"
+                className="text-red-500 text-sm"
+              />
+            </div>
+          )}
 
           {/* Question Content */}
           <div>

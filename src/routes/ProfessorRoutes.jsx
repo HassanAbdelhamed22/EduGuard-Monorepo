@@ -15,7 +15,7 @@ import CourseMaterials from "../pages/professor/CourseMaterials";
 import UploadMaterials from "../pages/professor/UploadMaterials";
 import RegisteredStudent from "../pages/professor/RegisteredStudent";
 import AddQuestion from "../pages/professor/AddQuestion";
-import QuizView from "../pages/professor/ViewQuiz";
+import QuizViewDetails from "../pages/professor/ViewQuizDetails";
 
 const ProfessorRoutes = () => {
   return (
@@ -46,7 +46,10 @@ const ProfessorRoutes = () => {
             path="quizzes/manage-questions"
             element={<div>Manage Questions</div>}
           />
-          <Route path="quizzes/view-list" element={<QuizView></QuizView>} />
+          <Route
+            path="quiz/:quizId"
+            element={<QuizViewDetails></QuizViewDetails>}
+          />
 
           <Route path="/profile" element={<Profile />} />
           <Route path="/update-password" element={<UpdatePassword />} />

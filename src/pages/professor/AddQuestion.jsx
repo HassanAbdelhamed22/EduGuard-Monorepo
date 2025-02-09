@@ -40,10 +40,6 @@ const AddQuestion = () => {
         formData.append("image", values.image);
       }
 
-      for (let pair of formData.entries()) {
-        console.log(pair[0], pair[1]);
-      }
-
       const response = await createQuestion(formData);
       if (response.status === 201) {
         toast.success(response.data.message);
