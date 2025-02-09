@@ -65,9 +65,13 @@ const Dashboard = () => {
     fetchData();
   }, []);
 
-  // Memoize derived data (if needed)
-  const filteredQuizzes = useMemo(() => {
-    return quizzes.filter((quiz) => new Date(quiz.QuizDate) > new Date());
+  // Memoize derived data for the two nearest upcoming quizzes
+  const nearestQuizzes = useMemo(() => {
+    const now = new Date();
+    return quizzes
+      .filter(quiz => new Date(quiz.QuizDate) > now)
+      .sort((a, b) => new Date(a.QuizDate) - new Date(b.QuizDate))
+      .slice(0, 2);
   }, [quizzes]);
 
   if (isLoading) {
@@ -194,14 +198,14 @@ const Dashboard = () => {
             </h3>
             {isLoading ? (
               <Loading />
-            ) : filteredQuizzes.length === 0 ? (
+            ) : nearestQuizzes.length === 0 ? (
               <div className="flex items-center justify-center p-6 bg-gray-50 rounded-lg shadow-sm">
                 <AlertCircle className="w-6 h-6 text-gray-400 mr-2" />
                 <p className="text-gray-600">No quizzes found.</p>
               </div>
             ) : (
               <div className="flex flex-col gap-4">
-                {quizzes?.map((quiz) => (
+                {nearestQuizzes?.map((quiz) => (
                   <div
                     key={quiz.QuizID}
                     className="p-6 rounded-lg border border-gray-200 hover:shadow-lg transition-shadow duration-200 bg-gray-50"
