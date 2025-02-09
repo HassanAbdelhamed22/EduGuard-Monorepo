@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { X, Edit2, Trash2, Plus } from "lucide-react";
-import Button from "../../components/ui/Button";
+import { Edit2, Trash2, Plus } from "lucide-react";
 import { useLocation, useParams } from "react-router-dom";
 import {
   createQuestion,
@@ -189,7 +188,7 @@ const QuizViewDetails = () => {
       </div>
 
       <div className="mb-4 pb-2 border-b flex justify-between items-center">
-        <QuizInfo quiz={quiz} courseName={courseName} courseCode={courseCode}/>
+        <QuizInfo quiz={quiz} courseName={courseName} courseCode={courseCode} />
       </div>
 
       <div className="space-y-4">
