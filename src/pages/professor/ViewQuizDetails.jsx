@@ -20,6 +20,7 @@ const QuizViewDetails = () => {
   const [editedOptions, setEditedOptions] = useState([]);
   const [correctAnswer, setCorrectAnswer] = useState(null);
   const [editedMarks, setEditedMarks] = useState(0);
+  const [isSaving, setIsSaving] = useState(false);
 
   const [pagination, setPagination] = useState({
     current_page: 1,
@@ -77,6 +78,8 @@ const QuizViewDetails = () => {
 
   const handleSave = async () => {
     try {
+      setIsSaving(true);
+
       const correctAnswerText = editedOptions[correctAnswer].AnswerText;
       
       const updatedQuestion = {
@@ -96,6 +99,8 @@ const QuizViewDetails = () => {
     } catch (error) {
       console.error(error);
       toast.error(error?.response?.data?.message);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -228,7 +233,7 @@ const QuizViewDetails = () => {
                     >
                       Cancel
                     </Button>
-                    <Button onClick={handleSave} variant={"default"} fullWidth>
+                    <Button onClick={handleSave} variant={"default"} fullWidth isLoading={isSaving}>
                       Save
                     </Button>
                   </div>
