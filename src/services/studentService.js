@@ -12,20 +12,26 @@ export const allCourses = async () => {
   }
 };
 
-export const registerCourses = async (data) => {
+export const registerCourses = async (courseIds) => {
   try {
-    const response = await api.post(`${BASE_URL}course/registerCourse`, data);
-    return response.data;
+    const { data, status } = await api.post(
+      `${BASE_URL}course/registerCourse`,
+      courseIds
+    );
+    return { data, status };
   } catch (error) {
     console.error(error);
     toast.error(error?.response?.data?.message);
   }
 };
 
-export const unregisterCourses = async (data) => {
+export const unregisterCourses = async (courseIds) => {
   try {
-    const response = await api.post(`${BASE_URL}course/unregisterCourse`, data);
-    return response.data;
+    const { data, status } = await api.post(
+      `${BASE_URL}course/unregisterCourse`,
+      courseIds
+    );
+    return { data, status };
   } catch (error) {
     console.error(error);
     toast.error(error?.response?.data?.message);
