@@ -8,6 +8,7 @@ import PageNotFound from "../pages/PageNotFound";
 import Dashboard from "../pages/student/Dashboard";
 import Profile from "../pages/auth/Profile";
 import UpdatePassword from "../pages/auth/UpdatePassword";
+import CourseRegistration from "../pages/student/CourseRegistration";
 
 const StudentRoutes = () => {
   return (
@@ -18,7 +19,7 @@ const StudentRoutes = () => {
       >
         <Route element={<StudentLayout />}>
           <Route path="dashboard" element={<Dashboard />} />
-          <Route path="courses" element={<div>Course Registration</div>} />
+          <Route path="courses" element={<CourseRegistration />} />
           <Route path="my-courses" element={<div>My Courses</div>} />
           <Route path="quizzes" element={<div>Quizzes</div>} />
           <Route path="quiz-results" element={<div>Quizzes Results</div>} />
