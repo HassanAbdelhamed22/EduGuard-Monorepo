@@ -3,9 +3,9 @@ import { Routes } from 'react-router-dom';
 import { Route } from 'react-router-dom';
 import SecureRoute from './SecureRoute';
 import StudentLayout from '../layouts/StudentLayout';
-import Dashboard from '../pages/admin/Dashboard';
 import ErrorHandler from '../components/errors/ErrorHandler';
 import PageNotFound from '../pages/PageNotFound';
+import Dashboard from '../pages/student/Dashboard';
 
 const StudentRoutes = () => {
   return (
