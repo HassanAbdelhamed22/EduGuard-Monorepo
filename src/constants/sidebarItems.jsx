@@ -106,10 +106,6 @@ export const professorItems = [
         title: "Manage Questions",
         path: "/professor/quizzes/manage-questions",
       },
-      {
-        title: "View Quiz List",
-        path: "/professor/quizzes/view-list",
-      },
     ],
   },
   {
