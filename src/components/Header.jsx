@@ -42,7 +42,13 @@ const Header = ({ toggleSidebar, isSidebarOpen }) => {
         <div className="flex items-center gap-2">
           <div className="text-right">
             <div className="font-semibold">{profile.name}</div>
-            <div className="text-sm text-primary">{profile.role}</div>
+            <div className="text-sm text-primary">
+              {profile?.role === "user"
+                ? "Student"
+                : profile?.role
+                ? profile.role.charAt(0).toUpperCase() + profile.role.slice(1)
+                : ""}
+            </div>
           </div>
           <div className="relative group">
             {hasValidProfilePicture ? (
