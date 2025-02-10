@@ -21,3 +21,13 @@ export const registerCourses = async (data) => {
     toast.error(error?.response?.data?.message);
   }
 };
+
+export const unregisterCourses = async (data) => {
+  try {
+    const response = await api.post(`${BASE_URL}course/unregisterCourse`, data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    toast.error(error?.response?.data?.message);
+  }
+};
