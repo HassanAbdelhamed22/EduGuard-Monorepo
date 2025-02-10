@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
   allCourses,
+  getRegisteredCourses,
   registerCourses,
   unregisterCourses,
 } from "../../services/studentService";
@@ -25,8 +26,22 @@ const CourseRegistration = () => {
     }
   };
 
+  const fetchRegisteredCourses = async () => {
+    try {
+      const response = await getRegisteredCourses();
+      const registeredCourseIds = response.data.registeredCourses.map(
+        (regCourse) => regCourse.CourseID
+      );
+      setSelectedCourse(registeredCourseIds);
+    } catch (error) {
+      console.error("Error fetching registered courses:", error);
+      toast.error("Failed to fetch registered courses.");
+    }
+  }
+
   useEffect(() => {
     fetchCourses();
+    fetchRegisteredCourses();
   }, []);
 
   const handleCheckboxChange = (courseId) => {
@@ -38,7 +53,6 @@ const CourseRegistration = () => {
   };
 
   const handleRegister = async () => {
-    console.log("Selected Courses:", selectedCourse); // Debugging
     if (selectedCourse.length === 0) {
       toast.error("Please select at least one course before registering.");
       return;
@@ -50,7 +64,6 @@ const CourseRegistration = () => {
       });
       if (status === 200) {
         toast.success(data.message);
-        setSelectedCourse([]);
       } else {
         toast.error("Unexpected server response. Please try again.");
       }
@@ -61,7 +74,6 @@ const CourseRegistration = () => {
   };
 
   const handleUnregister = async () => {
-    console.log("Selected Courses:", selectedCourse); // Debugging
     if (selectedCourse.length === 0) {
       toast.error("Please select at least one course before registering.");
       return;
@@ -70,7 +82,6 @@ const CourseRegistration = () => {
     try {
       const { data } = await unregisterCourses({ CourseIDs: selectedCourse });
       toast.success(data.message);
-      setSelectedCourse([]);
     } catch (error) {
       console.error("Error unregistering courses:", error);
       toast.error(error?.response?.data?.message);
