@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { allCourses, registerCourses } from "../../services/studentService";
+import { allCourses, registerCourses, unregisterCourses } from "../../services/studentService";
 import toast from "react-hot-toast";
+import Loading from './../../components/ui/Loading';
 
 const CourseRegistration = () => {
   const [courses, setCourses] = useState([]);
@@ -46,6 +47,25 @@ const CourseRegistration = () => {
     }
   };
 
+  const handleUnregister = async () => {
+    try {
+      const response = await unregisterCourses(selectedCourse);
+      const { data, status } = response;
+      if (status === 200) {
+        toast.success(data.message);
+        setSelectedCourse([]);
+      } else {
+        toast.error("Unexpected server response. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error unregistering courses:", error);
+      toast.error(error?.response?.data?.message);
+    }
+  };
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return <div>CourseRegistration</div>;
 };
