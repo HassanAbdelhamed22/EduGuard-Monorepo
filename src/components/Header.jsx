@@ -55,7 +55,7 @@ const Header = ({ toggleSidebar, isSidebarOpen }) => {
               <img
                 src={profile.profile_picture}
                 alt={`${username}'s avatar`}
-                className="w-14 h-14 ml-2 rounded-full"
+                className="w-14 h-14 ml-2 rounded-full object-cover"
                 loading="lazy"
               />
             ) : (
