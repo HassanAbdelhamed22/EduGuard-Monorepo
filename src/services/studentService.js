@@ -37,3 +37,8 @@ export const unregisterCourses = async (courseIds) => {
     toast.error(error?.response?.data?.message);
   }
 };
+
+export const getRegisteredCourses = async () => {
+  const response = await api.get(`${BASE_URL}/student/courses`);
+  return response.data;
+};
