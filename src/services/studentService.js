@@ -39,6 +39,6 @@ export const unregisterCourses = async (courseIds) => {
 };
 
 export const getRegisteredCourses = async () => {
-  const response = await api.get(`${BASE_URL}/student/courses`);
+  const response = await api.get(`${BASE_URL}student/courses`);
   return response.data;
 };
