@@ -1,8 +1,9 @@
-import { BookOpen, University, UserCog, Users } from "lucide-react";
+import { BookOpen, GraduationCap, House, Pencil, University, UserCog, Users } from "lucide-react";
 
 export const adminItems = [
   {
     title: "Dashboard",
+    icon: <House className="w-5 h-5" />,
     path: "/admin/dashboard",
   },
   {
@@ -64,6 +65,7 @@ export const adminItems = [
 export const professorItems = [
   {
     title: "Dashboard",
+    icon: <House className="w-5 h-5" />,
     path: "/professor/dashboard",
   },
   {
@@ -85,7 +87,7 @@ export const professorItems = [
     ],
   },
   {
-    title: 'Quiz Management',
+    title: "Quiz Management",
     icon: <University className="w-5 h-5" />,
     items: [
       {
@@ -109,6 +111,48 @@ export const professorItems = [
         path: "/professor/quizzes/view-list",
       },
     ],
+  },
+  {
+    title: "Settings",
+    icon: <UserCog className="w-5 h-5" />,
+    items: [
+      {
+        title: "Profile",
+        path: "/professor/profile",
+      },
+      {
+        title: "Update Password",
+        path: "/professor/update-password",
+      },
+    ],
+  },
+];
+
+export const studentItems = [
+  {
+    title: "Dashboard",
+    icon: <House className="w-5 h-5" />,
+    path: "/student/dashboard",
+  },
+  {
+    title: "Course Registration",
+    icon: <Pencil className="w-5 h-5" />,
+    path: "/student/courses",
+  },
+  {
+    title: "My Courses",
+    icon: <BookOpen className="w-5 h-5" />,
+    path: "/student/my-courses",
+  },
+  {
+    title: "Quizzes",
+    icon: <University className="w-5 h-5" />,
+    path: "/student/quizzes",
+  },
+  {
+    title: "Quizzes Results",
+    icon: <GraduationCap className="w-5 h-5" />,
+    path: "/student/quiz-results",
   },
   {
     title: "Settings",
