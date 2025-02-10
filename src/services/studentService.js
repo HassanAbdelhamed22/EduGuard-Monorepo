@@ -11,3 +11,13 @@ export const allCourses = async () => {
     toast.error(error?.response?.data?.message);
   }
 };
+
+export const registerCourses = async (data) => {
+  try {
+    const response = await api.post(`${BASE_URL}course/registerCourse`, data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    toast.error(error?.response?.data?.message);
+  }
+};
