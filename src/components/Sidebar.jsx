@@ -2,7 +2,11 @@ import { ChevronDown, LogOut } from "lucide-react";
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { userRole } from "../constants";
-import { adminItems, professorItems } from "./../constants/sidebarItems";
+import {
+  adminItems,
+  professorItems,
+  studentItems,
+} from "./../constants/sidebarItems";
 import Logo from "./Logo";
 import { logout } from "../services/authService";
 import { removeUserData } from "../utils/functions";
@@ -11,7 +15,13 @@ import toast from "react-hot-toast";
 const Sidebar = ({ isOpen }) => {
   const navigate = useNavigate();
   const [expandedItems, setExpandedItems] = useState([]);
-  const sidebarItems = userRole === "admin" ? adminItems : professorItems;
+  const roleItems = {
+    admin: adminItems,
+    professor: professorItems,
+    student: studentItems,
+  };
+
+  const sidebarItems = roleItems[userRole] || studentItems; // Default to studentItems if role is undefined
 
   const toggleExpand = (title) => {
     setExpandedItems((prevItems) =>
