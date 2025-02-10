@@ -160,11 +160,11 @@ export const studentItems = [
     items: [
       {
         title: "Profile",
-        path: "/professor/profile",
+        path: "/student/profile",
       },
       {
         title: "Update Password",
-        path: "/professor/update-password",
+        path: "/student/update-password",
       },
     ],
   },
