@@ -8,6 +8,7 @@ import {
   getStudentQuiz,
 } from "../../services/studentService";
 import { DayPicker } from "react-day-picker";
+import "react-day-picker/dist/style.css";
 
 const Dashboard = () => {
   const [courses, setCourses] = useState([]);
@@ -63,6 +64,12 @@ const Dashboard = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  // Generate an array of quiz dates
+  const quizDates = useMemo(
+    () => quizzes.map((quiz) => new Date(quiz.QuizDate)),
+    [quizzes]
+  );
 
   if (isLoading) {
     return <Loading />;
@@ -138,6 +145,11 @@ const Dashboard = () => {
             mode="single"
             className="border border-gray-300 rounded-lg p-2 md:p-4 bg-gray-50 sm:w-[21rem] lg:w-full h-full"
             classNames={{ today: "bg-indigo-600 text-white rounded-full" }}
+            selected={quizDates} // Highlight quiz dates
+            modifiers={{ quizDay: quizDates }}
+            modifiersClassNames={{
+              quizDay: "bg-indigo-100 text-primary rounded-full",
+            }}
           />
 
           <div className="mt-8">
