@@ -11,6 +11,7 @@ import UpdatePassword from "../pages/auth/UpdatePassword";
 import CourseRegistration from "../pages/student/CourseRegistration";
 import MyCourses from "../pages/student/MyCourses";
 import CourseMaterials from "../pages/student/CourseMaterials";
+import MyQuizzes from "../pages/student/MyQuizzes";
 
 const StudentRoutes = () => {
   return (
@@ -27,7 +28,7 @@ const StudentRoutes = () => {
             path="materials/:courseId"
             element={<CourseMaterials />}
           />
-          <Route path="quizzes" element={<div>Quizzes</div>} />
+          <Route path="quizzes" element={<MyQuizzes/>} />
           <Route path="quiz-results" element={<div>Quizzes Results</div>} />
 
           <Route path="/profile" element={<Profile />} />

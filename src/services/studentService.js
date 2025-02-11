@@ -64,3 +64,13 @@ export const getStudentQuiz = async () => {
     toast.error(error?.response?.data?.message);
   }
 };
+
+export const getAllQuizzes  = async () =>{
+  try{
+    const {data} = await api.get(`${BASE_URL}quiz/student-quizzes`);
+    return data;
+  } catch(error){
+    console.error(error);
+    toast.error(error?.response?.data?.message);
+  }
+};
