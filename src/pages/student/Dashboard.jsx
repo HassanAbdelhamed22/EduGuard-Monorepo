@@ -52,7 +52,7 @@ const Dashboard = () => {
       setCourses(courseReg.data.registeredCourses);
 
       const quizReg = await getStudentQuiz();
-      setQuizzes(Array.isArray(quizReg?.data) ? quizReg.data : []);
+      setQuizzes(quizReg.quizzes);
     } catch (error) {
       console.error("Error fetching data", error);
     } finally {
@@ -165,7 +165,7 @@ const Dashboard = () => {
                           {quiz.Title}
                         </h4>
                         <p className="text-sm text-gray-700">
-                          Course: {quiz.CourseName}
+                          Course: {quiz.CourseName} ({quiz.CourseCode})
                         </p>
                         <p className="text-sm text-gray-600">
                           Date: {quiz.QuizDate}
