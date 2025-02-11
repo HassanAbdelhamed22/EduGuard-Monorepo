@@ -128,10 +128,10 @@ const MyCourses = () => {
                 disabled={materials.total === 0}
                 fullWidth
                 onClick={() =>
-                  navigate(`/professor/materials/${course.CourseID}`, {
+                  navigate(`/student/materials/${course.CourseID}`, {
                     state: {
-                      courseName: course.CourseName,
-                      courseCode: course.CourseCode,
+                      courseName: course.course.CourseName,
+                      courseCode: course.course.CourseCode,
                     },
                   })
                 }
