@@ -9,6 +9,8 @@ import Dashboard from "../pages/student/Dashboard";
 import Profile from "../pages/auth/Profile";
 import UpdatePassword from "../pages/auth/UpdatePassword";
 import CourseRegistration from "../pages/student/CourseRegistration";
+import MyCourses from "../pages/student/MyCourses";
+import CourseMaterials from "../pages/student/CourseMaterials";
 
 const StudentRoutes = () => {
   return (
@@ -20,7 +22,11 @@ const StudentRoutes = () => {
         <Route element={<StudentLayout />}>
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="courses" element={<CourseRegistration />} />
-          <Route path="my-courses" element={<div>My Courses</div>} />
+          <Route path="my-courses" element={<MyCourses />} />
+          <Route
+            path="materials/:courseId"
+            element={<CourseMaterials />}
+          />
           <Route path="quizzes" element={<div>Quizzes</div>} />
           <Route path="quiz-results" element={<div>Quizzes Results</div>} />
 

@@ -43,6 +43,18 @@ export const getRegisteredCourses = async () => {
   return response.data;
 };
 
+export const viewCourseMaterials = async (courseId) => {
+  try {
+    const response = await api.get(
+      `${BASE_URL}student/materials/${courseId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    toast.error(error?.response?.data?.message);
+  }
+};
+
 export const getStudentQuiz = async () => {
   try {
     const { data } = await api.get(`${BASE_URL}quiz/student-quizzes`);
