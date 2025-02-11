@@ -48,7 +48,7 @@ export const viewCourseMaterials = async (courseId) => {
     const response = await api.get(
       `${BASE_URL}student/materials/${courseId}`
     );
-    return response.data.data;
+    return response.data;
   } catch (error) {
     console.error(error);
     toast.error(error?.response?.data?.message);
