@@ -42,6 +42,17 @@ const QuizInterface = () => {
     initializeQuiz();
   }, [quizId, navigate]);
 
+  //** Timer Logic */
+  useEffect(() => {
+    if (!quizStarted || timeLeft <= 0) return;
+
+    const timer = setInterval(() => {
+      setTimeLeft((prevTime) => prevTime - 1);
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [quizStarted, timeLeft]);
+
   return (
     <div>QuizInterface</div>
   )
