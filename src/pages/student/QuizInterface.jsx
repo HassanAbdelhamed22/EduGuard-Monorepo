@@ -61,6 +61,17 @@ const QuizInterface = () => {
     }
   }, [timeLeft]);
 
+  //* Fetch Questions for the current page
+  const fetchQuestions = async (page) => {
+    try {
+      const response = await getQuizQuestions(quizId, page);
+      setQuestions(response.questions);
+      setCurrentPage(page)
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   return <div>QuizInterface</div>;
 };
 
