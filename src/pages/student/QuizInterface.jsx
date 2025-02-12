@@ -72,6 +72,14 @@ const QuizInterface = () => {
     }
   }
 
+  //** Handle answer selection
+  const handleAnswerSelect = (questionId, answer) => {
+    setSelectedAnswers((prevAnswers) => ({
+      ...prevAnswers,
+      [questionId]: answer,
+    }));
+  };
+
   return <div>QuizInterface</div>;
 };
 
