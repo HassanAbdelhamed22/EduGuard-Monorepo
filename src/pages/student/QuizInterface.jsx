@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom';
-import { getQuizQuestions, startQuiz } from '../../services/studentService';
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { getQuizQuestions, startQuiz } from "../../services/studentService";
 
 const QuizInterface = () => {
   const { quizId } = useParams();
@@ -17,7 +17,7 @@ const QuizInterface = () => {
   useEffect(() => {
     const initializeQuiz = async () => {
       setIsLoading(true);
-      try{
+      try {
         const startResponse = await startQuiz(quizId);
 
         if (startResponse.status === 200) {
@@ -25,15 +25,15 @@ const QuizInterface = () => {
           const questionResponse = await getQuizQuestions(quizId, 1);
           setQuestions(questionResponse.questions);
           setTotalPages(questionResponse.pagination.totalPages);
-          setTimeLeft(startResponse.quiz.Duration * 60)
-      } else {
-        toast.error(startResponse.message);
-        navigate(-1)
-      }
+          setTimeLeft(startResponse.quiz.Duration * 60);
+        } else {
+          toast.error(startResponse.message);
+          navigate(-1);
+        }
       } catch (error) {
         console.error(error);
         toast.error(error.message);
-        navigate(-1)
+        navigate(-1);
       } finally {
         setIsLoading(false);
       }
@@ -53,9 +53,15 @@ const QuizInterface = () => {
     return () => clearInterval(timer);
   }, [quizStarted, timeLeft]);
 
-  return (
-    <div>QuizInterface</div>
-  )
-}
+  //* Handle time running out
+  useEffect(() => {
+    if (timeLeft <= 0) {
+      toast.error("Time's up!");
+      handleSubmitQuiz();
+    }
+  }, [timeLeft]);
 
-export default QuizInterface
+  return <div>QuizInterface</div>;
+};
+
+export default QuizInterface;
