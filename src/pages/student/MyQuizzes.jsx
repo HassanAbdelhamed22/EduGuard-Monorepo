@@ -56,9 +56,12 @@ const MyQuizzes = () => {
         return <Loading />;
     }
 
-    const filteredQuizzes = quizzes.filter(quiz =>
+    const filteredQuizzes = quizzes
+    .filter(quiz =>
         quiz.CourseName.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    )
+    .sort((a, b) => new Date(a.StartTime) - new Date(b.StartTime));
+
 
     return (
         <div className="p-6">
@@ -92,7 +95,7 @@ const MyQuizzes = () => {
                                     className={`px-4 py-2 rounded text-white ${quizStatus[quiz.QuizID] ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-700 hover:bg-blue-900'}`}
                                     disabled={quizStatus[quiz.QuizID]}
                                 >
-                                    Start
+                                 Start
                                 </Button>
                             </div>
                         </div>
