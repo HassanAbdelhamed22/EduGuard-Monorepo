@@ -66,11 +66,11 @@ const QuizInterface = () => {
     try {
       const response = await getQuizQuestions(quizId, page);
       setQuestions(response.questions);
-      setCurrentPage(page)
+      setCurrentPage(page);
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
   //** Handle answer selection
   const handleAnswerSelect = (questionId, answer) => {
@@ -78,6 +78,29 @@ const QuizInterface = () => {
       ...prevAnswers,
       [questionId]: answer,
     }));
+  };
+
+  //** Submit the quiz
+  const handleSubmitQuiz = async () => {
+    try {
+      const answers = Object.entries(selectedAnswers).map(
+        ([questionId, answer]) => ({
+          question_id: parseInt(questionId),
+          answer: answer,
+        })
+      );
+
+      const response = await startQuiz(quizId, { answers });
+
+      if (response.status === 200) {
+        toast.success("Quiz submitted successfully!");
+        navigate("/student/quizzes");
+      } else {
+        toast.error("Unexpected server response. Please try again.");
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return <div>QuizInterface</div>;
