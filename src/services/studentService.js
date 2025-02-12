@@ -74,3 +74,13 @@ export const getAllQuizzes  = async () =>{
     toast.error(error?.response?.data?.message);
   }
 };
+
+export const startQuiz = async (quizId) => {
+  try {
+    const response = await api.get(`${BASE_URL}quiz/start-quiz/${quizId}`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    toast.error(error?.response?.data?.message);
+  }
+};
