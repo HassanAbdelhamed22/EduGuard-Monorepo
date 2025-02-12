@@ -30,7 +30,7 @@ const StudentRoutes = () => {
             element={<CourseMaterials />}
           />
           <Route path="quizzes" element={<MyQuizzes/>} />
-          <Route path="/student/quiz/:quizId" element={<QuizInterface />} />
+          <Route path="quiz/:quizId" element={<QuizInterface />} />
           <Route path="quiz-results" element={<div>Quizzes Results</div>} />
 
           <Route path="/profile" element={<Profile />} />
