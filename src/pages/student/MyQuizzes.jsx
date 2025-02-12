@@ -9,6 +9,7 @@ const MyQuizzes = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [quizStatus, setQuizStatus] = useState({});
   const [searchTerm, setSearchTerm] = useState("");
+  const [sortOrder, setSortOrder] = useState("nearest");
 
   const fetchData = async () => {
     setIsLoading(true);
@@ -51,6 +52,18 @@ const MyQuizzes = () => {
     const interval = setInterval(checkStartTime, 1000);
     return () => clearInterval(interval);
   }, [quizzes]);
+
+  const filteredQuizzes = quizzes
+    .filter(
+      (quiz) =>
+        quiz.CourseName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        quiz.Title.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .sort((a, b) => {
+      const dateA = new Date(a.StartTime);
+      const dateB = new Date(b.StartTime);
+      return sortOrder === "nearest" ? dateA - dateB : dateB - dateA;
+    });
 
   if (isLoading) {
     return <Loading />;
