@@ -3,6 +3,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { getQuizQuestions, startQuiz } from "../../services/studentService";
 import Loading from "../../components/ui/Loading";
 import toast from "react-hot-toast";
+import { ArrowLeft, ArrowRight, Clock } from "lucide-react";
+import Button from "../../components/ui/Button";
 
 const QuizInterface = () => {
   const { quizId } = useParams();
@@ -109,7 +111,81 @@ const QuizInterface = () => {
     return <Loading />;
   }
 
-  return <div>QuizInterface</div>;
+  return (
+    <div className="p-6 bg-gray-50 min-h-screen">
+      {/* Timer */}
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-bold text-gray-800">Quiz</h2>
+        <div className="flex items-center gap-2 bg-white p-2 rounded-md shadow-md">
+          <Clock className="w-6 h-6 text-gray-600" />
+          <span className="text-lg font-semibold text-gray-700">
+            {Math.floor(timeLeft / 60)}:{String(timeLeft % 60).padStart(2, "0")}
+          </span>
+        </div>
+      </div>
+
+      {/* Question Navigation */}
+      <div className="flex justify-between items-center mb-4">
+        <Button
+          variant="outline"
+          onClick={() => fetchQuestions(currentPage - 1)}
+          disabled={currentPage === 1}
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" /> Previous
+        </Button>
+        <span className="text-sm text-gray-600">
+          Page {currentPage} of {totalPages}
+        </span>
+        <Button
+          variant="outline"
+          onClick={() => fetchQuestions(currentPage + 1)}
+          disabled={currentPage === totalPages}
+        >
+          Next <ArrowRight className="w-4 h-4 ml-2" />
+        </Button>
+      </div>
+
+      {/* Current Question */}
+      <div className="bg-white p-6 rounded-lg shadow-sm">
+        {questions.map((question) => (
+          <div key={question.QuestionID}>
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">
+              {question.Content}
+            </h2>
+            <div className="space-y-3">
+              {question.answers.map((answer) => (
+                <div
+                  key={answer.AnswerID}
+                  className="flex items-center gap-3 p-3 border rounded-lg hover:bg-gray-50 cursor-pointer"
+                  onClick={() =>
+                    handleAnswerSelect(question.QuestionID, answer.AnswerText)
+                  }
+                >
+                  <input
+                    type="radio"
+                    name={`question-${question.QuestionID}`}
+                    checked={
+                      selectedAnswers[question.QuestionID] === answer.AnswerText
+                    }
+                    onChange={() => {}}
+                    className="w-4 h-4"
+                  />
+                  <span className="text-gray-700">{answer.AnswerText}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Submit Button */}
+      <div className="mt-6 flex justify-end">
+        <Button onClick={handleSubmitQuiz} variant="primary">
+          Submit Quiz
+        </Button>
+      </div>
+    </div>
+  );
 };
 
 export default QuizInterface;
