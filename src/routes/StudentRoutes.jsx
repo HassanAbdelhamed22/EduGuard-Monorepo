@@ -12,6 +12,7 @@ import CourseRegistration from "../pages/student/CourseRegistration";
 import MyCourses from "../pages/student/MyCourses";
 import CourseMaterials from "../pages/student/CourseMaterials";
 import MyQuizzes from "../pages/student/MyQuizzes";
+import QuizInterface from "../pages/student/QuizInterface";
 
 const StudentRoutes = () => {
   return (
@@ -29,6 +30,7 @@ const StudentRoutes = () => {
             element={<CourseMaterials />}
           />
           <Route path="quizzes" element={<MyQuizzes/>} />
+          <Route path="/student/quiz/:quizId" element={<QuizInterface />} />
           <Route path="quiz-results" element={<div>Quizzes Results</div>} />
 
           <Route path="/profile" element={<Profile />} />
