@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getQuizQuestions, startQuiz } from "../../services/studentService";
+import Loading from "../../components/ui/Loading";
+import toast from "react-hot-toast";
 
 const QuizInterface = () => {
   const { quizId } = useParams();
@@ -102,6 +104,10 @@ const QuizInterface = () => {
       console.error(error);
     }
   };
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return <div>QuizInterface</div>;
 };
