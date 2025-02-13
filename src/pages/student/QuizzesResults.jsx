@@ -3,6 +3,7 @@ import { getSubmittedQuizzes } from "../../services/studentService";
 import { FileQuestion } from "lucide-react";
 import Loading from "../../components/ui/Loading";
 import Button from "../../components/ui/Button";
+import PaginationLogic from "../../components/PaginationLogic";
 
 const QuizzesResults = () => {
   const [quizDetails, setQuizDetails] = useState([]);
@@ -107,6 +108,11 @@ const QuizzesResults = () => {
           ))}
         </div>
       )}
+
+      <PaginationLogic
+        pagination={pagination}
+        handlePageChange={handlePageChange}
+      />
     </div>
   );
 };
