@@ -128,3 +128,16 @@ export const getSubmittedQuizzes = async (page) => {
     throw error;
   }
 };
+
+export const getQuizResult = async (quizId) => {
+  try {
+    const response = await api.get(`${BASE_URL}quiz/getQuizResult/${quizId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch quiz results:", error);
+    const errorMessage =
+      error?.response?.data?.message || "Failed to fetch quiz results";
+    toast.error(errorMessage);
+    throw error;
+  }
+};
