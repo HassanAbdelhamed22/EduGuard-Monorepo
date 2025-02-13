@@ -45,9 +45,7 @@ export const getRegisteredCourses = async () => {
 
 export const viewCourseMaterials = async (courseId) => {
   try {
-    const response = await api.get(
-      `${BASE_URL}student/materials/${courseId}`
-    );
+    const response = await api.get(`${BASE_URL}student/materials/${courseId}`);
     return response.data;
   } catch (error) {
     console.error(error);
@@ -62,5 +60,58 @@ export const getStudentQuiz = async () => {
   } catch (error) {
     console.error(error);
     toast.error(error?.response?.data?.message);
+  }
+};
+
+export const getAllQuizzes = async () => {
+  try {
+    const { data } = await api.get(`${BASE_URL}quiz/student-quizzes`);
+    return data;
+  } catch (error) {
+    console.error(error);
+    toast.error(error?.response?.data?.message);
+  }
+};
+
+export const getQuizQuestions = async (quizId, page) => {
+  try {
+    const response = await api.get(
+      `${BASE_URL}quiz/get-questions/${quizId}?page=${page}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch quiz questions:", error);
+    const errorMessage =
+      error?.response?.data?.message || "Failed to fetch quiz questions";
+    toast.error(errorMessage);
+    throw error; // Propagate error to component for proper handling
+  }
+};
+
+export const startQuiz = async (quizId) => {
+  try {
+    const response = await api.get(`${BASE_URL}quiz/start-quiz/${quizId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to start quiz:", error);
+    const errorMessage =
+      error?.response?.data?.message || "Failed to start quiz";
+    toast.error(errorMessage);
+    throw error; // Propagate error to component for proper handling
+  }
+};
+
+export const submitQuiz = async (quizId, answers) => {
+  try {
+    const response = await api.post(`${BASE_URL}quiz/submit-quiz/${quizId}`, {
+      answers,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Failed to submit quiz:", error);
+    const errorMessage =
+      error?.response?.data?.message || "Failed to submit quiz";
+    toast.error(errorMessage);
+    throw error; // Propagate error to component for proper handling
   }
 };

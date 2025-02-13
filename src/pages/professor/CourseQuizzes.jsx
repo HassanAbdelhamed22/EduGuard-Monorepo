@@ -221,7 +221,6 @@ const CourseQuizzes = () => {
                     },
                   });
                 }}
-                disabled={quiz.TotalMarks === 0}
               >
                 View Details
               </Button>
