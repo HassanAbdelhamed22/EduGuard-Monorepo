@@ -23,6 +23,7 @@ const QuizInfo = ({ quiz, courseName, courseCode }) => {
           }),
         },
         { label: "Duration", value: `${quiz.Duration} minutes` },
+        { label: "Total Marks", value: `${quiz.TotalMarks} marks` },
       ].map(({ label, value }) => (
         <div key={label} className="flex">
           <span className="font-medium w-32">{label}:</span>

@@ -3,6 +3,7 @@ import { getAllQuizzes } from "../../services/studentService";
 import Loading from "../../components/ui/Loading";
 import Button from "../../components/ui/Button";
 import { Search, FileQuestion, Filter } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const MyQuizzes = () => {
   const [quizzes, setQuizzes] = useState([]);
@@ -10,6 +11,7 @@ const MyQuizzes = () => {
   const [quizStatus, setQuizStatus] = useState({});
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState("nearest");
+  const navigate = useNavigate();
 
   const fetchData = async () => {
     setIsLoading(true);
@@ -178,6 +180,7 @@ const MyQuizzes = () => {
                 fullWidth
                 disabled={quizStatus[quiz.QuizID]}
                 className="mt-4"
+                onClick={() => navigate(`/student/quiz/${quiz.QuizID}`)}
               >
                 Start Quiz
               </Button>
