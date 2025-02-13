@@ -84,7 +84,7 @@ export const getQuizQuestions = async (quizId, page) => {
     const errorMessage =
       error?.response?.data?.message || "Failed to fetch quiz questions";
     toast.error(errorMessage);
-    throw error; // Propagate error to component for proper handling
+    throw error;
   }
 };
 
@@ -97,7 +97,7 @@ export const startQuiz = async (quizId) => {
     const errorMessage =
       error?.response?.data?.message || "Failed to start quiz";
     toast.error(errorMessage);
-    throw error; // Propagate error to component for proper handling
+    throw error;
   }
 };
 
@@ -112,6 +112,19 @@ export const submitQuiz = async (quizId, answers) => {
     const errorMessage =
       error?.response?.data?.message || "Failed to submit quiz";
     toast.error(errorMessage);
-    throw error; // Propagate error to component for proper handling
+    throw error;
+  }
+};
+
+export const getSubmittedQuizzes = async () => {
+  try {
+    const response = await api.get(`${BASE_URL}quiz/submitted-quizzes`);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch submitted quizzes:", error);
+    const errorMessage =
+      error?.response?.data?.message || "Failed to fetch submitted quizzes";
+    toast.error(errorMessage);
+    throw error;
   }
 };
