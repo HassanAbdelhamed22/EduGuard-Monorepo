@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getSubmittedQuizzes } from "../../services/studentService";
+import { getQuizResult, getSubmittedQuizzes } from "../../services/studentService";
 import { FileQuestion } from "lucide-react";
 import Loading from "../../components/ui/Loading";
 import Button from "../../components/ui/Button";
@@ -13,6 +13,9 @@ const QuizzesResults = () => {
     total_pages: 1,
     total_items: 0,
   });
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [quizResult, setQuizResult] = useState(null);
+  const [selectedQuizId, setSelectedQuizId] = useState(null);
 
   const handlePageChange = (page) => {
     if (
@@ -39,6 +42,20 @@ const QuizzesResults = () => {
   useEffect(() => {
     fetchQuizDetails(pagination.current_page);
   }, []);
+
+  const handleShowResult = (quizId) => {
+    try {
+      setIsLoading(true);
+      const response = getQuizResult(quizId);
+      setQuizResult(response.data);
+      setSelectedQuizId(quizId);
+      setIsModalOpen(true);
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   if (isLoading) {
     <Loading />;
