@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { getQuizResult, getSubmittedQuizzes } from "../../services/studentService";
-import { FileQuestion } from "lucide-react";
+import {
+  getQuizResult,
+  getSubmittedQuizzes,
+} from "../../services/studentService";
+import { CircleAlert, CircleCheck, FileQuestion } from "lucide-react";
 import Loading from "../../components/ui/Loading";
 import Button from "../../components/ui/Button";
 import PaginationLogic from "../../components/PaginationLogic";
+import Modal from "../../components/ui/Modal";
 
 const QuizzesResults = () => {
   const [quizDetails, setQuizDetails] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isPageLoading, setIsPageLoading] = useState(true);
+  const [isResultLoading, setIsResultLoading] = useState(false);
   const [pagination, setPagination] = useState({
     current_page: 1,
     total_pages: 1,
@@ -15,7 +20,7 @@ const QuizzesResults = () => {
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [quizResult, setQuizResult] = useState(null);
-  const [selectedQuizId, setSelectedQuizId] = useState(null);
+  const [selectedQuiz, setSelectedQuiz] = useState(null);
 
   const handlePageChange = (page) => {
     if (
@@ -29,13 +34,14 @@ const QuizzesResults = () => {
 
   const fetchQuizDetails = async (page) => {
     try {
+      setIsPageLoading(true);
       const response = await getSubmittedQuizzes(page);
       setQuizDetails(response.data);
       setPagination({ ...response.pagination, current_page: page });
     } catch (error) {
       toast.error(error.message);
     } finally {
-      setIsLoading(false);
+      setIsPageLoading(false);
     }
   };
 
@@ -43,23 +49,24 @@ const QuizzesResults = () => {
     fetchQuizDetails(pagination.current_page);
   }, []);
 
-  const handleShowResult = (quizId) => {
+  const handleShowResult = async (quiz) => {
     try {
-      setIsLoading(true);
-      const response = getQuizResult(quizId);
-      setQuizResult(response.data);
-      setSelectedQuizId(quizId);
       setIsModalOpen(true);
+      setIsResultLoading(true);
+      setSelectedQuiz(quiz);
+      const response = await getQuizResult(quiz.quiz_details.id);
+      setQuizResult(response);
     } catch (error) {
       toast.error(error.message);
     } finally {
-      setIsLoading(false);
+      setIsResultLoading(false);
     }
   };
 
-  if (isLoading) {
-    <Loading />;
+  if (isPageLoading) {
+    return <Loading />;
   }
+
   return (
     <div className="container p-4 mx-auto">
       <h1 className="text-2xl font-semibold mb-4">Quizzes Results</h1>
@@ -117,7 +124,11 @@ const QuizzesResults = () => {
               </div>
 
               <div className="mt-4">
-                <Button variant="default" fullWidth>
+                <Button
+                  variant="default"
+                  fullWidth
+                  onClick={() => handleShowResult(quiz)}
+                >
                   Show Result
                 </Button>
               </div>
@@ -130,6 +141,73 @@ const QuizzesResults = () => {
         pagination={pagination}
         handlePageChange={handlePageChange}
       />
+
+      <Modal
+        isOpen={isModalOpen}
+        closeModal={() => {
+          setIsModalOpen(false);
+          setQuizResult(null);
+          setSelectedQuiz(null);
+        }}
+        title={selectedQuiz ? selectedQuiz.quiz_details.title : "Quiz Result"}
+      >
+        {isResultLoading ? (
+          <div className="flex justify-center items-center">
+            <Loading />
+          </div>
+        ) : (
+          quizResult &&
+          selectedQuiz && (
+            <div className="space-y-6">
+              <div className="text-center p-4 rounded-lg bg-gray-50">
+                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                  {selectedQuiz.course_details.name} (
+                  {selectedQuiz.course_details.code})
+                </h3>
+                <p className="text-sm text-gray-600">
+                  Date:{" "}
+                  {new Date(
+                    selectedQuiz.quiz_details.quiz_date
+                  ).toLocaleDateString()}
+                </p>
+              </div>
+
+              <div className="flex flex-col items-center gap-3 p-4">
+                {quizResult.passed === 1 ? (
+                  <>
+                    <CircleCheck className="w-20 h-20 text-green-600" />
+                    <p className="text-lg font-semibold text-green-600">
+                      Congratulations! You passed the quiz.
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <CircleAlert className="w-20 h-20 text-red-600" />
+                    <p className="text-base font-semibold text-red-600">
+                      You did not pass the quiz. Better luck next time!
+                    </p>
+                  </>
+                )}
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 p-4 bg-gray-50 rounded-lg">
+                <div className="text-center">
+                  <p className="text-sm text-gray-600">Your Score</p>
+                  <p className="text-2xl font-bold text-primary">
+                    {quizResult.score} / {selectedQuiz.quiz_details.total_marks}
+                  </p>
+                </div>
+                <div className="text-center">
+                  <p className="text-sm text-gray-600">Percentage</p>
+                  <p className="text-2xl font-bold text-primary">
+                    {quizResult.percentage}%
+                  </p>
+                </div>
+              </div>
+            </div>
+          )
+        )}
+      </Modal>
     </div>
   );
 };
