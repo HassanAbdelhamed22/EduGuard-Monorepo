@@ -116,9 +116,9 @@ export const submitQuiz = async (quizId, answers) => {
   }
 };
 
-export const getSubmittedQuizzes = async () => {
+export const getSubmittedQuizzes = async (page) => {
   try {
-    const response = await api.get(`${BASE_URL}quiz/submitted-quizzes`);
+    const response = await api.get(`${BASE_URL}quiz/submitted-quizzes?page=${page}`);
     return response.data;
   } catch (error) {
     console.error("Failed to fetch submitted quizzes:", error);
