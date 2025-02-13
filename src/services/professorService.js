@@ -172,6 +172,7 @@ export const getQuiz = async (quizId) => {
   }
 };
 
+
 export const getQuizDetails = async (quizId, page) => {
   try {
     const response = await api.get(`${BASE_URL}quiz/get-quiz/${quizId}?page=${page}`);
@@ -181,3 +182,24 @@ export const getQuizDetails = async (quizId, page) => {
     toast.error(error?.response?.data?.message);
   }
 };
+
+export const getQuizResult =  async () =>{
+  try {
+    const { data } = await api.get(`${BASE_URL}quiz/ended-with-results`);
+    return data;
+  } catch (error) {
+    console.error(error);
+    toast.error(error?.response?.data?.message);
+  }
+}
+
+
+export const getQuizScore = async(quiz_id) =>{
+  try{
+    const response = await api.get(`${BASE_URL}quiz/getQuizScores/${quiz_id}`)
+    return response.data
+  }catch(error){
+    console.error("Error fetching quiz:", error.message);
+    return null;  }
+
+} 

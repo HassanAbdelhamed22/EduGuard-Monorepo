@@ -103,8 +103,8 @@ export const professorItems = [
         path: "/professor/quizzes/add-questions",
       },
       {
-        title: "Manage Questions",
-        path: "/professor/quizzes/manage-questions",
+        title: "Show Results",
+        path: "/professor/quizzes/View-Result",
       },
     ],
   },
