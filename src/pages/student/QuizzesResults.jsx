@@ -8,6 +8,7 @@ import Loading from "../../components/ui/Loading";
 import Button from "../../components/ui/Button";
 import PaginationLogic from "../../components/PaginationLogic";
 import Modal from "../../components/ui/Modal";
+import { useNavigate } from "react-router-dom";
 
 const QuizzesResults = () => {
   const [quizDetails, setQuizDetails] = useState([]);
@@ -21,6 +22,7 @@ const QuizzesResults = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [quizResult, setQuizResult] = useState(null);
   const [selectedQuiz, setSelectedQuiz] = useState(null);
+  const navigate = useNavigate();
 
   const handlePageChange = (page) => {
     if (
@@ -203,6 +205,26 @@ const QuizzesResults = () => {
                     {quizResult.percentage}%
                   </p>
                 </div>
+              </div>
+
+              <div>
+                <Button
+                  variant="default"
+                  fullWidth
+                  onClick={() =>
+                    navigate(
+                      `/student/quiz/answers/${selectedQuiz.quiz_details.id}`,
+                      {
+                        state: {
+                          courseName: selectedQuiz.course_details.name,
+                          courseCode: selectedQuiz.course_details.code,
+                        },
+                      }
+                    )
+                  }
+                >
+                  Show Your Answers
+                </Button>
               </div>
             </div>
           )
