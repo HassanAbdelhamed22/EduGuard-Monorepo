@@ -208,7 +208,21 @@ const QuizzesResults = () => {
               </div>
 
               <div>
-                <Button variant="default" fullWidth onClick={() => navigate(`/student/quiz/answers/${selectedQuiz.quiz_details.id}`)}>
+                <Button
+                  variant="default"
+                  fullWidth
+                  onClick={() =>
+                    navigate(
+                      `/student/quiz/answers/${selectedQuiz.quiz_details.id}`,
+                      {
+                        state: {
+                          courseName: selectedQuiz.course_details.name,
+                          courseCode: selectedQuiz.course_details.code,
+                        },
+                      }
+                    )
+                  }
+                >
                   Show Your Answers
                 </Button>
               </div>
