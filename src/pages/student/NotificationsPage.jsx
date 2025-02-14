@@ -8,6 +8,7 @@ import {
   markAsRead,
 } from "../../services/notificationService";
 import toast from "react-hot-toast";
+import Loading from "../../components/ui/Loading";
 
 const NotificationsPage = () => {
   const [notifications, setNotifications] = useState([]);
@@ -33,7 +34,7 @@ const NotificationsPage = () => {
 
   useEffect(() => {
     fetchNotifications();
-  })
+  });
 
   // Handle marking a notification as read
   const handleMarkAsRead = async (notificationId) => {
@@ -45,7 +46,7 @@ const NotificationsPage = () => {
       console.error(error);
       toast.error("Failed to mark notification as read");
     }
-  }
+  };
 
   // Handle marking all notifications as read
   const handleMarkAllAsRead = async () => {
@@ -57,7 +58,7 @@ const NotificationsPage = () => {
       console.error(error);
       toast.error("Failed to mark all notifications as read");
     }
-  }
+  };
 
   // Handle deleting a notification
   const handleDeleteNotification = async (notificationId) => {
@@ -69,7 +70,7 @@ const NotificationsPage = () => {
       console.error(error);
       toast.error("Failed to delete notification");
     }
-  }
+  };
 
   // Handle deleting all notifications
   const handleDeleteAllNotifications = async () => {
@@ -81,6 +82,19 @@ const NotificationsPage = () => {
       console.error(error);
       toast.error("Failed to delete all notifications");
     }
+  };
+
+  // Handle notification click
+  const handleNotificationClick = (notification) => {
+    if (notification.type === "quiz") {
+      navigate(`/student/quizzes`);
+    } else if (notification.type === "material") {
+      navigate(`/student/materials/${notification.CourseId}`);
+    }
+  };
+
+  if (loading) {
+    return <Loading />;
   }
   return <div>NotificationsPage</div>;
 };
