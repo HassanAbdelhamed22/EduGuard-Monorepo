@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import {
   getAllNotifications,
   getUnreadNotifications,
+  markAsRead,
 } from "../../services/notificationService";
 import toast from "react-hot-toast";
 
@@ -31,6 +32,18 @@ const NotificationsPage = () => {
   useEffect(() => {
     fetchNotifications();
   })
+
+  // Handle marking a notification as read
+  const handleMarkAsRead = async (notificationId) => {
+    try {
+      await markAsRead(notificationId);
+      toast.success("Notification marked as read");
+      fetchNotifications();
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to mark notification as read");
+    }
+  }
   return <div>NotificationsPage</div>;
 };
 
