@@ -15,6 +15,7 @@ import MyQuizzes from "../pages/student/MyQuizzes";
 import QuizInterface from "../pages/student/QuizInterface";
 import QuizzesResults from "../pages/student/QuizzesResults";
 import StudentAnswers from "../pages/student/StudentAnswers";
+import NotificationsPage from "../pages/student/NotificationsPage";
 
 const StudentRoutes = () => {
   return (
@@ -32,6 +33,7 @@ const StudentRoutes = () => {
           <Route path="quiz/:quizId" element={<QuizInterface />} />
           <Route path="quiz-results" element={<QuizzesResults />} />
           <Route path="quiz/answers/:quizId" element={<StudentAnswers />} />
+          <Route path="notifications" element={<NotificationsPage />} />
 
           <Route path="/profile" element={<Profile />} />
           <Route path="/update-password" element={<UpdatePassword />} />
