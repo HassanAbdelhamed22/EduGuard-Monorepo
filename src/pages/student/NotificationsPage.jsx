@@ -44,6 +44,18 @@ const NotificationsPage = () => {
       toast.error("Failed to mark notification as read");
     }
   }
+
+  // Handle marking all notifications as read
+  const handleMarkAllAsRead = async () => {
+    try {
+      await markAsRead();
+      toast.success("All notifications marked as read");
+      fetchNotifications();
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to mark all notifications as read");
+    }
+  }
   return <div>NotificationsPage</div>;
 };
 
