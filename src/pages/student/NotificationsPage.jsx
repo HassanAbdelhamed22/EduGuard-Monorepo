@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
+  deleteNotification,
   getAllNotifications,
   getUnreadNotifications,
   markAsRead,
@@ -54,6 +55,18 @@ const NotificationsPage = () => {
     } catch (error) {
       console.error(error);
       toast.error("Failed to mark all notifications as read");
+    }
+  }
+
+  // Handle deleting a notification
+  const handleDeleteNotification = async (notificationId) => {
+    try {
+      await deleteNotification(notificationId);
+      toast.success("Notification deleted");
+      fetchNotifications();
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to delete notification");
     }
   }
   return <div>NotificationsPage</div>;
