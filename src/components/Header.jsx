@@ -5,9 +5,11 @@ import SearchBar from "./ui/SearchBar";
 import { getInitials } from "../utils/functions";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProfile } from "../redux/slices/profileSlice";
+import { useNavigate } from "react-router-dom";
 
 const Header = ({ toggleSidebar, isSidebarOpen }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // Select profile data from Redux
   const profile = useSelector((state) => state.profile.profile);
@@ -38,7 +40,10 @@ const Header = ({ toggleSidebar, isSidebarOpen }) => {
 
       {/* User Info*/}
       <div className="flex items-center gap-4">
-        <Bell className="w-6 h-6 cursor-pointer text-darkGray" />
+        <Bell
+          className="w-6 h-6 cursor-pointer text-darkGray"
+          onClick={() => navigate("/student/notifications")}
+        />
         <div className="flex items-center gap-2">
           <div className="text-right">
             <div className="font-semibold">{profile.name}</div>
