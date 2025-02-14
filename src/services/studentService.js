@@ -141,3 +141,16 @@ export const getQuizResult = async (quizId) => {
     throw error;
   }
 };
+
+export const getStudentAnswers = async (quizId) => {
+  try {
+    const response = await api.get(`${BASE_URL}quiz/correct_answer/${quizId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch student answers:", error);
+    const errorMessage =
+      error?.response?.data?.message || "Failed to fetch student answers";
+    toast.error(errorMessage);
+    throw error;
+  }
+};
