@@ -292,7 +292,7 @@ const Dashboard = () => {
                       <Bell className="w-6 h-6 text-primary" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-gray-900">
+                      <p className="text-[13px] font-medium text-gray-900">
                         {notification.Message}
                       </p>
                       <p className="text-xs text-gray-500">
