@@ -35,7 +35,7 @@ const ShowResult = () =>{
       }
     return(
         <div className="  p-4">
-            <h1 className=" text-xl  font-bold  mb-4">
+            <h1 className=" text-3xl font-bold text-gray-800 mb-8">
                 Quiz Result
             </h1>
             <ResultsTable results={result} />
