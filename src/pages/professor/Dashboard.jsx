@@ -5,6 +5,7 @@ import { AlertCircle, Book, Clock } from "lucide-react";
 import Loading from "./../../components/ui/Loading";
 import {
   getAllQuizzes,
+  getBestPerformers,
   viewRegisteredCourses,
 } from "../../services/professorService";
 import "react-day-picker/dist/style.css";
@@ -22,6 +23,7 @@ const Dashboard = () => {
   const [courses, setCourses] = useState([]);
   const [quizzes, setQuizzes] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [bestPerformers, setBestPerformers] = useState([]);
 
   // Memoize static data
   const colors = useMemo(
@@ -53,7 +55,15 @@ const Dashboard = () => {
       setCourses(courseRes.data);
 
       const quizRes = await getAllQuizzes();
+      console.log("Quiz data structure:", {
+        firstQuiz: quizRes.quizzes[0],
+        dateType: typeof quizRes.quizzes[0]?.QuizDate,
+        totalQuizzes: quizRes.quizzes.length,
+      });
       setQuizzes(quizRes.quizzes);
+
+      const bestPerformersRes = await getBestPerformers();
+      setBestPerformers(bestPerformersRes.best_performers);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -73,6 +83,30 @@ const Dashboard = () => {
       .sort((a, b) => new Date(a.QuizDate) - new Date(b.QuizDate))
       .slice(0, 2);
   }, [quizzes]);
+
+  // Format date and time for display
+  const formatDate = (date) => {
+    return new Date(date).toLocaleDateString("en-US", {
+      weekday: "short",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  };
+
+  const formatTime = (dateTime) => {
+    return new Date(dateTime).toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+  };
+
+  useEffect(() => {
+    console.log("Current Date and Time:", new Date());
+    console.log("Quizzes Data:", quizzes);
+    console.log("Nearest Quizzes:", nearestQuizzes);
+  }, [quizzes, nearestQuizzes]);
 
   if (isLoading) {
     return <Loading />;
@@ -160,21 +194,23 @@ const Dashboard = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {/* Sample Data */}
-              <TableRow>
-                <TableCell>1</TableCell>
-                <TableCell>Floyd Miles</TableCell>
-                <TableCell>5</TableCell>
-                <TableCell>30</TableCell>
-                <TableCell>94</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>2</TableCell>
-                <TableCell>Courtney Henry</TableCell>
-                <TableCell>4</TableCell>
-                <TableCell>30</TableCell>
-                <TableCell>90</TableCell>
-              </TableRow>
+              {bestPerformers.length > 0 ? (
+                bestPerformers.map((student) => (
+                  <TableRow key={student.rank}>
+                    <TableCell>{student.rank}</TableCell>
+                    <TableCell>{student.student_name}</TableCell>
+                    <TableCell>{student.courses}</TableCell>
+                    <TableCell>{student.quizzes}</TableCell>
+                    <TableCell>{student.points}</TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center">
+                    No best performers found.
+                  </TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </div>
@@ -192,52 +228,63 @@ const Dashboard = () => {
           />
 
           {/* Quizzes Section */}
-          <div className="mt-8 md:mt-0 lg:mt-8">
-            <h3 className="text-xl font-semibold text-gray-800 mb-4">
+          <div className="mt-6">
+            <h3 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+              <Clock className="w-5 h-5 mr-2 text-indigo-600" />
               Upcoming Quizzes
             </h3>
+
             {isLoading ? (
               <Loading />
             ) : nearestQuizzes.length === 0 ? (
-              <div className="flex items-center justify-center p-6 bg-gray-50 rounded-lg shadow-sm">
+              <div className="flex items-center justify-center p-6 bg-gray-50 rounded-lg">
                 <AlertCircle className="w-6 h-6 text-gray-400 mr-2" />
-                <p className="text-gray-600">No quizzes found.</p>
+                <p className="text-gray-600">No upcoming nearestQuizzes</p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 gap-4">
-                {nearestQuizzes?.map((quiz) => (
+              <div className="space-y-4">
+                {nearestQuizzes.map((quiz) => (
                   <div
                     key={quiz.QuizID}
-                    className="p-6 rounded-lg border border-gray-200 hover:shadow-lg transition-shadow duration-200 bg-gray-50"
+                    className="p-4 rounded-lg border border-gray-200 hover:shadow-lg transition-all duration-200 bg-white hover:bg-gray-50"
                   >
-                    <div className="flex items-center gap-4">
-                      <div className="p-3 bg-blue-50 rounded-full">
-                        <Clock className="w-6 h-6 text-blue-500" />
+                    <div className="flex items-start gap-3">
+                      <div className="p-2 bg-indigo-100 rounded-lg">
+                        <Clock className="w-5 h-5 text-indigo-600" />
                       </div>
-                      <div>
+                      <div className="flex-1">
                         <h4 className="text-lg font-semibold text-gray-900">
                           {quiz.Title}
                         </h4>
-                        <p className="text-sm text-gray-700">
-                          Course: {quiz.CourseName}
+                        <p className="text-sm font-medium text-indigo-600 mt-1">
+                          {quiz.CourseName} ({quiz.CourseCode})
                         </p>
-                        <p className="text-sm text-gray-600">
-                          Date: {quiz.QuizDate}
-                        </p>
-                        <div className="flex gap-4 text-[13px]">
-                          <p className=" text-gray-500">
-                            From:{" "}
-                            {new Date(quiz.StartTime).toLocaleTimeString([], {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
+                        <div className="mt-2 space-y-1">
+                          <p className="text-sm text-gray-600 flex items-center">
+                            <span className="font-medium">Date:</span>
+                            <span className="ml-2">
+                              {formatDate(quiz.QuizDate)}
+                            </span>
                           </p>
-                          <p className=" text-gray-500">
-                            To:{" "}
-                            {new Date(quiz.EndTime).toLocaleTimeString([], {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
+                          <div className="flex items-center text-sm text-gray-600 gap-4">
+                            <p className="flex items-center">
+                              <span className="font-medium">Start:</span>
+                              <span className="ml-2">
+                                {formatTime(quiz.StartTime)}
+                              </span>
+                            </p>
+                            <p className="flex items-center">
+                              <span className="font-medium">End:</span>
+                              <span className="ml-2">
+                                {formatTime(quiz.EndTime)}
+                              </span>
+                            </p>
+                          </div>
+                          <p className="text-sm text-gray-600 flex items-center">
+                            <span className="font-medium">Duration:</span>
+                            <span className="ml-2">
+                              {quiz.Duration} minutes
+                            </span>
                           </p>
                         </div>
                       </div>

@@ -3,6 +3,7 @@ import { username } from "../../constants";
 import img from "../../assets/undraw_developer-activity_dn7p.svg";
 import {
   AlertCircle,
+  Bell,
   Book,
   CircleCheck,
   Clock,
@@ -18,11 +19,13 @@ import {
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
 import { useNavigate } from "react-router-dom";
+import { getUnreadNotifications } from "../../services/notificationService";
 
 const Dashboard = () => {
   const [courses, setCourses] = useState([]);
   const [quizzes, setQuizzes] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [unreadNotifications, setUnreadNotifications] = useState([]);
   const navigate = useNavigate();
 
   const colors = useMemo(
@@ -56,14 +59,6 @@ const Dashboard = () => {
     []
   );
 
-  const notifications = [
-    {
-      id: 1,
-      message: "Your profile has been updated successfully.",
-      date: "2024-02-11T10:30:00Z",
-    },
-  ];
-
   // Function to get the nearest quizzes
   const nearestQuizzes = useMemo(() => {
     const now = new Date();
@@ -81,6 +76,9 @@ const Dashboard = () => {
 
       const quizReg = await getStudentQuiz();
       setQuizzes(quizReg.quizzes);
+
+      const unreadNotiReg = await getUnreadNotifications();
+      setUnreadNotifications(unreadNotiReg.notifications);
     } catch (error) {
       console.error("Error fetching data", error);
     } finally {
@@ -97,6 +95,9 @@ const Dashboard = () => {
     () => quizzes.map((quiz) => new Date(quiz.QuizDate)),
     [quizzes]
   );
+
+  // fetch only 3 unread notifications
+  const unreadNotificationsSlice = unreadNotifications.slice(0, 3);
 
   if (isLoading) {
     return <Loading />;
@@ -270,38 +271,35 @@ const Dashboard = () => {
             <h3 className="text-xl font-semibold text-gray-800 mb-4">
               Notifications
             </h3>
-            {notifications.length === 0 ? (
+            {unreadNotifications.length === 0 ? (
               <div className="flex items-center justify-center p-4 bg-gray-50 rounded-lg shadow-sm">
                 <AlertCircle className="w-6 h-6 text-gray-400 mr-2" />
-                <p className="text-gray-600">No new notifications.</p>
+                <p className="text-gray-600">No unread Notifications.</p>
               </div>
             ) : (
               <div className="space-y-4">
-                {notifications.map((notification) => (
+                {unreadNotificationsSlice.map((notification) => (
                   <div
-                    key={notification.id}
+                    key={notification.NotificationID}
                     className="flex items-center gap-2 p-4 border border-gray-200 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all"
                   >
                     <div className="p-2 bg-indigo-50 rounded-full">
-                      <AlertCircle className="w-6 h-6 text-primary" />
+                      <Bell className="w-6 h-6 text-primary" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-gray-900">
-                        {notification.message}
+                      <p className="text-[13px] font-medium text-gray-900">
+                        {notification.Message}
                       </p>
                       <p className="text-xs text-gray-500">
-                        {new Date(notification.date).toLocaleString()}
+                        {new Date(notification.SendAt).toLocaleString()}
                       </p>
                     </div>
-                    <button className="ml-auto text-sm text-indigo-600 hover:text-indigo-800">
-                      <CircleCheck />
-                    </button>
                   </div>
                 ))}
               </div>
             )}
             <a
-              href="/notifications"
+              href="/student/notifications"
               className="block text-center text-sm text-indigo-600 hover:text-indigo-800 mt-[10px] hover:underline duration-300 transition-all"
             >
               View All Notifications
