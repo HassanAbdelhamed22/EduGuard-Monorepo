@@ -59,14 +59,6 @@ const Dashboard = () => {
     []
   );
 
-  const notifications = [
-    {
-      id: 1,
-      message: "Your profile has been updated successfully.",
-      date: "2024-02-11T10:30:00Z",
-    },
-  ];
-
   // Function to get the nearest quizzes
   const nearestQuizzes = useMemo(() => {
     const now = new Date();
@@ -103,6 +95,9 @@ const Dashboard = () => {
     () => quizzes.map((quiz) => new Date(quiz.QuizDate)),
     [quizzes]
   );
+
+  // fetch only 3 unread notifications
+  const unreadNotificationsSlice = unreadNotifications.slice(0, 3);
 
   if (isLoading) {
     return <Loading />;
@@ -283,7 +278,7 @@ const Dashboard = () => {
               </div>
             ) : (
               <div className="space-y-4">
-                {unreadNotifications.map((notification) => (
+                {unreadNotificationsSlice.map((notification) => (
                   <div
                     key={notification.NotificationID}
                     className="flex items-center gap-2 p-4 border border-gray-200 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all"
