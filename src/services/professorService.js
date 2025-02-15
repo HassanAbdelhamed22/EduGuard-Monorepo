@@ -20,17 +20,22 @@ export const fetchCourseRegistrations = async (courseId, page) => {
   return { data, pagination };
 };
 
-export const viewCourseQuizzes = async (courseId) => {
+export const viewCourseQuizzes = async (courseId, options = {}) => {
+  const { page = 1, search = "", sort_order = "nearest" } = options;
   try {
-    const response = await api.get(
-      `${BASE_URL}quiz/course-quizzes/${courseId}`
-    );
-    return response.data.quizzes;
+    const response = await api.get(`${BASE_URL}quiz/course-quizzes/${courseId}`, {
+      params: {
+        page,
+        search,
+        sort_order
+      }
+    });
+    return response.data;
   } catch (error) {
-    console.error(error);
-    toast.error(error?.response?.data?.message);
+    console.error("Error fetching course quizzes:", error);
+    throw error;
   }
-};
+}
 
 export const viewCourseMaterials = async (courseId) => {
   try {
