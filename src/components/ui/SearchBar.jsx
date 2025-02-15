@@ -8,7 +8,7 @@ const SearchBar = ({ value, onChange, placeholder = "Search ..." }) => {
         placeholder={placeholder}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full py-2 pl-4 pr-10 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-indigoLight dark:focus:ring-indigoDark transition-transform duration-300 ease-in-out transform focus:scale-105 bg-inherit placeholder:text-mediumGray dark:placeholder:text-gray-300"
+        className="w-full pr-10 pl-4 py-3 border-[1px] border-borderLight dark:border-borderDark shadow-md focus:border-indigo-600 focus:outline-none focus:ring-1 focus:ring-indigo-600 rounded-lg"
       />
       <svg
         xmlns="http://www.w3.org/2000/svg"
