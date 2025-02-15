@@ -179,7 +179,7 @@ const AllUsers = () => {
           onEdit={(userId, userData) => openModal("edit", userId, userData)}
         />
       ) : (
-        <p className="text-center text-darkGray font-bold text-2xl">
+        <p className="text-center text-mediumGray font-bold text-xl">
           No users found.
         </p>
       )}
