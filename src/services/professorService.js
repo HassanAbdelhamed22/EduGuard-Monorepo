@@ -13,7 +13,9 @@ export const viewRegisteredCourses = async () => {
 };
 
 export const fetchCourseRegistrations = async (courseId, page) => {
-  const response = await api.get(`${BASE_URL}course/${courseId}/students?page=${page}`);
+  const response = await api.get(
+    `${BASE_URL}course/${courseId}/students?page=${page}`
+  );
   const { data, pagination } = response.data;
   return { data, pagination };
 };
@@ -130,23 +132,30 @@ export const deleteMaterial = async (materialId) => {
 
 export const createQuestion = async (questionData) => {
   try {
-    const response = await api.post(`${BASE_URL}quiz/add-question`, questionData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    const response = await api.post(
+      `${BASE_URL}quiz/add-question`,
+      questionData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
     return response;
   } catch (error) {
     console.error(error);
     toast.error(error?.response?.data?.message);
   }
-}
+};
 
 export const updateQuestion = async (questionId, updatedQuestion) => {
   try {
-    console.log('Sending update request with data:', updatedQuestion);
-    const { data } = await api.patch(`${BASE_URL}quiz/update-question/${questionId}`, updatedQuestion);
-    console.log('Response from server:', data);
+    console.log("Sending update request with data:", updatedQuestion);
+    const { data } = await api.patch(
+      `${BASE_URL}quiz/update-question/${questionId}`,
+      updatedQuestion
+    );
+    console.log("Response from server:", data);
     return data;
   } catch (error) {
     throw error;
@@ -155,7 +164,9 @@ export const updateQuestion = async (questionId, updatedQuestion) => {
 
 export const deleteQuestion = async (questionId) => {
   try {
-    const { data } = await api.delete(`${BASE_URL}quiz/delete-question/${questionId}`);
+    const { data } = await api.delete(
+      `${BASE_URL}quiz/delete-question/${questionId}`
+    );
     return data;
   } catch (error) {
     throw error;
@@ -172,10 +183,11 @@ export const getQuiz = async (quizId) => {
   }
 };
 
-
 export const getQuizDetails = async (quizId, page) => {
   try {
-    const response = await api.get(`${BASE_URL}quiz/get-quiz/${quizId}?page=${page}`);
+    const response = await api.get(
+      `${BASE_URL}quiz/get-quiz/${quizId}?page=${page}`
+    );
     return response.data;
   } catch (error) {
     console.error(error);
@@ -183,7 +195,7 @@ export const getQuizDetails = async (quizId, page) => {
   }
 };
 
-export const getQuizResult =  async () =>{
+export const getQuizResult = async () => {
   try {
     const { data } = await api.get(`${BASE_URL}quiz/ended-with-results`);
     return data;
@@ -191,16 +203,24 @@ export const getQuizResult =  async () =>{
     console.error(error);
     toast.error(error?.response?.data?.message);
   }
-}
+};
 
-
-export const getQuizScore = async(quiz_id) =>{
-  try{
-    const response = await api.get(`${BASE_URL}quiz/getQuizScores/${quiz_id}`)
-    return response.data
-  }catch(error){
+export const getQuizScore = async (quiz_id) => {
+  try {
+    const response = await api.get(`${BASE_URL}quiz/getQuizScores/${quiz_id}`);
+    return response.data;
+  } catch (error) {
     console.error("Error fetching quiz:", error.message);
-    return null; 
-   }
+    return null;
+  }
+};
 
-} 
+export const getBestPerformers = async () => {
+  try {
+    const response = await api.get(`${BASE_URL}professor/getCoursesWithResults`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    toast.error(error?.response?.data?.message);
+  }
+};
