@@ -200,9 +200,17 @@ export const getQuizDetails = async (quizId, page) => {
   }
 };
 
-export const getQuizResult = async () => {
+export const getQuizResult = async (params = {}) => {
   try {
-    const { data } = await api.get(`${BASE_URL}quiz/ended-with-results`);
+    const queryParams = new URLSearchParams({
+      search: params.search || '',
+      sortBy: params.sortBy || 'QuizDate',
+      sortOrder: params.sortOrder || 'desc',
+      courseId: params.courseId || '',
+      page: params.page || 1
+    }).toString();
+
+    const { data } = await api.get(`${BASE_URL}quiz/ended-with-results?${queryParams}`);
     return data;
   } catch (error) {
     console.error(error);
