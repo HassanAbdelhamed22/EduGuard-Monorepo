@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   deleteQuiz,
@@ -12,6 +12,9 @@ import useModal from "../../hooks/CourseQuizzes/useModal";
 import toast from "react-hot-toast";
 import Modal from "../../components/ui/Modal";
 import UpdateQuizForm from "../../components/forms/UpdateQuizForm";
+import PaginationLogic from "./../../components/PaginationLogic";
+import SearchBar from "../../components/ui/SearchBar";
+import SortDropdown from "../../components/ui/SortDropdown";
 
 const CourseQuizzes = () => {
   const { courseId } = useParams();
@@ -22,26 +25,63 @@ const CourseQuizzes = () => {
   const { modal, openModal, closeModal } = useModal();
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState("nearest");
+  const [pagination, setPagination] = useState({
+    current_page: 1,
+    total_pages: 1,
+    total_items: 0,
+  });
+
+  // Add debounce to prevent too many API calls
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
 
   const { courseName, courseCode } = location.state || {
     courseName: "Unknown Course",
     courseCode: "N/A",
   };
 
-  const fetchQuizzes = async () => {
+  const fetchQuizzes = async (page, search = "", sort = "nearest") => {
+    setLoading(true);
     try {
-      const data = await viewCourseQuizzes(courseId);
-      setQuizzes(data);
+      // Modify your API endpoint to accept these parameters
+      const response = await viewCourseQuizzes(courseId, {
+        page,
+        search,
+        sort_order: sort,
+      });
+      setQuizzes(response.quizzes);
+      setPagination({ ...response.pagination, current_page: page });
     } catch (error) {
       console.error(error);
+      toast.error("Failed to fetch quizzes");
     } finally {
       setLoading(false);
     }
   };
 
+  // Effect for search and sort changes
   useEffect(() => {
-    fetchQuizzes();
-  }, [courseId]);
+    fetchQuizzes(1, debouncedSearchTerm, sortOrder);
+  }, [debouncedSearchTerm, sortOrder, courseId]);
+
+  // Effect for pagination changes
+  const handlePageChange = useCallback(
+    (page) => {
+      if (
+        page !== pagination.current_page &&
+        page > 0 &&
+        page <= pagination.total_pages
+      ) {
+        fetchQuizzes(page, debouncedSearchTerm, sortOrder);
+      }
+    },
+    [pagination, debouncedSearchTerm, sortOrder]
+  );
 
   const handleDeleteQuiz = async () => {
     try {
@@ -104,15 +144,12 @@ const CourseQuizzes = () => {
       : "",
   };
 
-  const filteredQuizzes = quizzes
-    .filter((quiz) =>
-      quiz.Title.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-    .sort((a, b) => {
-      const dateA = new Date(a.StartTime);
-      const dateB = new Date(b.StartTime);
-      return sortOrder === "nearest" ? dateA - dateB : dateB - dateA;
-    });
+  const displayQuizzes = quizzes;
+
+  const sortingOptions = [
+    { value: "nearest", label: "Sort by Nearest Date" },
+    { value: "longest", label: "Sort by Farthest Date" },
+  ];
 
   const renderModalContent = () => {
     if (modal.type === "delete") {
@@ -156,45 +193,31 @@ const CourseQuizzes = () => {
       {/* Search & Filter Section */}
       <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
         {/* Search Input */}
-        <div className="relative w-full md:w-1/2">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-          <input
-            type="text"
-            placeholder="Search by Quiz Title"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 border border-borderLight dark:border-borderDark shadow-md focus:border-indigo-600 focus:outline-none focus:ring-1 focus:ring-indigo-600 rounded-lg"
-          />
-        </div>
+        <SearchBar
+          value={searchTerm}
+          onChange={(e) => {
+            setSearchTerm(e.target.value);
+            setPagination((prev) => ({ ...prev, current_page: 1 }));
+          }}
+          placeholder="Search quizzes..."
+        />
 
         {/* Sorting Dropdown */}
-        <div className="relative">
-          <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-          <select
-            value={sortOrder}
-            onChange={(e) => setSortOrder(e.target.value)}
-            className="appearance-none w-full md:w-56 pl-10 pr-4 py-3 border border-borderLight dark:border-borderDark shadow-md focus:border-indigo-600 focus:outline-none focus:ring-1 focus:ring-indigo-600 rounded-lg cursor-pointer bg-white"
-          >
-            <option value="nearest">Sort by Nearest Date</option>
-            <option value="longest">Sort by Farthest Date</option>
-          </select>
-          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-1 text-gray-700">
-            <svg
-              className="fill-current h-4 w-4"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-            >
-              <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-            </svg>
-          </div>
-        </div>
+        <SortDropdown
+          value={sortOrder}
+          onChange={(e) => {
+            setSortOrder(e.target.value);
+            setPagination((prev) => ({ ...prev, current_page: 1 }));
+          }}
+          options={sortingOptions}
+        />
       </div>
 
-      {filteredQuizzes.length === 0 ? (
+      {displayQuizzes.length === 0 ? (
         <p className="text-gray-600">No quizzes found.</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredQuizzes.map((quiz) => (
+          {displayQuizzes.map((quiz) => (
             <div
               key={quiz.QuizID}
               className="p-6 border rounded-lg shadow-sm hover:shadow-lg transition-shadow bg-white cursor-pointer flex flex-col justify-between"
@@ -280,6 +303,11 @@ const CourseQuizzes = () => {
           ))}
         </div>
       )}
+
+      <PaginationLogic
+        pagination={pagination}
+        handlePageChange={handlePageChange}
+      />
 
       <Modal
         isOpen={modal.isOpen}
