@@ -7,11 +7,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchProfile } from "../redux/slices/profileSlice";
 import { useNavigate } from "react-router-dom";
 import { getUnreadNotifications } from "../services/notificationService";
+import { setUnreadCount } from "../redux/slices/notificationsSlice";
 
 const Header = ({ toggleSidebar, isSidebarOpen }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [unreadCount, setUnreadCount] = useState(0);
+  const unreadCount = useSelector((state) => state.notifications.unreadCount);
 
   // Select profile data from Redux
   const profile = useSelector((state) => state.profile.profile);
@@ -30,7 +31,7 @@ const Header = ({ toggleSidebar, isSidebarOpen }) => {
     const fetchUnreadNotifications = async () => {
       try {
         const response = await getUnreadNotifications();
-        setUnreadCount(response.notifications.length);
+        dispatch(setUnreadCount(response.notifications.length));
       } catch (error) {
         console.error(error);
         toast.error("Failed to fetch unread notifications");
@@ -38,7 +39,7 @@ const Header = ({ toggleSidebar, isSidebarOpen }) => {
     };
 
     fetchUnreadNotifications();
-  }, []);
+  }, [dispatch]);
 
   return (
     <header className="flex items-center justify-between px-5 py-3 bg-white shadow-sm sticky top-0">
