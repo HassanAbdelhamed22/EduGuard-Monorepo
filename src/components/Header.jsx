@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Bell, Menu } from "lucide-react";
 import { username, userRole } from "../constants";
 import SearchBar from "./ui/SearchBar";
@@ -6,10 +6,12 @@ import { getInitials } from "../utils/functions";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProfile } from "../redux/slices/profileSlice";
 import { useNavigate } from "react-router-dom";
+import { getUnreadNotifications } from "../services/notificationService";
 
 const Header = ({ toggleSidebar, isSidebarOpen }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [unreadCount, setUnreadCount] = useState(0);
 
   // Select profile data from Redux
   const profile = useSelector((state) => state.profile.profile);
@@ -22,6 +24,21 @@ const Header = ({ toggleSidebar, isSidebarOpen }) => {
   useEffect(() => {
     dispatch(fetchProfile());
   }, [dispatch]);
+
+  // Fetch unread notifications count
+  useEffect(() => {
+    const fetchUnreadNotifications = async () => {
+      try {
+        const response = await getUnreadNotifications();
+        setUnreadCount(response.notifications.length);
+      } catch (error) {
+        console.error(error);
+        toast.error("Failed to fetch unread notifications");
+      }
+    };
+
+    fetchUnreadNotifications();
+  }, []);
 
   return (
     <header className="flex items-center justify-between px-5 py-3 bg-white shadow-sm sticky top-0">
@@ -39,11 +56,18 @@ const Header = ({ toggleSidebar, isSidebarOpen }) => {
       </div>
 
       {/* User Info*/}
-      <div className="flex items-center gap-4">
-        <Bell
-          className="w-6 h-6 cursor-pointer text-darkGray"
-          onClick={() => navigate("/student/notifications")}
-        />
+      <div className="flex items-center gap-5">
+        <div className="relative">
+          <Bell
+            className="w-6 h-6 cursor-pointer text-darkGray"
+            onClick={() => navigate("/student/notifications")}
+          />
+          {unreadCount > 0 && (
+            <div className="absolute -top-2 -right-2 bg-primary text-white text-xs rounded-full px-1.5 py-0.5">
+              {unreadCount}
+            </div>
+          )}
+        </div>
         <div className="flex items-center gap-2">
           <div className="text-right">
             <div className="font-semibold">{profile.name}</div>
