@@ -77,20 +77,10 @@ const Dashboard = () => {
 
   // Memoize derived data for the two nearest upcoming quizzes
   const nearestQuizzes = useMemo(() => {
-    if (!quizzes.length) return [];
-  
     const now = new Date();
-  
     return quizzes
-      .filter((quiz) => {
-        const quizEndDateTime = new Date(`${quiz.QuizDate}T${quiz.EndTime}Z`); // Add 'Z' for UTC
-        return quizEndDateTime > now;
-      })
-      .sort((a, b) => {
-        const aStartDateTime = new Date(`${a.QuizDate}T${a.StartTime}Z`);
-        const bStartDateTime = new Date(`${b.QuizDate}T${b.StartTime}Z`);
-        return aStartDateTime - bStartDateTime;
-      })
+      .filter((quiz) => new Date(quiz.QuizDate) > now)
+      .sort((a, b) => new Date(a.QuizDate) - new Date(b.QuizDate))
       .slice(0, 2);
   }, [quizzes]);
 
@@ -246,14 +236,14 @@ const Dashboard = () => {
 
             {isLoading ? (
               <Loading />
-            ) : quizzes.length === 0 ? (
+            ) : nearestQuizzes.length === 0 ? (
               <div className="flex items-center justify-center p-6 bg-gray-50 rounded-lg">
                 <AlertCircle className="w-6 h-6 text-gray-400 mr-2" />
-                <p className="text-gray-600">No upcoming quizzes</p>
+                <p className="text-gray-600">No upcoming nearestQuizzes</p>
               </div>
             ) : (
               <div className="space-y-4">
-                {quizzes.map((quiz) => (
+                {nearestQuizzes.map((quiz) => (
                   <div
                     key={quiz.QuizID}
                     className="p-4 rounded-lg border border-gray-200 hover:shadow-lg transition-all duration-200 bg-white hover:bg-gray-50"
