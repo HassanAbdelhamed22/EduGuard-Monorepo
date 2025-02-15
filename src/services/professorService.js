@@ -200,6 +200,7 @@ export const getQuizScore = async(quiz_id) =>{
     return response.data
   }catch(error){
     console.error("Error fetching quiz:", error.message);
-    return null;  }
+    return null; 
+   }
 
 } 
