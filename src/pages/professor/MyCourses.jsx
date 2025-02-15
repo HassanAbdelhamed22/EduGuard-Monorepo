@@ -38,7 +38,7 @@ const CourseList = () => {
 
       data.forEach((course, index) => {
         const materials = materialsArray[index] || [];
-        const quizzes = quizzesArray[index] || [];
+        const totalQuizzes = quizzesArray[index]?.pagination?.total_items || [];
 
         newMaterialsCount[course.CourseID] = {
           pdf: materials.filter((m) => m.MaterialType === "pdf").length,
@@ -46,7 +46,7 @@ const CourseList = () => {
           notes: materials.filter((m) => m.MaterialType === "text").length,
           total: materials.length,
         };
-        newQuizzesCount[course.CourseID] = quizzes.length;
+        newQuizzesCount[course.CourseID] = totalQuizzes;
       });
 
       // Update state only once

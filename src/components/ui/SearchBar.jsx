@@ -1,29 +1,19 @@
-import Input from "./Input";
+import React from "react";
+import { Search } from "lucide-react";
 
-const SearchBar = ({ value, onChange, placeholder = "Search ..." }) => {
+const SearchBar = ({ value, onChange, placeholder = "Search..." }) => {
   return (
-    <div className="relative flex items-center mx-auto sm:mx-4 ">
-      <Input
+    <div className="relative w-full md:w-96">
+      <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+        <Search className="h-5 w-5 text-gray-400" />
+      </div>
+      <input
         type="text"
-        placeholder={placeholder}
         value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="w-full py-2 pl-4 pr-10 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-indigoLight dark:focus:ring-indigoDark transition-transform duration-300 ease-in-out transform focus:scale-105 bg-inherit placeholder:text-mediumGray dark:placeholder:text-gray-300"
+        onChange={onChange}
+        placeholder={placeholder}
+        className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white focus:outline-none"
       />
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        strokeWidth={2}
-        stroke="currentColor"
-        className="w-6 h-6 absolute right-3 text-mediumGray dark:text-gray-300"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
-        />
-      </svg>
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   deleteQuiz,
@@ -6,12 +6,15 @@ import {
   viewCourseQuizzes,
 } from "../../services/professorService";
 import Loading from "../../components/ui/Loading";
-import { FileQuestion } from "lucide-react";
+import { FileQuestion, Filter, Search } from "lucide-react";
 import Button from "../../components/ui/Button";
 import useModal from "../../hooks/CourseQuizzes/useModal";
 import toast from "react-hot-toast";
 import Modal from "../../components/ui/Modal";
 import UpdateQuizForm from "../../components/forms/UpdateQuizForm";
+import PaginationLogic from "./../../components/PaginationLogic";
+import SearchBar from "../../components/ui/SearchBar";
+import SortDropdown from "../../components/ui/SortDropdown";
 
 const CourseQuizzes = () => {
   const { courseId } = useParams();
@@ -20,26 +23,65 @@ const CourseQuizzes = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { modal, openModal, closeModal } = useModal();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortOrder, setSortOrder] = useState("nearest");
+  const [pagination, setPagination] = useState({
+    current_page: 1,
+    total_pages: 1,
+    total_items: 0,
+  });
+
+  // Add debounce to prevent too many API calls
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
 
   const { courseName, courseCode } = location.state || {
     courseName: "Unknown Course",
     courseCode: "N/A",
   };
 
-  const fetchQuizzes = async () => {
+  const fetchQuizzes = async (page, search = "", sort = "nearest") => {
+    setLoading(true);
     try {
-      const data = await viewCourseQuizzes(courseId);
-      setQuizzes(data);
+      // Modify your API endpoint to accept these parameters
+      const response = await viewCourseQuizzes(courseId, {
+        page,
+        search,
+        sort_order: sort,
+      });
+      setQuizzes(response.quizzes);
+      setPagination({ ...response.pagination, current_page: page });
     } catch (error) {
       console.error(error);
+      toast.error("Failed to fetch quizzes");
     } finally {
       setLoading(false);
     }
   };
 
+  // Effect for search and sort changes
   useEffect(() => {
-    fetchQuizzes();
-  }, [courseId]);
+    fetchQuizzes(1, debouncedSearchTerm, sortOrder);
+  }, [debouncedSearchTerm, sortOrder, courseId]);
+
+  // Effect for pagination changes
+  const handlePageChange = useCallback(
+    (page) => {
+      if (
+        page !== pagination.current_page &&
+        page > 0 &&
+        page <= pagination.total_pages
+      ) {
+        fetchQuizzes(page, debouncedSearchTerm, sortOrder);
+      }
+    },
+    [pagination, debouncedSearchTerm, sortOrder]
+  );
 
   const handleDeleteQuiz = async () => {
     try {
@@ -102,6 +144,13 @@ const CourseQuizzes = () => {
       : "",
   };
 
+  const displayQuizzes = quizzes;
+
+  const sortingOptions = [
+    { value: "nearest", label: "Sort by Nearest Date" },
+    { value: "longest", label: "Sort by Farthest Date" },
+  ];
+
   const renderModalContent = () => {
     if (modal.type === "delete") {
       return (
@@ -140,14 +189,38 @@ const CourseQuizzes = () => {
         </h1>
         <p className="text-lg text-gray-600">Quizzes</p>
       </div>
-      {quizzes.length === 0 ? (
-        <p className="text-gray-600">No quizzes available for this course.</p>
+
+      {/* Search & Filter Section */}
+      <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
+        {/* Search Input */}
+        <SearchBar
+          value={searchTerm}
+          onChange={(e) => {
+            setSearchTerm(e.target.value);
+            setPagination((prev) => ({ ...prev, current_page: 1 }));
+          }}
+          placeholder="Search quizzes..."
+        />
+
+        {/* Sorting Dropdown */}
+        <SortDropdown
+          value={sortOrder}
+          onChange={(e) => {
+            setSortOrder(e.target.value);
+            setPagination((prev) => ({ ...prev, current_page: 1 }));
+          }}
+          options={sortingOptions}
+        />
+      </div>
+
+      {displayQuizzes.length === 0 ? (
+        <p className="text-gray-600">No quizzes found.</p>
       ) : (
-        <div className="flex flex-wrap gap-4">
-          {quizzes.map((quiz) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {displayQuizzes.map((quiz) => (
             <div
               key={quiz.QuizID}
-              className="p-6 border rounded-lg shadow-sm hover:shadow-lg transition-shadow bg-white cursor-pointer"
+              className="p-6 border rounded-lg shadow-sm hover:shadow-lg transition-shadow bg-white cursor-pointer flex flex-col justify-between"
             >
               <div
                 className="flex items-center gap-4"
@@ -188,46 +261,53 @@ const CourseQuizzes = () => {
                 </div>
               </div>
 
-              <div className="flex gap-4 mt-6">
-                <Button
-                  variant="cancel"
-                  onClick={() => {
-                    openModal("edit", quiz.QuizID, quiz);
-                  }}
-                  fullWidth
-                >
-                  Edit
-                </Button>
+              <div className="flex flex-col justify-between">
+                <div className="flex gap-4 mt-6">
+                  <Button
+                    variant="cancel"
+                    onClick={() => {
+                      openModal("edit", quiz.QuizID, quiz);
+                    }}
+                    fullWidth
+                  >
+                    Edit
+                  </Button>
+
+                  <Button
+                    variant="danger"
+                    onClick={() => {
+                      openModal("delete", quiz.QuizID);
+                    }}
+                    fullWidth
+                  >
+                    Delete
+                  </Button>
+                </div>
 
                 <Button
-                  variant="danger"
+                  variant="default"
+                  className="w-full mt-2"
                   onClick={() => {
-                    openModal("delete", quiz.QuizID);
+                    navigate(`/professor/quiz/${quiz.QuizID}`, {
+                      state: {
+                        courseName: courseName,
+                        courseCode: courseCode,
+                      },
+                    });
                   }}
-                  fullWidth
                 >
-                  Delete
+                  View Details
                 </Button>
               </div>
-
-              <Button
-                variant="default"
-                className="w-full mt-2"
-                onClick={() => {
-                  navigate(`/professor/quiz/${quiz.QuizID}`, {
-                    state: {
-                      courseName: courseName,
-                      courseCode: courseCode,
-                    },
-                  });
-                }}
-              >
-                View Details
-              </Button>
             </div>
           ))}
         </div>
       )}
+
+      <PaginationLogic
+        pagination={pagination}
+        handlePageChange={handlePageChange}
+      />
 
       <Modal
         isOpen={modal.isOpen}

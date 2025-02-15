@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import useCourses from "../../hooks/allCourses/useCourses";
 import useModal from "./../../hooks/allCourses/useModal";
 import Loading from "../../components/ui/Loading";
@@ -9,10 +9,12 @@ import toast from "react-hot-toast";
 import Button from "../../components/ui/Button";
 import UpdateCourseForm from "../../components/forms/UpdateCourseForm";
 import Modal from "../../components/ui/Modal";
+import SearchBar from "../../components/ui/SearchBar";
 
 const AllCourses = () => {
   const { courses, pagination, isLoading, fetchCourses } = useCourses();
   const { modal, openModal, closeModal } = useModal();
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handlePageChange = useCallback(
     (page) => {
@@ -78,6 +80,18 @@ const AllCourses = () => {
     ]
   );
 
+  // search by course name or code
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+  };
+
+  const filteredCourses = courses.filter((course) => {
+    const courseName = course.CourseName.toLowerCase();
+    const courseCode = course.CourseCode.toLowerCase();
+    const query = searchQuery.toLowerCase();
+    return courseName.includes(query) || courseCode.includes(query);
+  });
+
   const renderModalContent = useMemo(() => {
     if (modal.type === "delete") {
       return (
@@ -110,17 +124,26 @@ const AllCourses = () => {
   }
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
+      <div className="mb-8 flex items-center justify-between">
         <h2 className="text-2xl font-bold text-darkGray">All Courses</h2>
+        <div className="w-1/3">
+          <SearchBar
+            placeholder="Search by course name or code..."
+            onChange={handleSearch}
+            value={searchQuery}
+          />
+        </div>
       </div>
 
-      <AllCoursesTable
-        courses={courses}
-        onEdit={(courseId, courseData) =>
-          openModal("edit", courseId, courseData)
-        }
-        onDelete={(courseId) => openModal("delete", courseId)}
-      />
+      {filteredCourses.length > 0 ? (
+        <AllCoursesTable
+          courses={filteredCourses}
+          openModal={openModal}
+          isLoading={isLoading}
+        />
+      ) : (
+        <p className="text-mediumGray text-center">No courses found.</p>
+      )}
 
       <PaginationLogic
         pagination={pagination}

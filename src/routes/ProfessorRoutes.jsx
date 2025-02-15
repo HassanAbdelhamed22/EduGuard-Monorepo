@@ -36,12 +36,7 @@ const ProfessorRoutes = () => {
             path="course/:courseId/students"
             element={<RegisteredStudent />}
           />
-          <Route
-            path="courses/manage-material"
-            element={<div>Manage Course Material</div>}
-          />
 
-          <Route path="quizzes" element={<div>My Quizzes</div>} />
           <Route path="quizzes/create" element={<CreateQuiz></CreateQuiz>} />
           <Route path="quizzes/add-questions" element={<AddQuestion />} />
           <Route

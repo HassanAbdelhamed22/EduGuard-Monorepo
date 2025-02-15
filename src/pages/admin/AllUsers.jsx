@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   assignRole,
   deleteUserAccount,
@@ -14,10 +14,12 @@ import useUsers from "../../hooks/allUsers/useUsers";
 import useModal from "../../hooks/allUsers/useModal";
 import AllUsersTable from "../../components/Tables/AllUsersTable";
 import PaginationLogic from "../../components/PaginationLogic";
+import SearchBar from "./../../components/ui/SearchBar";
 
 const AllUsers = () => {
   const { users, pagination, isLoading, fetchUsers } = useUsers();
   const { modal, openModal, closeModal } = useModal();
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handlePageChange = (page) => {
     if (
@@ -107,6 +109,16 @@ const AllUsers = () => {
     }
   };
 
+  // search by name
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+  };
+
+  const filteredUsers = users.filter((user) => {
+    if (!searchQuery) return true;
+    return user.name.toLowerCase().includes(searchQuery.toLowerCase());
+  });
+
   const renderModalContent = () => {
     if (modal.type === "delete") {
       return (
@@ -148,18 +160,29 @@ const AllUsers = () => {
   }
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
+      <div className="mb-8 flex items-center justify-between">
         <h2 className="text-2xl font-bold text-darkGray">All Users</h2>
+        <SearchBar
+          placeholder="Search by name..."
+          onChange={handleSearch}
+          value={searchQuery}
+        />
       </div>
 
-      <AllUsersTable
-        users={users}
-        onAssignRole={(userId, role) =>
-          openModal("assignRole", userId, null, role)
-        }
-        onDelete={(id) => openModal("delete", id)}
-        onEdit={(userId, userData) => openModal("edit", userId, userData)}
-      />
+      {filteredUsers.length > 0 ? (
+        <AllUsersTable
+          users={filteredUsers}
+          onAssignRole={(userId, role) =>
+            openModal("assignRole", userId, null, role)
+          }
+          onDelete={(id) => openModal("delete", id)}
+          onEdit={(userId, userData) => openModal("edit", userId, userData)}
+        />
+      ) : (
+        <p className="text-center text-mediumGray font-bold text-xl">
+          No users found.
+        </p>
+      )}
 
       <PaginationLogic
         pagination={pagination}

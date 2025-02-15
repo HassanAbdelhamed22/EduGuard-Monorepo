@@ -7,6 +7,7 @@ import PaginationLogic from "./PaginationLogic";
 import Modal from "./ui/Modal";
 import Textarea from "./ui/Textarea";
 import UserTable from "./Tables/UserTable";
+import SearchBar from "./ui/SearchBar";
 
 const UserManagementPage = ({
   users,
@@ -18,6 +19,7 @@ const UserManagementPage = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [reason, setReason] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handlePageChange = (page) => {
     if (
@@ -71,17 +73,39 @@ const UserManagementPage = ({
     }
   };
 
+  // search by name
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+  };
+
+  const filteredUsers = users.filter((user) => {
+    if (!searchQuery) return true;
+    return user.name.toLowerCase().includes(searchQuery.toLowerCase());
+  });
+
   if (isLoading && users.length === 0) {
     return <Loading />;
   }
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
+      <div className="mb-8 flex items-center justify-between">
         <h2 className="text-2xl font-bold text-darkGray">{pageTitle}</h2>
+        <SearchBar
+          placeholder="Search by name..."
+          onChange={handleSearch}
+          value={searchQuery}
+        />
       </div>
 
-      <UserTable users={users} onBlockToggle={handleBlockToggle} />
+      {filteredUsers.length > 0 ? (
+        <UserTable
+          users={filteredUsers}
+          handleBlockToggle={handleBlockToggle}
+        />
+      ) : (
+        <p className="text-center text-mediumGray font-bold text-xl">No users found.</p>
+      )}
 
       <PaginationLogic
         pagination={pagination}

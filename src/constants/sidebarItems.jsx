@@ -80,20 +80,12 @@ export const professorItems = [
         title: "Upload Material",
         path: "/professor/courses/upload-material",
       },
-      {
-        title: "Manage Course Material",
-        path: "/professor/courses/manage-material",
-      },
     ],
   },
   {
     title: "Quiz Management",
     icon: <University className="w-5 h-5" />,
     items: [
-      {
-        title: "My Quizzes",
-        path: "/professor/quizzes",
-      },
       {
         title: "Create Quiz",
         path: "/professor/quizzes/create",
