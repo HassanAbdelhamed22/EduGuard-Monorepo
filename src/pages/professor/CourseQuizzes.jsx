@@ -6,7 +6,7 @@ import {
   viewCourseQuizzes,
 } from "../../services/professorService";
 import Loading from "../../components/ui/Loading";
-import { FileQuestion } from "lucide-react";
+import { FileQuestion, Filter, Search } from "lucide-react";
 import Button from "../../components/ui/Button";
 import useModal from "../../hooks/CourseQuizzes/useModal";
 import toast from "react-hot-toast";
@@ -20,6 +20,8 @@ const CourseQuizzes = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { modal, openModal, closeModal } = useModal();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortOrder, setSortOrder] = useState("nearest");
 
   const { courseName, courseCode } = location.state || {
     courseName: "Unknown Course",
@@ -102,6 +104,16 @@ const CourseQuizzes = () => {
       : "",
   };
 
+  const filteredQuizzes = quizzes
+    .filter((quiz) =>
+      quiz.Title.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .sort((a, b) => {
+      const dateA = new Date(a.StartTime);
+      const dateB = new Date(b.StartTime);
+      return sortOrder === "nearest" ? dateA - dateB : dateB - dateA;
+    });
+
   const renderModalContent = () => {
     if (modal.type === "delete") {
       return (
@@ -140,14 +152,52 @@ const CourseQuizzes = () => {
         </h1>
         <p className="text-lg text-gray-600">Quizzes</p>
       </div>
-      {quizzes.length === 0 ? (
-        <p className="text-gray-600">No quizzes available for this course.</p>
+
+      {/* Search & Filter Section */}
+      <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
+        {/* Search Input */}
+        <div className="relative w-full md:w-1/2">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+          <input
+            type="text"
+            placeholder="Search by Quiz Title"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-10 pr-4 py-3 border border-borderLight dark:border-borderDark shadow-md focus:border-indigo-600 focus:outline-none focus:ring-1 focus:ring-indigo-600 rounded-lg"
+          />
+        </div>
+
+        {/* Sorting Dropdown */}
+        <div className="relative">
+          <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+          <select
+            value={sortOrder}
+            onChange={(e) => setSortOrder(e.target.value)}
+            className="appearance-none w-full md:w-56 pl-10 pr-4 py-3 border border-borderLight dark:border-borderDark shadow-md focus:border-indigo-600 focus:outline-none focus:ring-1 focus:ring-indigo-600 rounded-lg cursor-pointer bg-white"
+          >
+            <option value="nearest">Sort by Nearest Date</option>
+            <option value="longest">Sort by Farthest Date</option>
+          </select>
+          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-1 text-gray-700">
+            <svg
+              className="fill-current h-4 w-4"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+            >
+              <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      {filteredQuizzes.length === 0 ? (
+        <p className="text-gray-600">No quizzes found.</p>
       ) : (
-        <div className="flex flex-wrap gap-4">
-          {quizzes.map((quiz) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredQuizzes.map((quiz) => (
             <div
               key={quiz.QuizID}
-              className="p-6 border rounded-lg shadow-sm hover:shadow-lg transition-shadow bg-white cursor-pointer"
+              className="p-6 border rounded-lg shadow-sm hover:shadow-lg transition-shadow bg-white cursor-pointer flex flex-col justify-between"
             >
               <div
                 className="flex items-center gap-4"
@@ -188,42 +238,44 @@ const CourseQuizzes = () => {
                 </div>
               </div>
 
-              <div className="flex gap-4 mt-6">
-                <Button
-                  variant="cancel"
-                  onClick={() => {
-                    openModal("edit", quiz.QuizID, quiz);
-                  }}
-                  fullWidth
-                >
-                  Edit
-                </Button>
+              <div className="flex flex-col justify-between">
+                <div className="flex gap-4 mt-6">
+                  <Button
+                    variant="cancel"
+                    onClick={() => {
+                      openModal("edit", quiz.QuizID, quiz);
+                    }}
+                    fullWidth
+                  >
+                    Edit
+                  </Button>
+
+                  <Button
+                    variant="danger"
+                    onClick={() => {
+                      openModal("delete", quiz.QuizID);
+                    }}
+                    fullWidth
+                  >
+                    Delete
+                  </Button>
+                </div>
 
                 <Button
-                  variant="danger"
+                  variant="default"
+                  className="w-full mt-2"
                   onClick={() => {
-                    openModal("delete", quiz.QuizID);
+                    navigate(`/professor/quiz/${quiz.QuizID}`, {
+                      state: {
+                        courseName: courseName,
+                        courseCode: courseCode,
+                      },
+                    });
                   }}
-                  fullWidth
                 >
-                  Delete
+                  View Details
                 </Button>
               </div>
-
-              <Button
-                variant="default"
-                className="w-full mt-2"
-                onClick={() => {
-                  navigate(`/professor/quiz/${quiz.QuizID}`, {
-                    state: {
-                      courseName: courseName,
-                      courseCode: courseCode,
-                    },
-                  });
-                }}
-              >
-                View Details
-              </Button>
             </div>
           ))}
         </div>
