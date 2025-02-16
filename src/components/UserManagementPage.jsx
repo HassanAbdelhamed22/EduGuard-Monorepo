@@ -101,7 +101,7 @@ const UserManagementPage = ({
       {filteredUsers.length > 0 ? (
         <UserTable
           users={filteredUsers}
-          handleBlockToggle={handleBlockToggle}
+          onBlockToggle={handleBlockToggle}
         />
       ) : (
         <p className="text-center text-mediumGray font-bold text-xl">No users found.</p>
