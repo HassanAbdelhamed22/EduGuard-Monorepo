@@ -1,11 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import { updatePassword } from "../../services/authService";
 import toast from "react-hot-toast";
 import { Form, Formik } from "formik";
 import { updatePassValidationSchema } from "../../utils/validation";
 import Button from "../../components/ui/Button";
+import { Eye, EyeOff } from "lucide-react";
 
 const UpdatePassword = () => {
+  const [showPassword, setShowPassword] = useState({
+    current: false,
+    new: false,
+    confirm: false,
+  });
+
+  const togglePasswordVisibility = (field) => {
+    setShowPassword((prev) => ({ ...prev, [field]: !prev[field] }));
+  };
+
   const initialValues = {
     current_password: "",
     new_password: "",
@@ -31,9 +42,10 @@ const UpdatePassword = () => {
       setSubmitting(false);
     }
   };
+
   return (
     <div className="max-w-xl mx-auto p-6 rounded-lg shadow-md bg-white mt-20">
-      <h2 className="text-2xl font-semibold mb-6 pb-4 text-center border-b ">
+      <h2 className="text-2xl font-semibold mb-6 pb-4 text-center border-b">
         Update Password
       </h2>
       <Formik
@@ -50,95 +62,42 @@ const UpdatePassword = () => {
           isSubmitting,
         }) => (
           <Form className="space-y-4">
-            <div>
-              <label
-                htmlFor="current_password"
-                className="block text-darkGray font-medium text-sm mb-1"
-              >
-                Current Password
-              </label>
-              <input
-                type="password"
-                id="current_password"
-                name="current_password"
-                value={values.current_password}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                className={`w-full px-3 py-2 border ${
-                  touched.current_password && errors.current_password
-                    ? "border-red-500"
-                    : "border-gray-300"
-                } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
-              />
-              {touched.current_password && errors.current_password && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.current_password}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label
-                htmlFor="new_password"
-                className="block text-darkGray font-medium text-sm mb-1"
-              >
-                New Password
-              </label>
-              <input
-                type="password"
-                id="new_password"
-                name="new_password"
-                value={values.new_password}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                className={`w-full px-3 py-2 border ${
-                  touched.new_password && errors.new_password
-                    ? "border-red-500"
-                    : "border-gray-300"
-                } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
-              />
-              {touched.new_password && errors.new_password && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.new_password}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label
-                htmlFor="new_password_confirmation"
-                className="block text-darkGray font-medium text-sm mb-1"
-              >
-                Confirm New Password
-              </label>
-              <input
-                type="password"
-                id="new_password_confirmation"
-                name="new_password_confirmation"
-                value={values.new_password_confirmation}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                className={`w-full px-3 py-2 border ${
-                  touched.new_password_confirmation &&
-                  errors.new_password_confirmation
-                    ? "border-red-500"
-                    : "border-gray-300"
-                } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
-              />
-              {touched.new_password_confirmation &&
-                errors.new_password_confirmation && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.new_password_confirmation}
-                  </p>
+            {[
+              { id: "current_password", label: "Current Password", key: "current" },
+              { id: "new_password", label: "New Password", key: "new" },
+              { id: "new_password_confirmation", label: "Confirm New Password", key: "confirm" },
+            ].map(({ id, label, key }) => (
+              <div key={id} className="relative">
+                <label htmlFor={id} className="block text-darkGray font-medium text-sm mb-1">
+                  {label}
+                </label>
+                <div className="relative">
+                  <input
+                    type={showPassword[key] ? "text" : "password"}
+                    id={id}
+                    name={id}
+                    value={values[id]}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    className={`border-[1px] border-borderLight dark:border-borderDark shadow-lg focus:border-indigo-600 focus:outline-none focus:ring-1 focus:ring-indigo-600 rounded-lg px-3 py-3 text-md w-full bg-transparent text-secondaryLightText dark:text-secondaryDarkText 
+                    ${touched[id] && errors[id] ? "border-red-500" : "border-gray-300"} 
+                    focus:border-blue-500`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => togglePasswordVisibility(key)}
+                    className="absolute inset-y-0 right-3 flex items-center text-gray-500"
+                  >
+                    {showPassword[key] ? <Eye size={20} /> : <EyeOff size={20} />}
+                  </button>
+                </div>
+                {touched[id] && errors[id] && (
+                  <p className="text-red-500 text-sm mt-1">{errors[id]}</p>
                 )}
-            </div>
+              </div>
+            ))}
 
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              fullWidth
-              isLoading={isSubmitting}
-            >
+            <Button type="submit" disabled={isSubmitting} fullWidth isLoading={isSubmitting}>
               {isSubmitting ? "Updating..." : "Update Password"}
             </Button>
           </Form>
