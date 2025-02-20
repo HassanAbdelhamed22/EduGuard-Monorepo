@@ -18,15 +18,12 @@ const AssignCourse = () => {
       toast.error("Please select a professor and a course.");
       return;
     }
-    console.log("Selected Course:", selectedCourse.id);
-    console.log("Selected Professor:", selectedProfessor.id);
 
     const payload = {
-      CourseID: selectedCourse.id, // Ensure this matches the backend's expected field name
-      ProfessorID: selectedProfessor.id, // Ensure this matches the backend's expected field name
+      CourseID: selectedCourse.id,
+      ProfessorID: selectedProfessor.id,
     };
   
-    console.log("Payload:", payload);
     setLoading(true);
     try {
       await assignCourse(selectedCourse.id, selectedProfessor.id);

@@ -55,11 +55,6 @@ const Dashboard = () => {
       setCourses(courseRes.data);
 
       const quizRes = await getAllQuizzes();
-      console.log("Quiz data structure:", {
-        firstQuiz: quizRes.quizzes[0],
-        dateType: typeof quizRes.quizzes[0]?.QuizDate,
-        totalQuizzes: quizRes.quizzes.length,
-      });
       setQuizzes(quizRes.quizzes);
 
       const bestPerformersRes = await getBestPerformers();
@@ -101,12 +96,6 @@ const Dashboard = () => {
       hour12: true,
     });
   };
-
-  useEffect(() => {
-    console.log("Current Date and Time:", new Date());
-    console.log("Quizzes Data:", quizzes);
-    console.log("Nearest Quizzes:", nearestQuizzes);
-  }, [quizzes, nearestQuizzes]);
 
   if (isLoading) {
     return <Loading />;

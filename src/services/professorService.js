@@ -155,12 +155,10 @@ export const createQuestion = async (questionData) => {
 
 export const updateQuestion = async (questionId, updatedQuestion) => {
   try {
-    console.log("Sending update request with data:", updatedQuestion);
     const { data } = await api.patch(
       `${BASE_URL}quiz/update-question/${questionId}`,
       updatedQuestion
     );
-    console.log("Response from server:", data);
     return data;
   } catch (error) {
     throw error;
