@@ -111,8 +111,10 @@ const AllCourses = () => {
     }
   };
 
-  const handleSearch = (query) => {
-    setSearchQuery(query);
+  const handleSearch = (event) => {
+    // Extract the value from the event object
+    const value = event?.target?.value ?? "";
+    setSearchQuery(value);
   };
 
   const filteredCourses = useMemo(() => {

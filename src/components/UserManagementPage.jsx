@@ -74,8 +74,10 @@ const UserManagementPage = ({
   };
 
   // search by name
-  const handleSearch = (query) => {
-    setSearchQuery(query);
+  const handleSearch = (event) => {
+    // Extract the value from the event object
+    const value = event?.target?.value ?? "";
+    setSearchQuery(value);
   };
 
   const filteredUsers = users.filter((user) => {
