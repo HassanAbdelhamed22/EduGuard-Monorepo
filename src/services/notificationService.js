@@ -4,7 +4,7 @@ import { BASE_URL } from "../constants";
 
 export const getAllNotifications = async () => {
   try {
-    const { data } = await api.get(`${BASE_URL}notification/notifications`);
+    const { data } = await api.get(`${BASE_URL}notifications`);
     return data;
   } catch (error) {
     console.error(error);
@@ -14,7 +14,7 @@ export const getAllNotifications = async () => {
 
 export const getUnreadNotifications = async () => {
   try {
-    const { data } = await api.get(`${BASE_URL}notification/notifications/unread`);
+    const { data } = await api.get(`${BASE_URL}notifications/unread`);
     return data;
   } catch (error) {
     console.error(error);
@@ -25,7 +25,7 @@ export const getUnreadNotifications = async () => {
 export const markAsRead = async (notificationId) => {
   try {
     const response = await api.post(
-      `${BASE_URL}notification/notifications/read/${notificationId}`
+      `${BASE_URL}notifications/read/${notificationId}`
     );
     return response.data;
   } catch (error) {
@@ -36,7 +36,7 @@ export const markAsRead = async (notificationId) => {
 
 export const markAllAsRead = async () => {
   try {
-    const response = await api.post(`${BASE_URL}notification/notifications/read-all`);
+    const response = await api.post(`${BASE_URL}notifications/read-all`);
     return response.data;
   } catch (error) {
     console.error(error);
@@ -47,7 +47,7 @@ export const markAllAsRead = async () => {
 export const deleteNotification = async (notificationId) => {
   try {
     const response = await api.delete(
-      `${BASE_URL}notification/notifications/${notificationId}`
+      `${BASE_URL}notifications/${notificationId}`
     );
     return response.data;
   } catch (error) {
@@ -58,7 +58,7 @@ export const deleteNotification = async (notificationId) => {
 
 export const deleteAllNotifications = async () => {
   try {
-    const response = await api.delete(`${BASE_URL}notification/notifications`);
+    const response = await api.delete(`${BASE_URL}notifications`);
     return response.data;
   } catch (error) {
     console.error(error);
