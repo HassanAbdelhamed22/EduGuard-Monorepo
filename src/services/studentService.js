@@ -4,7 +4,7 @@ import { BASE_URL } from "./../constants/index";
 
 export const allCourses = async () => {
   try {
-    const response = await api.get(`${BASE_URL}course`);
+    const response = await api.get(`${BASE_URL}courses`);
     return response.data.data;
   } catch (error) {
     console.error(error);
@@ -15,7 +15,7 @@ export const allCourses = async () => {
 export const registerCourses = async (courseIds) => {
   try {
     const { data, status } = await api.post(
-      `${BASE_URL}course/registerCourse`,
+      `${BASE_URL}courses/register`,
       courseIds
     );
     return { data, status };
@@ -28,7 +28,7 @@ export const registerCourses = async (courseIds) => {
 export const unregisterCourses = async (courseIds) => {
   try {
     const { data, status } = await api.post(
-      `${BASE_URL}course/unregisterCourse`,
+      `${BASE_URL}courses/unregister`,
       courseIds
     );
     return { data, status };
