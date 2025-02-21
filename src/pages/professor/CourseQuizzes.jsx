@@ -109,7 +109,7 @@ const CourseQuizzes = () => {
     try {
       const { data, status } = await updateQuiz(modal.quizId, updatedFields);
       if (status === 200) {
-        toast.success("Course updated successfully");
+        toast.success("Quiz updated successfully");
         closeModal();
         fetchQuizzes();
       } else {

@@ -76,7 +76,7 @@ export const getAllQuizzes = async () => {
 export const getQuizQuestions = async (quizId, page) => {
   try {
     const response = await api.get(
-      `${BASE_URL}questions/${quizId}?page=${page}`
+      `${BASE_URL}questions/quiz/${quizId}?page=${page}`
     );
     return response.data;
   } catch (error) {
