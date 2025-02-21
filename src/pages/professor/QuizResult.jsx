@@ -93,8 +93,11 @@ const ViewResults = () => {
   const handleSearchChange = (e) => {
     const value = e.target.value;
     setSearchTerm(value);
-    debouncedSearch(value);
   };
+
+  const handleSearchEnter = () => {
+    debouncedSearch(searchTerm);
+  }
 
   const toggleSort = () => {
     const newOrder = sortOrder === "asc" ? "desc" : "asc";
@@ -115,6 +118,7 @@ const ViewResults = () => {
           <SearchBar
             value={searchTerm}
             onChange={handleSearchChange}
+            onEnter={handleSearchEnter}
             placeholder="Search by quiz title or course..."
           />
         </div>
