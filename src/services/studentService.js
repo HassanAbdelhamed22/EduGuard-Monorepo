@@ -55,7 +55,7 @@ export const viewCourseMaterials = async (courseId) => {
 
 export const getStudentQuiz = async () => {
   try {
-    const { data } = await api.get(`${BASE_URL}quiz/student-quizzes`);
+    const { data } = await api.get(`${BASE_URL}quizzes/student-quizzes`);
     return data;
   } catch (error) {
     console.error(error);
@@ -65,7 +65,7 @@ export const getStudentQuiz = async () => {
 
 export const getAllQuizzes = async () => {
   try {
-    const { data } = await api.get(`${BASE_URL}quiz/student-quizzes`);
+    const { data } = await api.get(`${BASE_URL}quizzes/student-quizzes`);
     return data;
   } catch (error) {
     console.error(error);
@@ -76,7 +76,7 @@ export const getAllQuizzes = async () => {
 export const getQuizQuestions = async (quizId, page) => {
   try {
     const response = await api.get(
-      `${BASE_URL}quiz/get-questions/${quizId}?page=${page}`
+      `${BASE_URL}quizzes/get-questions/${quizId}?page=${page}`
     );
     return response.data;
   } catch (error) {
@@ -90,7 +90,7 @@ export const getQuizQuestions = async (quizId, page) => {
 
 export const startQuiz = async (quizId) => {
   try {
-    const response = await api.get(`${BASE_URL}quiz/start-quiz/${quizId}`);
+    const response = await api.get(`${BASE_URL}quizzes/start/${quizId}`);
     return response.data;
   } catch (error) {
     console.error("Failed to start quiz:", error);
@@ -103,7 +103,7 @@ export const startQuiz = async (quizId) => {
 
 export const submitQuiz = async (quizId, answers) => {
   try {
-    const response = await api.post(`${BASE_URL}quiz/submit-quiz/${quizId}`, {
+    const response = await api.post(`${BASE_URL}quizzes/submit/${quizId}`, {
       answers,
     });
     return response.data;
@@ -119,7 +119,7 @@ export const submitQuiz = async (quizId, answers) => {
 export const getSubmittedQuizzes = async (page) => {
   try {
     const response = await api.get(
-      `${BASE_URL}quiz/submitted-quizzes?page=${page}`
+      `${BASE_URL}quizzes/submitted?page=${page}`
     );
     return response.data;
   } catch (error) {
@@ -133,7 +133,7 @@ export const getSubmittedQuizzes = async (page) => {
 
 export const getQuizResult = async (quizId) => {
   try {
-    const response = await api.get(`${BASE_URL}quiz/getQuizResult/${quizId}`);
+    const response = await api.get(`${BASE_URL}quizzes/result/${quizId}`);
     return response.data;
   } catch (error) {
     console.error("Failed to fetch quiz results:", error);
@@ -147,7 +147,7 @@ export const getQuizResult = async (quizId) => {
 export const getStudentAnswers = async (quizId, page) => {
   try {
     const response = await api.get(
-      `${BASE_URL}quiz/correct_answer/${quizId}?page=${page}`
+      `${BASE_URL}quizzes/correct-answer/${quizId}?page=${page}`
     );
     return response.data;
   } catch (error) {

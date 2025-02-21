@@ -23,7 +23,7 @@ export const fetchCourseRegistrations = async (courseId, page) => {
 export const viewCourseQuizzes = async (courseId, options = {}) => {
   const { page = 1, search = "", sort_order = "nearest" } = options;
   try {
-    const response = await api.get(`${BASE_URL}quiz/course-quizzes/${courseId}`, {
+    const response = await api.get(`${BASE_URL}quizzes/course/${courseId}`, {
       params: {
         page,
         search,
@@ -51,7 +51,7 @@ export const viewCourseMaterials = async (courseId) => {
 
 export const getAllQuizzes = async () => {
   try {
-    const { data } = await api.get(`${BASE_URL}quiz/get-quizzes`);
+    const { data } = await api.get(`${BASE_URL}quizzes`);
     return data;
   } catch (error) {
     console.error(error);
@@ -61,7 +61,7 @@ export const getAllQuizzes = async () => {
 
 export const createQuiz = async (quizData) => {
   try {
-    const response = await api.post(`${BASE_URL}quiz/create-quiz`, quizData);
+    const response = await api.post(`${BASE_URL}quizzes`, quizData);
     return response;
   } catch (error) {
     console.error(error);
@@ -71,7 +71,7 @@ export const createQuiz = async (quizData) => {
 
 export const deleteQuiz = async (quizId) => {
   try {
-    const data = await api.delete(`${BASE_URL}quiz/delete-quiz/${quizId}`);
+    const data = await api.delete(`${BASE_URL}quizzes/${quizId}`);
     return data;
   } catch (error) {
     console.error(error);
@@ -82,7 +82,7 @@ export const deleteQuiz = async (quizId) => {
 export const updateQuiz = async (quizId, quizData) => {
   try {
     const { data, status } = await api.patch(
-      `${BASE_URL}quiz/update-quiz/${quizId}`,
+      `${BASE_URL}quizzes/${quizId}`,
       quizData
     );
     return { data, status };
@@ -138,7 +138,7 @@ export const deleteMaterial = async (materialId) => {
 export const createQuestion = async (questionData) => {
   try {
     const response = await api.post(
-      `${BASE_URL}quiz/add-question`,
+      `${BASE_URL}quizzes/add-question`,
       questionData,
       {
         headers: {
@@ -156,7 +156,7 @@ export const createQuestion = async (questionData) => {
 export const updateQuestion = async (questionId, updatedQuestion) => {
   try {
     const { data } = await api.patch(
-      `${BASE_URL}quiz/update-question/${questionId}`,
+      `${BASE_URL}quizzes/update-question/${questionId}`,
       updatedQuestion
     );
     return data;
@@ -168,7 +168,7 @@ export const updateQuestion = async (questionId, updatedQuestion) => {
 export const deleteQuestion = async (questionId) => {
   try {
     const { data } = await api.delete(
-      `${BASE_URL}quiz/delete-question/${questionId}`
+      `${BASE_URL}quizzes/delete-question/${questionId}`
     );
     return data;
   } catch (error) {
@@ -178,7 +178,7 @@ export const deleteQuestion = async (questionId) => {
 
 export const getQuiz = async (quizId) => {
   try {
-    const response = await axios.get(`${BASE_URL}quiz/get-quiz/${quizId}`);
+    const response = await axios.get(`${BASE_URL}quizzes/${quizId}`);
     return response.data;
   } catch (error) {
     console.error("Error fetching quiz:", error.message);
@@ -189,7 +189,7 @@ export const getQuiz = async (quizId) => {
 export const getQuizDetails = async (quizId, page) => {
   try {
     const response = await api.get(
-      `${BASE_URL}quiz/get-quiz/${quizId}?page=${page}`
+      `${BASE_URL}quizzes/${quizId}?page=${page}`
     );
     return response.data;
   } catch (error) {
@@ -208,7 +208,7 @@ export const getQuizResult = async (params = {}) => {
       page: params.page || 1
     }).toString();
 
-    const { data } = await api.get(`${BASE_URL}quiz/ended-with-results?${queryParams}`);
+    const { data } = await api.get(`${BASE_URL}quizzes/ended-with-results?${queryParams}`);
     return data;
   } catch (error) {
     console.error(error);
@@ -218,7 +218,7 @@ export const getQuizResult = async (params = {}) => {
 
 export const getQuizScore = async (quiz_id) => {
   try {
-    const response = await api.get(`${BASE_URL}quiz/getQuizScores/${quiz_id}`);
+    const response = await api.get(`${BASE_URL}quizzes/scores/${quiz_id}`);
     return response.data;
   } catch (error) {
     console.error("Error fetching quiz:", error.message);
