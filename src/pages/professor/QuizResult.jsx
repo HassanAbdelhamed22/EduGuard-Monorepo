@@ -14,7 +14,7 @@ const ViewResults = () => {
   const [quizzes, setQuizzes] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortBy, setSortBy] = useState("QuizDate");
+  const [sortBy] = useState("QuizDate");
   const [sortOrder, setSortOrder] = useState("desc");
   const [selectedCourse, setSelectedCourse] = useState("");
   const [courses, setCourses] = useState([]);

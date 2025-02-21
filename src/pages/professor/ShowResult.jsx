@@ -13,7 +13,6 @@ const ShowResult = () =>{
     useEffect(() =>{
         const fetchData = async () =>{
             setIsLoading(true)
-
             try{
                 const data = await getQuizScore(quizId)
                 if(data){

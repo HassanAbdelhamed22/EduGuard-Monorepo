@@ -99,7 +99,7 @@ const QuizViewDetails = () => {
       };
 
       await updateQuestion(editingQuestion, updatedQuestion);
-      toast.success("Question updated successfully");
+      toast.success("Question Updated Successfully");
       setEditingQuestion(null);
       await fetchQuiz(pagination.current_page);
     } catch (error) {
@@ -117,7 +117,7 @@ const QuizViewDetails = () => {
   const handleDelete = async (id) => {
     try {
       await deleteQuestion(id);
-      toast.success("Question deleted successfully");
+      toast.success("Question Deleted Successfully");
       fetchQuiz(pagination.current_page);
     } catch (error) {
       console.error(error);

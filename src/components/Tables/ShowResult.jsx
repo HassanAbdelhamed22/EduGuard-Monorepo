@@ -17,9 +17,11 @@ const getGrade = (percentage) => {
 const ResultsTable = ({ results }) => {
   const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredResults = results?.filter((result) =>
-    result.student_name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredResults = results
+    ?.filter((result) =>
+      result.student_name.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .sort((a, b) => (b.percentage ?? 0) - (a.percentage ?? 0)); 
 
   return (
     <div>
@@ -58,7 +60,7 @@ const ResultsTable = ({ results }) => {
           </TableBody>
         </Table>
       ) : (
-        <p className="text-center text-lg  text-gray-500">No student found with this name.</p>
+        <p className="text-center text-lg  text-gray-500">No Student Found With This Name.</p>
       )}
     </div>
   );

@@ -228,7 +228,7 @@ const Dashboard = () => {
             ) : nearestQuizzes.length === 0 ? (
               <div className="flex items-center justify-center p-6 bg-gray-50 rounded-lg">
                 <AlertCircle className="w-6 h-6 text-gray-400 mr-2" />
-                <p className="text-gray-600">No upcoming nearestQuizzes</p>
+                <p className="text-gray-600">No upcoming nearest Quizzes</p>
               </div>
             ) : (
               <div className="space-y-4">
