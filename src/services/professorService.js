@@ -138,7 +138,7 @@ export const deleteMaterial = async (materialId) => {
 export const createQuestion = async (questionData) => {
   try {
     const response = await api.post(
-      `${BASE_URL}quizzes/add-question`,
+      `${BASE_URL}questions`,
       questionData,
       {
         headers: {
@@ -156,7 +156,7 @@ export const createQuestion = async (questionData) => {
 export const updateQuestion = async (questionId, updatedQuestion) => {
   try {
     const { data } = await api.patch(
-      `${BASE_URL}quizzes/update-question/${questionId}`,
+      `${BASE_URL}questions/${questionId}`,
       updatedQuestion
     );
     return data;
@@ -168,7 +168,7 @@ export const updateQuestion = async (questionId, updatedQuestion) => {
 export const deleteQuestion = async (questionId) => {
   try {
     const { data } = await api.delete(
-      `${BASE_URL}quizzes/delete-question/${questionId}`
+      `${BASE_URL}questions/${questionId}`
     );
     return data;
   } catch (error) {
@@ -228,7 +228,7 @@ export const getQuizScore = async (quiz_id) => {
 
 export const getBestPerformers = async () => {
   try {
-    const response = await api.get(`${BASE_URL}professor/courses-with-results`);
+    const response = await api.get(`${BASE_URL}professors/courses-with-results`);
     return response.data;
   } catch (error) {
     console.error(error);
