@@ -4,7 +4,7 @@ import { BASE_URL } from "../constants";
 
 export const viewRegisteredCourses = async () => {
   try {
-    const { data } = await api.get(`${BASE_URL}professor/courses`);
+    const { data } = await api.get(`${BASE_URL}professors/courses`);
     return data;
   } catch (error) {
     console.error(error);
@@ -40,7 +40,7 @@ export const viewCourseQuizzes = async (courseId, options = {}) => {
 export const viewCourseMaterials = async (courseId) => {
   try {
     const response = await api.get(
-      `${BASE_URL}professor/materials/${courseId}`
+      `${BASE_URL}professors/materials/${courseId}`
     );
     return response.data.data;
   } catch (error) {
@@ -95,7 +95,7 @@ export const updateQuiz = async (quizId, quizData) => {
 export const uploadMaterials = async (formData) => {
   try {
     const response = await api.post(
-      `${BASE_URL}professor/materials`,
+      `${BASE_URL}professors/materials`,
       formData,
       {
         headers: {
@@ -113,7 +113,7 @@ export const uploadMaterials = async (formData) => {
 export const updateMaterial = async (materialId, materialData) => {
   try {
     const { data, status } = await api.patch(
-      `${BASE_URL}professor/materials/${materialId}`,
+      `${BASE_URL}professors/materials/${materialId}`,
       materialData
     );
     return { data, status };
@@ -126,7 +126,7 @@ export const updateMaterial = async (materialId, materialData) => {
 export const deleteMaterial = async (materialId) => {
   try {
     const response = await api.delete(
-      `${BASE_URL}professor/materials/${materialId}`
+      `${BASE_URL}professors/materials/${materialId}`
     );
     return response.data;
   } catch (error) {
@@ -228,7 +228,7 @@ export const getQuizScore = async (quiz_id) => {
 
 export const getBestPerformers = async () => {
   try {
-    const response = await api.get(`${BASE_URL}professor/getCoursesWithResults`);
+    const response = await api.get(`${BASE_URL}professor/courses-with-results`);
     return response.data;
   } catch (error) {
     console.error(error);
