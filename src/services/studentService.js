@@ -39,13 +39,13 @@ export const unregisterCourses = async (courseIds) => {
 };
 
 export const getRegisteredCourses = async () => {
-  const response = await api.get(`${BASE_URL}student/courses`);
+  const response = await api.get(`${BASE_URL}students/courses`);
   return response.data;
 };
 
 export const viewCourseMaterials = async (courseId) => {
   try {
-    const response = await api.get(`${BASE_URL}student/materials/${courseId}`);
+    const response = await api.get(`${BASE_URL}students/materials/${courseId}`);
     return response.data;
   } catch (error) {
     console.error(error);
