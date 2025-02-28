@@ -51,6 +51,18 @@ const QuizzesResults = () => {
     fetchQuizDetails(pagination.current_page);
   }, []);
 
+  const getGrade = (percentage) => {
+    if (percentage >= 90) return "A+";
+    if (percentage >= 85) return "A";
+    if (percentage >= 80) return "B+";
+    if (percentage >= 75) return "B";
+    if (percentage >= 70) return "C+";
+    if (percentage >= 65) return "C";
+    if (percentage >= 60) return "D+";
+    if (percentage >= 50) return "D";
+    return "F";
+  };
+
   const handleShowResult = async (quiz) => {
     try {
       setIsModalOpen(true);
@@ -192,11 +204,18 @@ const QuizzesResults = () => {
                 )}
               </div>
 
-              <div className="grid grid-cols-2 gap-4 p-4 bg-gray-50 rounded-lg">
+              <div className="flex justify-between gap-4 p-4 bg-gray-50 rounded-lg">
                 <div className="text-center">
                   <p className="text-sm text-gray-600">Your Score</p>
                   <p className="text-2xl font-bold text-primary">
                     {quizResult.score} / {selectedQuiz.quiz_details.total_marks}
+                  </p>
+                </div>
+                
+                <div className="text-center">
+                  <p className="text-sm text-gray-600">Grade</p>
+                  <p className="text-2xl font-bold text-primary">
+                    {getGrade(quizResult.percentage)}
                   </p>
                 </div>
                 <div className="text-center">
