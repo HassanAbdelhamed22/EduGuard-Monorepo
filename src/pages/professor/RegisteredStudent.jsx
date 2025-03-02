@@ -6,9 +6,9 @@ import PaginationLogic from "../../components/PaginationLogic";
 import RegisteredStudentTable from "../../components/Tables/RegisteredStudentTable";
 import Loading from "../../components/ui/Loading";
 import toast from "react-hot-toast";
-import { suspendUser, unSuspendUser } from "../../services/adminService";
 import { useLocation, useParams } from "react-router";
 import { fetchCourseRegistrations } from "../../services/professorService";
+import { suspendUser, unSuspendUser } from "../../services/userService";
 
 const RegisteredStudent = () => {
   const { courseId } = useParams();

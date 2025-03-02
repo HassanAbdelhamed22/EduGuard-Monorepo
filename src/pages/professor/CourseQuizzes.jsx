@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   deleteQuiz,
@@ -15,6 +15,7 @@ import UpdateQuizForm from "../../components/forms/UpdateQuizForm";
 import PaginationLogic from "./../../components/PaginationLogic";
 import SearchBar from "../../components/ui/SearchBar";
 import SortDropdown from "../../components/ui/SortDropdown";
+import debounce from "lodash/debounce";
 
 const CourseQuizzes = () => {
   const { courseId } = useParams();
@@ -31,15 +32,6 @@ const CourseQuizzes = () => {
     total_items: 0,
   });
 
-  // Add debounce to prevent too many API calls
-  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearchTerm(searchTerm);
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [searchTerm]);
-
   const { courseName, courseCode } = location.state || {
     courseName: "Unknown Course",
     courseCode: "N/A",
@@ -48,7 +40,6 @@ const CourseQuizzes = () => {
   const fetchQuizzes = async (page, search = "", sort = "nearest") => {
     setLoading(true);
     try {
-      // Modify your API endpoint to accept these parameters
       const response = await viewCourseQuizzes(courseId, {
         page,
         search,
@@ -64,11 +55,6 @@ const CourseQuizzes = () => {
     }
   };
 
-  // Effect for search and sort changes
-  useEffect(() => {
-    fetchQuizzes(1, debouncedSearchTerm, sortOrder);
-  }, [debouncedSearchTerm, sortOrder, courseId]);
-
   // Effect for pagination changes
   const handlePageChange = useCallback(
     (page) => {
@@ -77,10 +63,10 @@ const CourseQuizzes = () => {
         page > 0 &&
         page <= pagination.total_pages
       ) {
-        fetchQuizzes(page, debouncedSearchTerm, sortOrder);
+        setPagination((prev) => ({ ...prev, current_page: page }));
       }
     },
-    [pagination, debouncedSearchTerm, sortOrder]
+    [pagination]
   );
 
   const handleDeleteQuiz = async () => {
@@ -109,7 +95,7 @@ const CourseQuizzes = () => {
     try {
       const { data, status } = await updateQuiz(modal.quizId, updatedFields);
       if (status === 200) {
-        toast.success("Course updated successfully");
+        toast.success("Quiz updated successfully");
         closeModal();
         fetchQuizzes();
       } else {
@@ -122,27 +108,22 @@ const CourseQuizzes = () => {
     }
   };
 
-  const initialValues = {
-    title: modal.quizData?.Title || "",
-    description: modal.quizData?.Description || "",
-    quiz_date: modal.quizData?.QuizDate
-      ? new Date(modal.quizData.QuizDate).toISOString().split("T")[0]
-      : "",
-    start_time: modal.quizData?.StartTime
-      ? new Date(modal.quizData.StartTime).toLocaleTimeString("en-US", {
-          hour12: false,
-          hour: "2-digit",
-          minute: "2-digit",
-        })
-      : "",
-    end_time: modal.quizData?.EndTime
-      ? new Date(modal.quizData.EndTime).toLocaleTimeString("en-US", {
-          hour12: false,
-          hour: "2-digit",
-          minute: "2-digit",
-        })
-      : "",
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
   };
+
+  // Handle enter key press
+  const handleSearchEnter = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      fetchQuizzes(1, searchTerm, sortOrder);
+    }
+  };
+
+  useEffect(() => {
+    fetchQuizzes(1, searchTerm, sortOrder);
+  }, [sortOrder]);
 
   const displayQuizzes = quizzes;
 
@@ -195,10 +176,8 @@ const CourseQuizzes = () => {
         {/* Search Input */}
         <SearchBar
           value={searchTerm}
-          onChange={(e) => {
-            setSearchTerm(e.target.value);
-            setPagination((prev) => ({ ...prev, current_page: 1 }));
-          }}
+          onChange={handleSearchChange}
+          onEnter={handleSearchEnter}
           placeholder="Search quizzes..."
         />
 

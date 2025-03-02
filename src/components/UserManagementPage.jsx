@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast";
-import { suspendUser, unSuspendUser } from "../services/adminService";
 import Loading from "./ui/Loading";
 import Button from "./ui/Button";
 import PaginationLogic from "./PaginationLogic";
@@ -8,6 +7,7 @@ import Modal from "./ui/Modal";
 import Textarea from "./ui/Textarea";
 import UserTable from "./Tables/UserTable";
 import SearchBar from "./ui/SearchBar";
+import { suspendUser, unSuspendUser } from "../services/userService";
 
 const UserManagementPage = ({
   users,

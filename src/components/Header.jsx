@@ -31,7 +31,7 @@ const Header = ({ toggleSidebar, isSidebarOpen }) => {
   useEffect(() => {
     const fetchUnreadNotifications = async () => {
       try {
-        if (profile?.role === "user") {
+        if (userRole === "user") {
           const response = await getUnreadNotifications();
           dispatch(setUnreadCount(response.notifications.length));
         }
