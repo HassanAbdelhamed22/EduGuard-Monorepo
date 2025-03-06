@@ -36,6 +36,81 @@ const QuizInterface = () => {
   const [allQuestions, setAllQuestions] = useState([]);
   const [quizDetails, setQuizDetails] = useState(null);
 
+  // Function to request full-screen mode
+  const requestFullscreen = () => {
+    const element = document.documentElement;
+    if (element.requestFullscreen) {
+      element.requestFullscreen();
+    } else if (element.mozRequestFullScreen) {
+      // For Firefox
+      element.mozRequestFullScreen();
+    } else if (element.webkitRequestFullscreen) {
+      // For Chrome, Safari and Opera
+      element.webkitRequestFullscreen();
+    } else if (element.msRequestFullscreen) {
+      // For IE/Edge
+      element.msRequestFullscreen();
+    }
+  };
+
+  // Function to exit full-screen mode
+  const exitFullscreen = () => {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.mozCancelFullScreen) {
+      // For Firefox
+      document.mozCancelFullScreen();
+    } else if (document.webkitExitFullscreen) {
+      // For Chrome, Safari and Opera
+      document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) {
+      // For IE/Edge
+      document.msExitFullscreen();
+    }
+  };
+
+  // Disable copying, right-click, and keyboard shortcuts
+  useEffect(() => {
+    const handleContextMenu = (e) => {
+      e.preventDefault();
+    };
+    const handleCopy = (e) => {
+      e.preventDefault();
+    };
+    const handleKeyDown = (e) => {
+      if (e.ctrlKey || e.metaKey) {
+        e.preventDefault();
+      }
+    };
+
+    document.addEventListener("contextmenu", handleContextMenu);
+    document.addEventListener("copy", handleCopy);
+    document.addEventListener("cut", handleCopy);
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("contextmenu", handleContextMenu);
+      document.removeEventListener("copy", handleCopy);
+      document.removeEventListener("cut", handleCopy);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
+  // Detect tab switching or window minimization
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        toast.error("Do not switch tabs or windows during the quiz!");
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, []);
+
   // Fetch quiz questions and start the quiz
   useEffect(() => {
     const initializeQuiz = async () => {
@@ -61,6 +136,8 @@ const QuizInterface = () => {
               });
               return newQuestions;
             });
+
+            requestFullscreen();
           } else {
             throw new Error("No questions received from server");
           }
@@ -77,6 +154,10 @@ const QuizInterface = () => {
     };
 
     initializeQuiz();
+
+    return () => {
+      exitFullscreen();
+    };
   }, [quizId, navigate]);
 
   // Timer logic
@@ -183,7 +264,7 @@ const QuizInterface = () => {
   return (
     <div className="min-h-screen">
       <div className="max-w-5xl mx-auto p-6 space-y-6">
-        {/* Enhanced Header Section */}
+        {/* Header Section */}
         <div className="bg-white rounded-xl shadow-sm overflow-hidden">
           <div className="border-b border-gray-100 bg-gradient-to-r from-indigo-500 to-purple-500 text-white p-6">
             <div className="flex justify-between items-start">
@@ -296,7 +377,7 @@ const QuizInterface = () => {
                   <img
                     src={`http://127.0.0.1:8000/storage/${question.image}`}
                     alt={question.Content}
-                    className="w-full h-full object-cover rounded-lg"
+                    className="w-1/2 mb-3 h-full object-cover rounded-lg"
                   />
                 </div>
               )}
