@@ -95,7 +95,7 @@ const QuizInterface = () => {
               return newQuestions;
             });
 
-            
+            requestFullscreen();
           } else {
             throw new Error("No questions received from server");
           }
@@ -112,6 +112,10 @@ const QuizInterface = () => {
     };
 
     initializeQuiz();
+
+    return () => {
+      exitFullscreen();
+    };
   }, [quizId, navigate]);
 
   // Timer logic
@@ -218,7 +222,7 @@ const QuizInterface = () => {
   return (
     <div className="min-h-screen">
       <div className="max-w-5xl mx-auto p-6 space-y-6">
-        {/* Enhanced Header Section */}
+        {/* Header Section */}
         <div className="bg-white rounded-xl shadow-sm overflow-hidden">
           <div className="border-b border-gray-100 bg-gradient-to-r from-indigo-500 to-purple-500 text-white p-6">
             <div className="flex justify-between items-start">
