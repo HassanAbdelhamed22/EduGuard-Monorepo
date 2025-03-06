@@ -339,8 +339,19 @@ const QuizInterface = () => {
           <Progress value={progressValue} className="h-2" />
         </div>
 
-        {/* Navigation */}
-        <div className="flex justify-between items-center bg-white p-4 rounded-lg shadow-sm">
+        {/* Floating Timer and Progress Bar */}
+        <div className="fixed top-4 right-4 bg-white p-4 rounded-lg shadow-md z-50">
+          <div className="flex items-center gap-3">
+            <Clock className="w-5 h-5 text-indigo-600" />
+            <p className="text-lg font-bold text-gray-800">
+              {timeFormatted.minutes}:{timeFormatted.seconds}
+            </p>
+          </div>
+          <Progress value={progressValue} className="h-2 mt-2" />
+        </div>
+
+        {/* Floating Question Navigation */}
+        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-white  p-4 rounded-lg shadow-md flex gap-4 z-50">
           <button
             onClick={() => fetchQuestions(currentPage - 1)}
             disabled={currentPage === 1}
@@ -352,7 +363,7 @@ const QuizInterface = () => {
           >
             <ArrowLeft className="w-4 h-4" /> Previous
           </button>
-          <span className="px-4 py-2 bg-gray-100 rounded-md text-sm font-medium">
+          <span className="px-4 py-2 bg-gray-100  rounded-md text-sm font-medium">
             Question {currentPage} of {totalPages}
           </span>
           <button
@@ -381,6 +392,7 @@ const QuizInterface = () => {
                   />
                 </div>
               )}
+              {/* Question Content */}
               <div className="space-y-4">
                 <h2 className="text-xl font-semibold text-gray-800 flex items-start gap-3">
                   <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-indigo-100 text-indigo-600 rounded-full text-sm font-bold">
@@ -388,6 +400,7 @@ const QuizInterface = () => {
                   </span>
                   {question.Content}
                 </h2>
+                {/* Answers */}
                 <div className="space-y-3">
                   {question.answers.map((answer) => (
                     <div
@@ -415,7 +428,7 @@ const QuizInterface = () => {
                       >
                         {selectedAnswers[question.QuestionID] ===
                           answer.AnswerText && (
-                          <div className="w-2 h-2 rounded-full bg-white" />
+                          <CheckCircle className="w-4 h-4 text-white" />
                         )}
                       </div>
                       <span className="text-gray-700 font-medium">
