@@ -335,7 +335,7 @@ const QuizInterface = () => {
                   <img
                     src={`http://127.0.0.1:8000/storage/${question.image}`}
                     alt={question.Content}
-                    className="w-full h-full object-cover rounded-lg"
+                    className="w-1/2 mb-3 h-full object-cover rounded-lg"
                   />
                 </div>
               )}
