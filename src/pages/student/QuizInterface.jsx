@@ -36,6 +36,23 @@ const QuizInterface = () => {
   const [allQuestions, setAllQuestions] = useState([]);
   const [quizDetails, setQuizDetails] = useState(null);
 
+  // Function to request full-screen mode
+  const requestFullscreen = () => {
+    const element = document.documentElement;
+    if (element.requestFullscreen) {
+      element.requestFullscreen();
+    } else if (element.mozRequestFullScreen) {
+      // For Firefox
+      element.mozRequestFullScreen();
+    } else if (element.webkitRequestFullscreen) {
+      // For Chrome, Safari and Opera
+      element.webkitRequestFullscreen();
+    } else if (element.msRequestFullscreen) {
+      // For IE/Edge
+      element.msRequestFullscreen();
+    }
+  };
+
   // Fetch quiz questions and start the quiz
   useEffect(() => {
     const initializeQuiz = async () => {
