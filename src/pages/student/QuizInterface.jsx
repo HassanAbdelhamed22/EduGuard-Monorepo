@@ -53,6 +53,22 @@ const QuizInterface = () => {
     }
   };
 
+  // Function to exit full-screen mode
+  const exitFullscreen = () => {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.mozCancelFullScreen) {
+      // For Firefox
+      document.mozCancelFullScreen();
+    } else if (document.webkitExitFullscreen) {
+      // For Chrome, Safari and Opera
+      document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) {
+      // For IE/Edge
+      document.msExitFullscreen();
+    }
+  };
+
   // Fetch quiz questions and start the quiz
   useEffect(() => {
     const initializeQuiz = async () => {
@@ -78,6 +94,8 @@ const QuizInterface = () => {
               });
               return newQuestions;
             });
+
+            
           } else {
             throw new Error("No questions received from server");
           }
