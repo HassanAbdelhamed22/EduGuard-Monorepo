@@ -30,17 +30,18 @@ const StudentRoutes = () => {
           <Route path="my-courses" element={<MyCourses />} />
           <Route path="materials/:courseId" element={<CourseMaterials />} />
           <Route path="quizzes" element={<MyQuizzes />} />
-          <Route path="quiz/:quizId" element={<QuizInterface />} />
           <Route path="quiz-results" element={<QuizzesResults />} />
           <Route path="quiz/answers/:quizId" element={<StudentAnswers />} />
           <Route path="notifications" element={<NotificationsPage />} />
 
           <Route path="/profile" element={<Profile />} />
           <Route path="/update-password" element={<UpdatePassword />} />
-
-          {/* Page not found */}
-          <Route path="*" element={<PageNotFound />} />
         </Route>
+
+        <Route path="quiz/:quizId" element={<QuizInterface />} />
+        
+        {/* Page not found */}
+        <Route path="*" element={<PageNotFound />} />
       </Route>
     </Routes>
   );
