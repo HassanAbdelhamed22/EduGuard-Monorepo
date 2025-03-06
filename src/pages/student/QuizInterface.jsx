@@ -228,7 +228,7 @@ const QuizInterface = () => {
 
       if (response?.status === 200) {
         toast.success(response.message || "Quiz submitted successfully!");
-        navigate("/student/quizzes");
+        navigate("/student/quiz-results");
       } else {
         throw new Error("Failed to submit quiz");
       }
@@ -384,11 +384,12 @@ const QuizInterface = () => {
           <Card key={question.QuestionID} className="overflow-hidden">
             <CardContent className="p-6 space-y-6">
               {question.image && (
-                <div className="relative">
+                <div className="flex justify-center my-4">
                   <img
                     src={`http://127.0.0.1:8000/storage/${question.image}`}
                     alt={question.Content}
-                    className="w-1/2 mb-3 h-full object-cover rounded-lg"
+                    className="max-w-full h-auto rounded-lg shadow-md object-contain"
+                    style={{ maxHeight: "300px" }}
                   />
                 </div>
               )}
