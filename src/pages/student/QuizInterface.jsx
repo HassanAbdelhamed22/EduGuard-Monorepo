@@ -268,13 +268,7 @@ const QuizInterface = () => {
         
 
         {/* Progress Section */}
-        <div className="bg-white p-4 rounded-lg shadow-sm space-y-2">
-          <div className="flex justify-between text-sm text-gray-600">
-            <span>Overall Progress</span>
-            <span>{Math.round(progressValue)}% Complete</span>
-          </div>
-          <Progress value={progressValue} className="h-2" />
-        </div>
+        
 
         {/* Floating Timer and Progress Bar */}
         <div className="fixed top-4 right-4 bg-white p-4 rounded-lg shadow-md z-50">
