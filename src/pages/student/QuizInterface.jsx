@@ -124,6 +124,22 @@ const QuizInterface = () => {
     };
   }, [quizStarted]);
 
+  // Prevent exiting full-screen mode
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      if (!document.fullscreenElement && quizStarted) {
+        toast.error("Please do not exit full-screen mode during the quiz.");
+        requestFullscreen(); // Re-enter full-screen mode
+      }
+    };
+
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+    };
+  }, [quizStarted]);
+
   // Fetch quiz questions and start the quiz
   useEffect(() => {
     const initializeQuiz = async () => {
