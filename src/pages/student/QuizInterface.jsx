@@ -107,6 +107,23 @@ const QuizInterface = () => {
     };
   }, []);
 
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        e.preventDefault(); // Prevent the default behavior of the Esc key
+        toast.error("Exiting full-screen mode is not allowed during the quiz.");
+      }
+    };
+
+    if (quizStarted) {
+      document.addEventListener("keydown", handleKeyDown);
+    }
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [quizStarted]);
+
   // Fetch quiz questions and start the quiz
   useEffect(() => {
     const initializeQuiz = async () => {
