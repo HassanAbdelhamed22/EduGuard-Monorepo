@@ -2,7 +2,7 @@ import React from "react";
 import { Card, CardContent } from "../ui/QuizCard";
 import { Clock } from "lucide-react";
 
-const QuizHeader = ({ quizDetails, timeFormatted }) => {
+const QuizHeader = ({ quizDetails, timeFormatted, selectedAnswers, totalQuestions }) => {
   return (
     <div className="bg-white rounded-xl shadow-sm overflow-hidden">
       <div className="border-b border-gray-100 bg-gradient-to-r from-indigo-500 to-purple-500 text-white p-6">

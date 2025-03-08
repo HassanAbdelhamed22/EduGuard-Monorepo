@@ -293,7 +293,12 @@ const QuizInterface = () => {
   return (
     <div className="min-h-screen">
       <div className="max-w-5xl mx-auto p-6 space-y-6">
-        <QuizHeader quizDetails={quizDetails} timeFormatted={timeFormatted} />
+        <QuizHeader
+          quizDetails={quizDetails}
+          timeFormatted={timeFormatted}
+          selectedAnswers={selectedAnswers}
+          totalQuestions={totalQuestions}
+        />
         <QuizProgress progressValue={progressValue} />
         <FloatingTimer
           progressValue={progressValue}
