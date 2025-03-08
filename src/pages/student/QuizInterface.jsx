@@ -7,18 +7,14 @@ import {
 } from "../../services/studentService";
 import Loading from "../../components/ui/Loading";
 import toast from "react-hot-toast";
-import {
-  ArrowLeft,
-  ArrowRight,
-  Clock,
-  CheckCircle,
-  AlertCircle,
-  HelpCircle,
-} from "lucide-react";
+import { CheckCircle } from "lucide-react";
 import Button from "../../components/ui/Button";
-import { Card, CardContent } from "../../components/ui/QuizCard";
-import { Progress } from "../../components/ui/Progress";
 import Modal from "../../components/ui/Modal";
+import QuizHeader from "../../components/quiz interface/QuizHeader";
+import QuizProgress from "../../components/quiz interface/QuizProgress";
+import FloatingTimer from "../../components/quiz interface/FloatingTimer";
+import FloatingNavigation from "../../components/quiz interface/FloatingNavigation";
+import QuestionCard from "../../components/quiz interface/QuestionCard";
 
 const QuizInterface = () => {
   const { quizId } = useParams();
@@ -126,7 +122,7 @@ const QuizInterface = () => {
           if (questionResponse?.questions) {
             setQuestions(questionResponse.questions);
             setTotalPages(questionResponse.pagination.last_page);
-            setTimeLeft(startResponse.quiz.Duration * 60); // Convert minutes to seconds
+            setTimeLeft(startResponse.quiz.Duration * 60);
 
             setTotalQuestions(questionResponse.pagination.total);
             setAllQuestions((prev) => {
@@ -238,12 +234,12 @@ const QuizInterface = () => {
     }
   };
 
-  // Calculate progress correctly based on total questions
+  // Calculate progress based on total questions
   useEffect(() => {
     if (totalQuestions > 0) {
       const answeredCount = Object.keys(selectedAnswers).length;
       const calculatedProgress = (answeredCount / totalQuestions) * 100;
-      setProgressValue(Math.min(calculatedProgress, 100)); // Ensure progress doesn't exceed 100%
+      setProgressValue(Math.min(calculatedProgress, 100));
     }
   }, [selectedAnswers, totalQuestions]);
 
@@ -264,22 +260,28 @@ const QuizInterface = () => {
   return (
     <div className="min-h-screen">
       <div className="max-w-5xl mx-auto p-6 space-y-6">
-        {/* Header Section */}
-        
-
-        {/* Progress Section */}
-        
-
-        {/* Floating Timer and Progress Bar */}
-        
-
-        {/* Floating Question Navigation */}
-        
+        <QuizHeader quizDetails={quizDetails} timeFormatted={timeFormatted} />
+        <QuizProgress progressValue={progressValue} />
+        <FloatingTimer
+          progressValue={progressValue}
+          timeFormatted={timeFormatted}
+        />
+        <FloatingNavigation
+          currentPage={currentPage}
+          totalPages={totalPages}
+          fetchQuestions={fetchQuestions}
+        />
 
         {/* Questions */}
-        {/* {questions.map((question) => (
-          
-        ))} */}
+        {questions.map((question) => (
+          <QuestionCard
+            key={question.QuestionID}
+            question={question}
+            currentPage={currentPage}
+            handleAnswerSelect={handleAnswerSelect}
+            selectedAnswers={selectedAnswers}
+          />
+        ))}
 
         {/* Submit Button */}
         <div className="flex justify-end pt-4">
