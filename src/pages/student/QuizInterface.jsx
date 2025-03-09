@@ -110,8 +110,11 @@ const QuizInterface = () => {
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === "Escape") {
-        e.preventDefault(); // Prevent the default behavior of the Esc key
+        e.preventDefault();
         toast.error("Exiting full-screen mode is not allowed during the quiz.");
+
+        // Re-enter full-screen mode
+        requestFullscreen();
       }
     };
 
