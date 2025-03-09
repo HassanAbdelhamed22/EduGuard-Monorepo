@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   getQuizQuestions,
@@ -7,18 +7,16 @@ import {
 } from "../../services/studentService";
 import Loading from "../../components/ui/Loading";
 import toast from "react-hot-toast";
-import {
-  ArrowLeft,
-  ArrowRight,
-  Clock,
-  CheckCircle,
-  AlertCircle,
-  HelpCircle,
-} from "lucide-react";
+import { CheckCircle } from "lucide-react";
 import Button from "../../components/ui/Button";
-import { Card, CardContent } from "../../components/ui/QuizCard";
-import { Progress } from "../../components/ui/Progress";
 import Modal from "../../components/ui/Modal";
+import QuizHeader from "../../components/quiz interface/QuizHeader";
+import QuizProgress from "../../components/quiz interface/QuizProgress";
+import FloatingTimer from "../../components/quiz interface/FloatingTimer";
+import FloatingNavigation from "../../components/quiz interface/FloatingNavigation";
+import QuestionCard from "../../components/quiz interface/QuestionCard";
+import { set } from "lodash";
+import { use } from "react";
 
 const QuizInterface = () => {
   const { quizId } = useParams();
@@ -35,21 +33,29 @@ const QuizInterface = () => {
   const [totalQuestions, setTotalQuestions] = useState(0);
   const [allQuestions, setAllQuestions] = useState([]);
   const [quizDetails, setQuizDetails] = useState(null);
+  const [showFullscreenWarning, setShowFullscreenWarning] = useState(false);
+  const fullscreenButtonRef = useRef(null);
 
   // Function to request full-screen mode
   const requestFullscreen = () => {
     const element = document.documentElement;
-    if (element.requestFullscreen) {
-      element.requestFullscreen();
-    } else if (element.mozRequestFullScreen) {
-      // For Firefox
-      element.mozRequestFullScreen();
-    } else if (element.webkitRequestFullscreen) {
-      // For Chrome, Safari and Opera
-      element.webkitRequestFullscreen();
-    } else if (element.msRequestFullscreen) {
-      // For IE/Edge
-      element.msRequestFullscreen();
+
+    try {
+      if (element.requestFullscreen) {
+        element.requestFullscreen();
+      } else if (element.mozRequestFullScreen) {
+        // For Firefox
+        element.mozRequestFullScreen();
+      } else if (element.webkitRequestFullscreen) {
+        // For Chrome, Safari and Opera
+        element.webkitRequestFullscreen();
+      } else if (element.msRequestFullscreen) {
+        // For IE/Edge
+        element.msRequestFullscreen();
+      }
+    } catch (error) {
+      console.error("Error requesting full-screen mode:", error);
+      toast.error("Could not request full-screen mode. Please try again.");
     }
   };
 
@@ -111,6 +117,49 @@ const QuizInterface = () => {
     };
   }, []);
 
+  // Handle escape key press
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+      }
+    };
+
+    if (quizStarted) {
+      document.addEventListener("keydown", handleKeyDown);
+    }
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [quizStarted]);
+
+  // Prevent exiting full-screen mode
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      if (!document.fullscreenElement && quizStarted) {
+        toast.error("Please do not exit full-screen mode during the quiz.");
+
+        setShowFullscreenWarning(true);
+      }
+    };
+
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+    };
+  }, [quizStarted]);
+
+  // Focus on the fullscreen button
+  useEffect(() => {
+    if (showFullscreenWarning && fullscreenButtonRef.current) {
+      setTimeout(() => {
+        fullscreenButtonRef.current.focus();
+      }, 100);
+    }
+  }, [showFullscreenWarning]);
+
   // Fetch quiz questions and start the quiz
   useEffect(() => {
     const initializeQuiz = async () => {
@@ -126,7 +175,7 @@ const QuizInterface = () => {
           if (questionResponse?.questions) {
             setQuestions(questionResponse.questions);
             setTotalPages(questionResponse.pagination.last_page);
-            setTimeLeft(startResponse.quiz.Duration * 60); // Convert minutes to seconds
+            setTimeLeft(startResponse.quiz.Duration * 60);
 
             setTotalQuestions(questionResponse.pagination.total);
             setAllQuestions((prev) => {
@@ -238,12 +287,12 @@ const QuizInterface = () => {
     }
   };
 
-  // Calculate progress correctly based on total questions
+  // Calculate progress based on total questions
   useEffect(() => {
     if (totalQuestions > 0) {
       const answeredCount = Object.keys(selectedAnswers).length;
       const calculatedProgress = (answeredCount / totalQuestions) * 100;
-      setProgressValue(Math.min(calculatedProgress, 100)); // Ensure progress doesn't exceed 100%
+      setProgressValue(Math.min(calculatedProgress, 100));
     }
   }, [selectedAnswers, totalQuestions]);
 
@@ -264,183 +313,32 @@ const QuizInterface = () => {
   return (
     <div className="min-h-screen">
       <div className="max-w-5xl mx-auto p-6 space-y-6">
-        {/* Header Section */}
-        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-          <div className="border-b border-gray-100 bg-gradient-to-r from-indigo-500 to-purple-500 text-white p-6">
-            <div className="flex justify-between items-start">
-              <div className="space-y-1">
-                <h1 className="text-3xl font-bold">{quizDetails?.Title}</h1>
-                <p className="text-indigo-100">{quizDetails?.Description}</p>
-              </div>
-              {/* Timer Card - Now with glass morphism effect */}
-              <Card className="bg-white/10 backdrop-blur-md border-white/20">
-                <CardContent className="p-4">
-                  <div className="flex items-center gap-3">
-                    <Clock className="w-5 h-5 text-white" />
-                    <div className="space-y-1">
-                      <p className="text-sm text-white/80">Time Remaining</p>
-                      <p className="text-2xl font-bold text-white font-mono">
-                        {timeFormatted.minutes}:{timeFormatted.seconds}
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-
-          {/* Quiz Details Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-6">
-            <div className="space-y-1">
-              <p className="text-sm text-gray-500">Course</p>
-              <p className="font-medium text-gray-900">
-                {quizDetails?.CourseName}
-              </p>
-              <p className="text-sm text-gray-600">{quizDetails?.CourseCode}</p>
-            </div>
-            <div className="space-y-1">
-              <p className="text-sm text-gray-500">Total Marks</p>
-              <p className="font-medium text-gray-900">
-                {quizDetails?.TotalMarks} Points
-              </p>
-              <p className="text-sm text-gray-600">
-                {Object.keys(selectedAnswers).length} of {totalQuestions}{" "}
-                answered
-              </p>
-            </div>
-            <div className="space-y-1">
-              <p className="text-sm text-gray-500">Duration</p>
-              <p className="font-medium text-gray-900">
-                {quizDetails?.Duration} Minutes
-              </p>
-              <p className="text-sm text-gray-600">
-                Started at{" "}
-                {new Date(quizDetails?.StartTime).toLocaleTimeString()}
-              </p>
-            </div>
-            <div className="space-y-1">
-              <p className="text-sm text-gray-500">Due</p>
-              <p className="font-medium text-gray-900">
-                {new Date(quizDetails?.EndTime).toLocaleDateString()}
-              </p>
-              <p className="text-sm text-gray-600">
-                {new Date(quizDetails?.EndTime).toLocaleTimeString()}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Progress Section */}
-        <div className="bg-white p-4 rounded-lg shadow-sm space-y-2">
-          <div className="flex justify-between text-sm text-gray-600">
-            <span>Overall Progress</span>
-            <span>{Math.round(progressValue)}% Complete</span>
-          </div>
-          <Progress value={progressValue} className="h-2" />
-        </div>
-
-        {/* Floating Timer and Progress Bar */}
-        <div className="fixed top-4 right-4 bg-white p-4 rounded-lg shadow-md z-50">
-          <div className="flex items-center gap-3">
-            <Clock className="w-5 h-5 text-indigo-600" />
-            <p className="text-lg font-bold text-gray-800">
-              {timeFormatted.minutes}:{timeFormatted.seconds}
-            </p>
-          </div>
-          <Progress value={progressValue} className="h-2 mt-2" />
-        </div>
-
-        {/* Floating Question Navigation */}
-        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-white  p-4 rounded-lg shadow-md flex gap-4 z-50">
-          <button
-            onClick={() => fetchQuestions(currentPage - 1)}
-            disabled={currentPage === 1}
-            className={`flex items-center gap-2 px-4 py-2 rounded-md transition-colors ${
-              currentPage === 1
-                ? "text-gray-400 cursor-not-allowed"
-                : "text-indigo-600 hover:bg-indigo-50"
-            }`}
-          >
-            <ArrowLeft className="w-4 h-4" /> Previous
-          </button>
-          <span className="px-4 py-2 bg-gray-100  rounded-md text-sm font-medium">
-            Question {currentPage} of {totalPages}
-          </span>
-          <button
-            onClick={() => fetchQuestions(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            className={`flex items-center gap-2 px-4 py-2 rounded-md transition-colors ${
-              currentPage === totalPages
-                ? "text-gray-400 cursor-not-allowed"
-                : "text-indigo-600 hover:bg-indigo-50"
-            }`}
-          >
-            Next <ArrowRight className="w-4 h-4" />
-          </button>
-        </div>
+        <QuizHeader
+          quizDetails={quizDetails}
+          timeFormatted={timeFormatted}
+          selectedAnswers={selectedAnswers}
+          totalQuestions={totalQuestions}
+        />
+        <QuizProgress progressValue={progressValue} />
+        <FloatingTimer
+          progressValue={progressValue}
+          timeFormatted={timeFormatted}
+        />
+        <FloatingNavigation
+          currentPage={currentPage}
+          totalPages={totalPages}
+          fetchQuestions={fetchQuestions}
+        />
 
         {/* Questions */}
         {questions.map((question) => (
-          <Card key={question.QuestionID} className="overflow-hidden">
-            <CardContent className="p-6 space-y-6">
-              {question.image && (
-                <div className="flex justify-center my-4">
-                  <img
-                    src={`http://127.0.0.1:8000/storage/${question.image}`}
-                    alt={question.Content}
-                    className="max-w-full h-auto rounded-lg shadow-md object-contain"
-                    style={{ maxHeight: "300px" }}
-                  />
-                </div>
-              )}
-              {/* Question Content */}
-              <div className="space-y-4">
-                <h2 className="text-xl font-semibold text-gray-800 flex items-start gap-3">
-                  <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-indigo-100 text-indigo-600 rounded-full text-sm font-bold">
-                    Q{currentPage}
-                  </span>
-                  {question.Content}
-                </h2>
-                {/* Answers */}
-                <div className="space-y-3">
-                  {question.answers.map((answer) => (
-                    <div
-                      key={answer.AnswerID}
-                      onClick={() =>
-                        handleAnswerSelect(
-                          question.QuestionID,
-                          answer.AnswerText
-                        )
-                      }
-                      className={`relative flex items-center gap-3 p-4 rounded-lg cursor-pointer transition-all duration-200 ${
-                        selectedAnswers[question.QuestionID] ===
-                        answer.AnswerText
-                          ? "bg-indigo-50 border-2 border-indigo-500"
-                          : "bg-gray-50 border-2 border-transparent hover:border-gray-200"
-                      }`}
-                    >
-                      <div
-                        className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                          selectedAnswers[question.QuestionID] ===
-                          answer.AnswerText
-                            ? "border-indigo-500 bg-indigo-500"
-                            : "border-gray-400"
-                        }`}
-                      >
-                        {selectedAnswers[question.QuestionID] ===
-                          answer.AnswerText && (
-                          <CheckCircle className="w-4 h-4 text-white" />
-                        )}
-                      </div>
-                      <span className="text-gray-700 font-medium">
-                        {answer.AnswerText}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <QuestionCard
+            key={question.QuestionID}
+            question={question}
+            currentPage={currentPage}
+            handleAnswerSelect={handleAnswerSelect}
+            selectedAnswers={selectedAnswers}
+          />
         ))}
 
         {/* Submit Button */}
@@ -469,6 +367,27 @@ const QuizInterface = () => {
             </Button>
             <Button variant="default" onClick={handleSubmitQuiz}>
               Submit
+            </Button>
+          </div>
+        </Modal>
+
+        {/* Fullscreen Warning Modal */}
+        <Modal
+          isOpen={showFullscreenWarning}
+          // closeModal={() => setShowFullscreenWarning(false)}
+          title="Fullscreen Warning"
+          description="You have exited fullscreen mode. This is not allowed during the quiz. Please click the button below to return to fullscreen mode."
+        >
+          <div className="flex justify-center mt-5">
+            <Button
+              ref={fullscreenButtonRef}
+              variant="default"
+              onClick={() => {
+                requestFullscreen();
+                setShowFullscreenWarning(false);
+              }}
+            >
+              Return to Fullscreen
             </Button>
           </div>
         </Modal>
