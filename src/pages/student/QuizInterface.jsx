@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   getQuizQuestions,
@@ -15,6 +15,8 @@ import QuizProgress from "../../components/quiz interface/QuizProgress";
 import FloatingTimer from "../../components/quiz interface/FloatingTimer";
 import FloatingNavigation from "../../components/quiz interface/FloatingNavigation";
 import QuestionCard from "../../components/quiz interface/QuestionCard";
+import { set } from "lodash";
+import { use } from "react";
 
 const QuizInterface = () => {
   const { quizId } = useParams();
@@ -31,21 +33,29 @@ const QuizInterface = () => {
   const [totalQuestions, setTotalQuestions] = useState(0);
   const [allQuestions, setAllQuestions] = useState([]);
   const [quizDetails, setQuizDetails] = useState(null);
+  const [showFullscreenWarning, setShowFullscreenWarning] = useState(false);
+  const fullscreenButtonRef = useRef(null);
 
   // Function to request full-screen mode
   const requestFullscreen = () => {
     const element = document.documentElement;
-    if (element.requestFullscreen) {
-      element.requestFullscreen();
-    } else if (element.mozRequestFullScreen) {
-      // For Firefox
-      element.mozRequestFullScreen();
-    } else if (element.webkitRequestFullscreen) {
-      // For Chrome, Safari and Opera
-      element.webkitRequestFullscreen();
-    } else if (element.msRequestFullscreen) {
-      // For IE/Edge
-      element.msRequestFullscreen();
+
+    try {
+      if (element.requestFullscreen) {
+        element.requestFullscreen();
+      } else if (element.mozRequestFullScreen) {
+        // For Firefox
+        element.mozRequestFullScreen();
+      } else if (element.webkitRequestFullscreen) {
+        // For Chrome, Safari and Opera
+        element.webkitRequestFullscreen();
+      } else if (element.msRequestFullscreen) {
+        // For IE/Edge
+        element.msRequestFullscreen();
+      }
+    } catch (error) {
+      console.error("Error requesting full-screen mode:", error);
+      toast.error("Could not request full-screen mode. Please try again.");
     }
   };
 
@@ -107,14 +117,11 @@ const QuizInterface = () => {
     };
   }, []);
 
+  // Handle escape key press
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === "Escape") {
         e.preventDefault();
-        toast.error("Exiting full-screen mode is not allowed during the quiz.");
-
-        // Re-enter full-screen mode
-        requestFullscreen();
       }
     };
 
@@ -132,7 +139,8 @@ const QuizInterface = () => {
     const handleFullscreenChange = () => {
       if (!document.fullscreenElement && quizStarted) {
         toast.error("Please do not exit full-screen mode during the quiz.");
-        requestFullscreen(); // Re-enter full-screen mode
+
+        setShowFullscreenWarning(true);
       }
     };
 
@@ -142,6 +150,15 @@ const QuizInterface = () => {
       document.removeEventListener("fullscreenchange", handleFullscreenChange);
     };
   }, [quizStarted]);
+
+  // Focus on the fullscreen button
+  useEffect(() => {
+    if (showFullscreenWarning && fullscreenButtonRef.current) {
+      setTimeout(() => {
+        fullscreenButtonRef.current.focus();
+      }, 100);
+    }
+  }, [showFullscreenWarning]);
 
   // Fetch quiz questions and start the quiz
   useEffect(() => {
@@ -350,6 +367,27 @@ const QuizInterface = () => {
             </Button>
             <Button variant="default" onClick={handleSubmitQuiz}>
               Submit
+            </Button>
+          </div>
+        </Modal>
+
+        {/* Fullscreen Warning Modal */}
+        <Modal
+          isOpen={showFullscreenWarning}
+          // closeModal={() => setShowFullscreenWarning(false)}
+          title="Fullscreen Warning"
+          description="You have exited fullscreen mode. This is not allowed during the quiz. Please click the button below to return to fullscreen mode."
+        >
+          <div className="flex justify-center mt-5">
+            <Button
+              ref={fullscreenButtonRef}
+              variant="default"
+              onClick={() => {
+                requestFullscreen();
+                setShowFullscreenWarning(false);
+              }}
+            >
+              Return to Fullscreen
             </Button>
           </div>
         </Modal>
