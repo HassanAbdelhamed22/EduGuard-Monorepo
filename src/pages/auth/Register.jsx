@@ -64,7 +64,7 @@ const Register = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col mb-5">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Header */}
       <header className="p-4 flex justify-between items-center max-w-7xl mx-auto w-full">
         <Logo />
@@ -74,37 +74,31 @@ const Register = () => {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8">
-        <div className="max-w-5xl w-full grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-          {/* Login Form */}
-          <div className="space-y-8">
-            <div className="text-center md:text-left">
-              <h2 className="text-4xl font-bold text-darkGray">
-                Register now!
-              </h2>
-              <p className="mt-2 text-mediumGray">Hi, Create your account 👋</p>
-            </div>
+      <main className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-6xl w-full ">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Left: Form and Webcam */}
+            <div className="space-y-6">
+              <div className="text-center lg:text-left">
+                <h2 className="text-3xl font-bold text-gray-800">
+                  Register Now
+                </h2>
+                <p className="mt-1 text-gray-600">Create your account 👋</p>
+              </div>
 
-            <RegisterForm
-              initialValues={initialValues}
-              validationSchema={registerValidationSchema}
-              onSubmit={handleSubmit}
-              isLoading={isLoading}
-              showPassword={showPassword}
-              setShowPassword={setShowPassword}
-              showPasswordConfirmation={showPasswordConfirmation}
-              setShowPasswordConfirmation={setShowPasswordConfirmation}
-            />
+              {/* Form */}
+              <RegisterForm
+                initialValues={initialValues}
+                validationSchema={registerValidationSchema}
+                onSubmit={handleSubmit}
+                isLoading={isLoading}
+                showPassword={showPassword}
+                setShowPassword={setShowPassword}
+                showPasswordConfirmation={showPasswordConfirmation}
+                setShowPasswordConfirmation={setShowPasswordConfirmation}
+              />
 
-            <div className="mt-6">
-              <h3 className="text-lg font-medium text-darkGray mb-2">
-                Capture Images for Face Recognition
-              </h3>
-              <WebcamCapture onCapture={handleCapture} />
-            </div>
-
-            <div className="text-center">
-              <p className="text-sm text-gray-600">
+              <p className="text-center text-sm text-gray-600">
                 Already have an account?{" "}
                 <Link
                   to="/login"
@@ -114,16 +108,23 @@ const Register = () => {
                 </Link>
               </p>
             </div>
-          </div>
 
-          {/* Illustration */}
-          <div className="hidden md:block">
-            <img
-              src={img}
-              alt="Education Illustration"
-              className="w-full h-auto"
-              loading="lazy"
-            />
+            {/* Right: Illustration */}
+            <div className="hidden lg:block ">
+              <img
+                src={img}
+                alt="Education Illustration"
+                className=" object-cover rounded-r-lg"
+                loading="lazy"
+              />
+            </div>
+          </div>
+          {/* Webcam Capture */}
+          <div className="mt-4 w-full">
+            <h3 className="text-lg font-medium text-gray-700 mb-2">
+              Capture Face Images
+            </h3>
+            <WebcamCapture onCapture={handleCapture} />
           </div>
         </div>
       </main>
