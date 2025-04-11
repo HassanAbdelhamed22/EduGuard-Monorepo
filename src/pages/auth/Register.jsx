@@ -8,6 +8,7 @@ import { registerValidationSchema } from "../../utils/validation";
 import Logo from "../../components/Logo";
 import Button from "../../components/ui/Button";
 import RegisterForm from "../../components/forms/RegisterForm";
+import WebcamCapture from "../../components/WebcamCapture";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -15,6 +16,7 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirmation, setShowPasswordConfirmation] =
     useState(false);
+  const [capturedImages, setCapturedImages] = useState([]);
 
   const initialValues = {
     name: "",
@@ -25,10 +27,19 @@ const Register = () => {
     address: "",
   };
 
+  const handleCapture = (images) => {
+    setCapturedImages(images);
+  };
+
   async function handleSubmit(values) {
+    if (capturedImages.length === 0) {
+      toast.error("Please capture at least one image.");
+      return;
+    }
     setIsLoading(true);
     try {
-      const { data, status } = await register(values);
+      const payload = { ...values, captured_images: capturedImages };
+      const { data, status } = await register(payload);
 
       if (status === 201) {
         saveUserData(data.data);
@@ -84,6 +95,13 @@ const Register = () => {
               showPasswordConfirmation={showPasswordConfirmation}
               setShowPasswordConfirmation={setShowPasswordConfirmation}
             />
+
+            <div className="mt-6">
+              <h3 className="text-lg font-medium text-darkGray mb-2">
+                Capture Images for Face Recognition
+              </h3>
+              <WebcamCapture onCapture={handleCapture} />
+            </div>
 
             <div className="text-center">
               <p className="text-sm text-gray-600">
