@@ -61,8 +61,10 @@ const WebcamCapture = ({ onCapture }) => {
           captureScreenshot();
           captureCount++;
           if (captureCount === 1) setInstructions("Captured 1/3: Look left.");
-          else if (captureCount === 2) setInstructions("Captured 2/3: Look right.");
-          else if (captureCount === 3) setInstructions("Captured 3/3: Look straight.");
+          else if (captureCount === 2)
+            setInstructions("Captured 2/3: Look right.");
+          else if (captureCount === 3)
+            setInstructions("Captured 3/3: Look straight.");
         } else {
           clearInterval(captureInterval);
           setIsCapturing(false);
@@ -98,50 +100,54 @@ const WebcamCapture = ({ onCapture }) => {
   };
 
   return (
-    <div className="space-y-4">
-      <Webcam
-        audio={false}
-        ref={webCamRef}
-        videoConstraints={videoConstraints}
-        screenshotFormat="image/jpeg"
-        className="w-full h-auto rounded-lg border border-gray-300"
-      />
-      <div className="flex justify-center gap-4">
+    <div className="flex flex-col md:flex-row gap-4">
+      <div className="w-full md:w-1/2 space-y-2">
+        <Webcam
+          audio={false}
+          ref={webCamRef}
+          videoConstraints={videoConstraints}
+          screenshotFormat="image/jpeg"
+          className="w-full h-auto rounded-lg border border-gray-300"
+        />
         <Button
           variant="default"
           onClick={startCapture}
           disabled={isCapturing || capturedImages.length >= 50}
+          fullWidth
         >
           {isCapturing ? "Capturing..." : "Start Auto Capture"}
         </Button>
       </div>
-      {instructions && (
-        <div className="text-center text-lg font-semibold text-indigo-600 whitespace-pre-line">
-          {instructions} {countdown > 0 && countdown}
-        </div>
-      )}
-      <div className="grid grid-cols-3 gap-2">
-        {capturedImages.map((image, index) => (
-          <div key={index} className="relative">
-            <img
-              src={image}
-              alt={`Captured ${index}`}
-              className="w-full h-24 object-cover rounded"
-            />
-            <button
-              onClick={() => removeImage(index)}
-              className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
-            >
-              &times;
-            </button>
+
+      <div className="w-full md:w-1/2 space-y-2">
+        {instructions && (
+          <div className="text-center text-sm font-medium text-indigo-600 whitespace-pre-line bg-indigo-50 p-2 rounded">
+            {instructions} {countdown > 0 && countdown}
           </div>
-        ))}
+        )}
+        <div className="max-h-[400px] overflow-y-auto grid grid-cols-3 gap-2">
+          {capturedImages.map((image, index) => (
+            <div key={index} className="relative">
+              <img
+                src={image}
+                alt={`Captured ${index}`}
+                className="w-full h-full object-cover rounded"
+              />
+              <button
+                onClick={() => removeImage(index)}
+                className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs"
+              >
+                ×
+              </button>
+            </div>
+          ))}
+        </div>
+        {capturedImages.length > 0 && (
+          <p className="text-center text-xs text-gray-600">
+            {capturedImages.length} image(s) captured
+          </p>
+        )}
       </div>
-      {capturedImages.length > 0 && (
-        <p className="text-center text-sm text-gray-600">
-          {capturedImages.length} image(s) captured
-        </p>
-      )}
     </div>
   );
 };
