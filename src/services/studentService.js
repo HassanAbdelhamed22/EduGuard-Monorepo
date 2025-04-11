@@ -88,9 +88,17 @@ export const getQuizQuestions = async (quizId, page) => {
   }
 };
 
-export const startQuiz = async (quizId) => {
+export const startQuiz = async (quizId, capturedFrame) => {
   try {
-    const response = await api.get(`${BASE_URL}quizzes/start/${quizId}`);
+    const response = await api.post(
+      `${BASE_URL}quizzes/start/${quizId}`,
+      { captured_frame: capturedFrame },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
     return response.data;
   } catch (error) {
     console.error("Failed to start quiz:", error);
@@ -118,9 +126,7 @@ export const submitQuiz = async (quizId, answers) => {
 
 export const getSubmittedQuizzes = async (page) => {
   try {
-    const response = await api.get(
-      `${BASE_URL}quizzes/submitted?page=${page}`
-    );
+    const response = await api.get(`${BASE_URL}quizzes/submitted?page=${page}`);
     return response.data;
   } catch (error) {
     console.error("Failed to fetch submitted quizzes:", error);
