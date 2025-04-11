@@ -15,8 +15,7 @@ import QuizProgress from "../../components/quiz interface/QuizProgress";
 import FloatingTimer from "../../components/quiz interface/FloatingTimer";
 import FloatingNavigation from "../../components/quiz interface/FloatingNavigation";
 import QuestionCard from "../../components/quiz interface/QuestionCard";
-import { set } from "lodash";
-import { use } from "react";
+import VerifyFace from "../../components/VerifyFace";
 
 const QuizInterface = () => {
   const { quizId } = useParams();
@@ -26,7 +25,7 @@ const QuizInterface = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [timeLeft, setTimeLeft] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [quizStarted, setQuizStarted] = useState(false);
   const [showConfirmSubmit, setShowConfirmSubmit] = useState(false);
   const [progressValue, setProgressValue] = useState(0);
@@ -160,54 +159,42 @@ const QuizInterface = () => {
     }
   }, [showFullscreenWarning]);
 
-  // Fetch quiz questions and start the quiz
-  useEffect(() => {
-    const initializeQuiz = async () => {
-      setIsLoading(true);
-      try {
-        const startResponse = await startQuiz(quizId);
-
-        if (startResponse?.status === 200) {
-          setQuizStarted(true);
-          setQuizDetails(startResponse.quiz);
-          const questionResponse = await getQuizQuestions(quizId, 1);
-
-          if (questionResponse?.questions) {
-            setQuestions(questionResponse.questions);
-            setTotalPages(questionResponse.pagination.last_page);
-            setTimeLeft(startResponse.quiz.Duration * 60);
-
-            setTotalQuestions(questionResponse.pagination.total);
-            setAllQuestions((prev) => {
-              const newQuestions = [...prev];
-              questionResponse.questions.forEach((q) => {
-                newQuestions[0] = questionResponse.questions;
-              });
-              return newQuestions;
-            });
-
-            requestFullscreen();
-          } else {
-            throw new Error("No questions received from server");
-          }
+  // Handle face verification and start quiz
+  const handleVerifyFace = async (capturedFrame) => {
+    setIsLoading(true);
+    try {
+      const startResponse = await startQuiz(quizId, capturedFrame);
+      if (startResponse?.status === 200) {
+        setQuizStarted(true);
+        setQuizDetails(startResponse.quiz);
+        const questionResponse = await getQuizQuestions(quizId, 1);
+        if (questionResponse?.questions) {
+          setQuestions(questionResponse.questions);
+          setTotalPages(questionResponse.pagination.last_page);
+          setTimeLeft(startResponse.quiz.Duration * 60);
+          setTotalQuestions(questionResponse.pagination.total);
+          setAllQuestions((prev) => {
+            const newQuestions = [...prev];
+            newQuestions[0] = questionResponse.questions;
+            return newQuestions;
+          });
+          requestFullscreen();
         } else {
-          throw new Error(startResponse?.message || "Failed to start quiz");
+          throw new Error("No questions received");
         }
-      } catch (error) {
-        console.error("Quiz initialization failed:", error);
-        toast.error(error.response?.data?.message || error.message);
-        navigate(-1);
-      } finally {
-        setIsLoading(false);
+      } else {
+        if (startResponse?.debug) {
+          console.error('Face verification debug:', startResponse.debug);
+        }
+        throw new Error(startResponse?.message || "Failed to start quiz");
       }
-    };
-
-    initializeQuiz();
-
-    return () => {
-      exitFullscreen();
-    };
-  }, [quizId, navigate]);
+    } catch (error) {
+      console.error("Quiz start failed:", error);
+      toast.error(error.response?.data?.message || error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // Timer logic
   useEffect(() => {
@@ -313,84 +300,90 @@ const QuizInterface = () => {
   return (
     <div className="min-h-screen">
       <div className="max-w-5xl mx-auto p-6 space-y-6">
-        <QuizHeader
-          quizDetails={quizDetails}
-          timeFormatted={timeFormatted}
-          selectedAnswers={selectedAnswers}
-          totalQuestions={totalQuestions}
-        />
-        <QuizProgress progressValue={progressValue} />
-        <FloatingTimer
-          progressValue={progressValue}
-          timeFormatted={timeFormatted}
-        />
-        <FloatingNavigation
-          currentPage={currentPage}
-          totalPages={totalPages}
-          fetchQuestions={fetchQuestions}
-        />
+        {!quizStarted ? (
+          <VerifyFace onCapture={handleVerifyFace} />
+        ) : (
+          <>
+            <QuizHeader
+              quizDetails={quizDetails}
+              timeFormatted={timeFormatted}
+              selectedAnswers={selectedAnswers}
+              totalQuestions={totalQuestions}
+            />
+            <QuizProgress progressValue={progressValue} />
+            <FloatingTimer
+              progressValue={progressValue}
+              timeFormatted={timeFormatted}
+            />
+            <FloatingNavigation
+              currentPage={currentPage}
+              totalPages={totalPages}
+              fetchQuestions={fetchQuestions}
+            />
 
-        {/* Questions */}
-        {questions.map((question) => (
-          <QuestionCard
-            key={question.QuestionID}
-            question={question}
-            currentPage={currentPage}
-            handleAnswerSelect={handleAnswerSelect}
-            selectedAnswers={selectedAnswers}
-          />
-        ))}
+            {/* Questions */}
+            {questions.map((question) => (
+              <QuestionCard
+                key={question.QuestionID}
+                question={question}
+                currentPage={currentPage}
+                handleAnswerSelect={handleAnswerSelect}
+                selectedAnswers={selectedAnswers}
+              />
+            ))}
 
-        {/* Submit Button */}
-        <div className="flex justify-end pt-4">
-          <Button
-            onClick={() => setShowConfirmSubmit(true)}
-            variant={"default"}
-          >
-            <CheckCircle className="w-5 h-5 mr-2" /> Submit Quiz
-          </Button>
-        </div>
+            {/* Submit Button */}
+            <div className="flex justify-end pt-4">
+              <Button
+                onClick={() => setShowConfirmSubmit(true)}
+                variant={"default"}
+              >
+                <CheckCircle className="w-5 h-5 mr-2" /> Submit Quiz
+              </Button>
+            </div>
 
-        {/* Confirm Submit Dialog */}
-        <Modal
-          isOpen={showConfirmSubmit}
-          closeModal={() => setShowConfirmSubmit(false)}
-          title="Confirm Quiz Submission"
-          description="Are you sure you want to submit your quiz? You won't be able to change your answers after submission."
-        >
-          <div className="flex justify-end gap-2 mt-5">
-            <Button
-              variant="cancel"
-              onClick={() => setShowConfirmSubmit(false)}
+            {/* Confirm Submit Dialog */}
+            <Modal
+              isOpen={showConfirmSubmit}
+              closeModal={() => setShowConfirmSubmit(false)}
+              title="Confirm Quiz Submission"
+              description="Are you sure you want to submit your quiz? You won't be able to change your answers after submission."
             >
-              Cancel
-            </Button>
-            <Button variant="default" onClick={handleSubmitQuiz}>
-              Submit
-            </Button>
-          </div>
-        </Modal>
+              <div className="flex justify-end gap-2 mt-5">
+                <Button
+                  variant="cancel"
+                  onClick={() => setShowConfirmSubmit(false)}
+                >
+                  Cancel
+                </Button>
+                <Button variant="default" onClick={handleSubmitQuiz}>
+                  Submit
+                </Button>
+              </div>
+            </Modal>
 
-        {/* Fullscreen Warning Modal */}
-        <Modal
-          isOpen={showFullscreenWarning}
-          // closeModal={() => setShowFullscreenWarning(false)}
-          title="Fullscreen Warning"
-          description="You have exited fullscreen mode. This is not allowed during the quiz. Please click the button below to return to fullscreen mode."
-        >
-          <div className="flex justify-center mt-5">
-            <Button
-              ref={fullscreenButtonRef}
-              variant="default"
-              onClick={() => {
-                requestFullscreen();
-                setShowFullscreenWarning(false);
-              }}
+            {/* Fullscreen Warning Modal */}
+            <Modal
+              isOpen={showFullscreenWarning}
+              // closeModal={() => setShowFullscreenWarning(false)}
+              title="Fullscreen Warning"
+              description="You have exited fullscreen mode. This is not allowed during the quiz. Please click the button below to return to fullscreen mode."
             >
-              Return to Fullscreen
-            </Button>
-          </div>
-        </Modal>
+              <div className="flex justify-center mt-5">
+                <Button
+                  ref={fullscreenButtonRef}
+                  variant="default"
+                  onClick={() => {
+                    requestFullscreen();
+                    setShowFullscreenWarning(false);
+                  }}
+                >
+                  Return to Fullscreen
+                </Button>
+              </div>
+            </Modal>
+          </>
+        )}
       </div>
     </div>
   );
