@@ -72,7 +72,7 @@ const WebcamCapture = ({ onCapture }) => {
           setTimeout(() => setInstructions(""), 3000);
           setCountdown(null);
         }
-      }, 500);
+      }, 1000);
 
       return () => clearInterval(captureInterval);
     }
