@@ -8,7 +8,7 @@ import {
 } from "../../services/studentService";
 import Loading from "../../components/ui/Loading";
 import toast from "react-hot-toast";
-import { CheckCircle } from "lucide-react";
+import { AlertTriangle, CheckCircle } from "lucide-react";
 import Button from "../../components/ui/Button";
 import Modal from "../../components/ui/Modal";
 import QuizHeader from "../../components/quiz interface/QuizHeader";
@@ -17,9 +17,6 @@ import FloatingTimer from "../../components/quiz interface/FloatingTimer";
 import FloatingNavigation from "../../components/quiz interface/FloatingNavigation";
 import QuestionCard from "../../components/quiz interface/QuestionCard";
 import VerifyFace from "../../components/VerifyFace";
-import api from "../../config/api";
-import { BASE_URL } from "../../constants";
-import { se } from "date-fns/locale/se";
 
 const QuizInterface = () => {
   const { quizId } = useParams();
@@ -46,6 +43,8 @@ const QuizInterface = () => {
   const [studentId, setStudentId] = useState(null);
   const [isVideoReady, setIsVideoReady] = useState(false);
   const [authToken, setAuthToken] = useState(null);
+  const [showCheatingWarning, setShowCheatingWarning] = useState(false);
+  const intervalRef = useRef(null);
 
   // Load the token after login
   useEffect(() => {
@@ -249,6 +248,7 @@ const QuizInterface = () => {
     wsRef.current.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
+        console.log("Received WebSocket message:", data);
         if (data.type === "alert") {
           // Show each alert as a toast
           data.message.forEach((alert) => {
@@ -283,9 +283,77 @@ const QuizInterface = () => {
               }
             );
           });
-          setCheatingScore((prev) =>
-            Math.min(prev + data.score_increment, 100)
+          // Update cheating score
+          const newScore = Math.min(
+            data.new_score || cheatingScore + data.score_increment,
+            100
           );
+          setCheatingScore(newScore);
+
+          if (data.auto_submitted || newScore >= 100) {
+            console.log("Cheating score reached 100, handling auto-submission");
+            stopWebcamStream();
+            if (wsRef.current) wsRef.current.close();
+            if (intervalRef.current) clearInterval(intervalRef.current);
+
+            // Show the cheating warning modal immediately
+            setShowCheatingWarning(true);
+
+            // Send selected answers to FastAPI for automatic submission
+            const payload = {
+              student_id: studentId,
+              quiz_id: quizId,
+              answers: Object.entries(selectedAnswers).map(
+                ([questionId, answer]) => ({
+                  question_id: questionId.toString(),
+                  answer: answer,
+                })
+              ),
+              auth_token: authToken,
+            };
+            console.log("Sending payload to /submit_due_to_cheating:", payload);
+            fetch("http://localhost:8001/submit_due_to_cheating", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            })
+              .then((response) => response.json())
+              .then((result) => {
+                console.log("Response from /submit_due_to_cheating:", result);
+                // Navigate to results page after a delay if modal isn't interacted with
+                setTimeout(() => {
+                  if (showCheatingWarning) {
+                    console.log(
+                      "Modal not interacted with, auto-navigating to results"
+                    );
+                    setShowCheatingWarning(false);
+                    setQuizStarted(false); // Now safe to set quizStarted to false
+                    exitFullscreen();
+                    navigate("/student/quiz-results", {
+                      state: { cheatingScore: newScore },
+                    });
+                  }
+                }, 5000); // 5 seconds delay
+              })
+              .catch((err) => {
+                console.error("Error submitting due to cheating:", err);
+                toast.error("Error submitting quiz due to cheating detection.");
+                // Navigate even if fetch fails
+                setTimeout(() => {
+                  if (showCheatingWarning) {
+                    console.log(
+                      "Modal not interacted with (fetch failed), auto-navigating to results"
+                    );
+                    setShowCheatingWarning(false);
+                    setQuizStarted(false);
+                    exitFullscreen();
+                    navigate("/student/quiz-results", {
+                      state: { cheatingScore: newScore },
+                    });
+                  }
+                }, 5000);
+              });
+          }
         }
       } catch (err) {
         console.error("WebSocket message error:", err);
@@ -339,7 +407,14 @@ const QuizInterface = () => {
       if (wsRef.current) wsRef.current.close();
       stopWebcamStream();
     };
-  }, [quizStarted, studentId, isVideoReady, authToken]);
+  }, [
+    quizStarted,
+    studentId,
+    isVideoReady,
+    authToken,
+    selectedAnswers,
+    cheatingScore,
+  ]);
 
   // Handle face verification and start quiz
   const handleVerifyFace = async (capturedFrame) => {
@@ -447,6 +522,7 @@ const QuizInterface = () => {
 
       if (response?.status === 200) {
         const result = await endQuizService(quizId);
+        console.log("Response return from endQuizService:", result);
         setCheatingScore(result.cheating_score || 0);
         toast.success(response.message || "Quiz submitted successfully!");
         setQuizStarted(false);
@@ -567,7 +643,7 @@ const QuizInterface = () => {
             {/* Fullscreen Warning Modal */}
             <Modal
               isOpen={showFullscreenWarning}
-              // closeModal={() => setShowFullscreenWarning(false)}
+              closeModal={() => setShowFullscreenWarning(false)}
               title="Fullscreen Warning"
               description="You have exited fullscreen mode. This is not allowed during the quiz. Please click the button below to return to fullscreen mode."
             >
@@ -586,6 +662,28 @@ const QuizInterface = () => {
             </Modal>
           </>
         )}
+        {/* Cheating Warning Modal */}
+        <Modal
+          isOpen={showCheatingWarning}
+          title="Cheating Detected"
+          description="Your cheating score has reached 100. The quiz has been automatically submitted due to detected cheating behavior. You will now be redirected to the results page."
+        >
+          <div className="flex justify-center mt-5">
+            <Button
+              variant="default"
+              onClick={() => {
+                setShowCheatingWarning(false);
+                exitFullscreen();
+                navigate("/student/quiz-results", {
+                  state: { cheatingScore: cheatingScore },
+                });
+              }}
+            >
+              <AlertTriangle className="w-5 h-5 mr-2" />
+              Go to Results
+            </Button>
+          </div>
+        </Modal>
       </div>
     </div>
   );
