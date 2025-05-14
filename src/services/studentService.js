@@ -164,3 +164,21 @@ export const getStudentAnswers = async (quizId, page) => {
     throw error;
   }
 };
+
+
+export const endQuizService = async (quizId) => {
+  try {
+    const response = await api.post(`${BASE_URL}quizzes/end/${quizId}`);
+    console.log("endQuizService response:", response.data); // Debug log
+    if (!response.data || typeof response.data.cheating_score === "undefined") {
+      throw new Error("Invalid response from server: cheating_score missing");
+    }
+    return response.data;
+  } catch (error) {
+    console.error("Failed to end quiz:", error);
+    const errorMessage =
+      error?.response?.data?.message || "Failed to end quiz";
+    toast.error(errorMessage);
+    throw error;
+  }
+};
