@@ -446,11 +446,11 @@ const QuizInterface = () => {
       const response = await submitQuiz(quizId, answers);
 
       if (response?.status === 200) {
+        const result = await endQuizService(quizId);
+        setCheatingScore(result.cheating_score || 0);
         toast.success(response.message || "Quiz submitted successfully!");
         setQuizStarted(false);
         stopWebcamStream();
-        const result = await endQuizService(quizId);
-        setCheatingScore(result.cheating_score || 0);
         exitFullscreen();
         navigate("/student/quiz-results", {
           state: { cheatingScore: result.cheating_score || 0 },
