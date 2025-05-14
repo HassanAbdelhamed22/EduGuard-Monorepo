@@ -187,7 +187,15 @@ const QuizzesResults = () => {
               </div>
 
               <div className="flex flex-col items-center gap-3 p-4">
-                {quizResult.passed === 1 ? (
+                {quizResult.cheating_score === 100 ? (
+                  <>
+                    <CircleAlert className="w-20 h-20 text-yellow-600" />
+                    <p className="text-lg font-semibold text-yellow-600">
+                      You have been flagged for cheating in this quiz. Please
+                      contact your professor.
+                    </p>
+                  </>
+                ) : quizResult.passed === 1 ? (
                   <>
                     <CircleCheck className="w-20 h-20 text-green-600" />
                     <p className="text-lg font-semibold text-green-600">
@@ -201,7 +209,7 @@ const QuizzesResults = () => {
                       You did not pass the quiz. Better luck next time!
                     </p>
                   </>
-                )}
+                )} 
               </div>
 
               <div className="flex justify-between gap-4 p-4 bg-gray-50 rounded-lg">
@@ -211,7 +219,7 @@ const QuizzesResults = () => {
                     {quizResult.score} / {selectedQuiz.quiz_details.total_marks}
                   </p>
                 </div>
-                
+
                 <div className="text-center">
                   <p className="text-sm text-gray-600">Grade</p>
                   <p className="text-2xl font-bold text-primary">
