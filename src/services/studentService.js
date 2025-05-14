@@ -164,3 +164,17 @@ export const getStudentAnswers = async (quizId, page) => {
     throw error;
   }
 };
+
+
+export const endQuizService = async (quizId) => {
+  try {
+    const response = await api.post(`${BASE_URL}quizzes/end/${quizId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to end quiz:", error);
+    const errorMessage =
+      error?.response?.data?.message || "Failed to end quiz";
+    toast.error(errorMessage);
+    throw error;
+  }
+}
