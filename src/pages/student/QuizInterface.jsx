@@ -310,7 +310,7 @@ const QuizInterface = () => {
         student_id: studentId,
         quiz_id: quizId,
         image_b64: imageData,
-        auth_token: authToken, // Include the token in the payload
+        auth_token: authToken,
       };
       console.log("Sending to /process_periodic:", payload);
       try {
@@ -449,7 +449,8 @@ const QuizInterface = () => {
         toast.success(response.message || "Quiz submitted successfully!");
         setQuizStarted(false);
         stopWebcamStream();
-        await endQuiz();
+        const result = await endQuizService(quizId);
+        setCheatingScore(result.cheating_score || 0);
         exitFullscreen();
         navigate("/student/quiz-results", {
           state: { cheatingScore: result.cheating_score || 0 },
@@ -460,17 +461,6 @@ const QuizInterface = () => {
     } catch (error) {
       console.error("Quiz submission failed:", error);
       toast.error(error.response?.data?.message || "Failed to submit quiz");
-    }
-  };
-
-  // End quiz
-  const endQuiz = async () => {
-    try {
-      const result = await endQuizService(quizId);
-      setCheatingScore(result.cheating_score || 0);
-    } catch (err) {
-      console.error("Error ending quiz:", err);
-      toast.error("Error finalizing quiz session.");
     }
   };
 
