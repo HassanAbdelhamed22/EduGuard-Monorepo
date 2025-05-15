@@ -667,6 +667,7 @@ const QuizInterface = () => {
           isOpen={showCheatingWarning}
           title="Cheating Detected"
           description="Your cheating score has reached 100. The quiz has been automatically submitted due to detected cheating behavior. You will now be redirected to the results page."
+          closeModal={() => setShowCheatingWarning(false)} 
         >
           <div className="flex justify-center mt-5">
             <Button
