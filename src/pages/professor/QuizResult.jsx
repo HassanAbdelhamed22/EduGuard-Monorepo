@@ -97,7 +97,7 @@ const ViewResults = () => {
 
   const handleSearchEnter = () => {
     debouncedSearch(searchTerm);
-  }
+  };
 
   const toggleSort = () => {
     const newOrder = sortOrder === "asc" ? "desc" : "asc";
@@ -200,16 +200,28 @@ const ViewResults = () => {
                 </p>
               </div>
 
-              <Button
-                variant="default"
-                fullWidth
-                className="mt-6"
-                onClick={() =>
-                  navigate(`/professor/quiz/results/${quiz_details.id}`)
-                }
-              >
-                Show Result
-              </Button>
+              <div className="flex gap-4">
+                <Button
+                  variant="default"
+                  fullWidth
+                  className="mt-6"
+                  onClick={() =>
+                    navigate(`/professor/quiz/results/${quiz_details.id}`)
+                  }
+                >
+                  Show Result
+                </Button>
+                <Button
+                  variant="danger"
+                  fullWidth
+                  className="mt-6"
+                  onClick={() =>
+                    navigate(`/professor/quiz/cheaters/${quiz_details.id}`)
+                  }
+                >
+                  Show Cheaters
+                </Button>
+              </div>
             </div>
           ))}
         </div>
