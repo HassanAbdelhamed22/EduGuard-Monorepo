@@ -27,15 +27,15 @@ export const viewCourseQuizzes = async (courseId, options = {}) => {
       params: {
         page,
         search,
-        sort_order
-      }
+        sort_order,
+      },
     });
     return response.data;
   } catch (error) {
     console.error("Error fetching course quizzes:", error);
     throw error;
   }
-}
+};
 
 export const viewCourseMaterials = async (courseId) => {
   try {
@@ -137,15 +137,11 @@ export const deleteMaterial = async (materialId) => {
 
 export const createQuestion = async (questionData) => {
   try {
-    const response = await api.post(
-      `${BASE_URL}questions`,
-      questionData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
+    const response = await api.post(`${BASE_URL}questions`, questionData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return response;
   } catch (error) {
     console.error(error);
@@ -167,9 +163,7 @@ export const updateQuestion = async (questionId, updatedQuestion) => {
 
 export const deleteQuestion = async (questionId) => {
   try {
-    const { data } = await api.delete(
-      `${BASE_URL}questions/${questionId}`
-    );
+    const { data } = await api.delete(`${BASE_URL}questions/${questionId}`);
     return data;
   } catch (error) {
     throw error;
@@ -188,9 +182,7 @@ export const getQuiz = async (quizId) => {
 
 export const getQuizDetails = async (quizId, page) => {
   try {
-    const response = await api.get(
-      `${BASE_URL}quizzes/${quizId}?page=${page}`
-    );
+    const response = await api.get(`${BASE_URL}quizzes/${quizId}?page=${page}`);
     return response.data;
   } catch (error) {
     console.error(error);
@@ -201,14 +193,16 @@ export const getQuizDetails = async (quizId, page) => {
 export const getQuizResult = async (params = {}) => {
   try {
     const queryParams = new URLSearchParams({
-      search: params.search || '',
-      sortBy: params.sortBy || 'QuizDate',
-      sortOrder: params.sortOrder || 'desc',
-      courseId: params.courseId || '',
-      page: params.page || 1
+      search: params.search || "",
+      sortBy: params.sortBy || "QuizDate",
+      sortOrder: params.sortOrder || "desc",
+      courseId: params.courseId || "",
+      page: params.page || 1,
     }).toString();
 
-    const { data } = await api.get(`${BASE_URL}quizzes/ended-with-results?${queryParams}`);
+    const { data } = await api.get(
+      `${BASE_URL}quizzes/ended-with-results?${queryParams}`
+    );
     return data;
   } catch (error) {
     console.error(error);
@@ -228,7 +222,21 @@ export const getQuizScore = async (quiz_id) => {
 
 export const getBestPerformers = async () => {
   try {
-    const response = await api.get(`${BASE_URL}professors/courses-with-results`);
+    const response = await api.get(
+      `${BASE_URL}professors/courses-with-results`
+    );
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    toast.error(error?.response?.data?.message);
+  }
+};
+
+export const getCheatersInQuiz = async (quizId) => {
+  try {
+    const response = await api.get(
+      `${BASE_URL}professors/quizzes/${quizId}/cheaters`
+    );
     return response.data;
   } catch (error) {
     console.error(error);
