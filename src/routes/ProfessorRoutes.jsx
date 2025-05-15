@@ -18,6 +18,8 @@ import AddQuestion from "../pages/professor/AddQuestion";
 import QuizViewDetails from "../pages/professor/ViewQuizDetails";
 import ViewResults from "../pages/professor/QuizResult";
 import ShowResult from "../pages/professor/ShowResult";
+import ShowCheaters from "../pages/professor/ShowCheaters";
+import CheatingDetails from "../pages/professor/CheatingDetails";
 
 const ProfessorRoutes = () => {
   return (
@@ -39,18 +41,14 @@ const ProfessorRoutes = () => {
 
           <Route path="quizzes/create" element={<CreateQuiz></CreateQuiz>} />
           <Route path="quizzes/add-questions" element={<AddQuestion />} />
-          <Route
-            path="quizzes/View-Result"
-            element={<ViewResults/>}
-          />
+          <Route path="quizzes/View-Result" element={<ViewResults />} />
           <Route
             path="quiz/:quizId"
             element={<QuizViewDetails></QuizViewDetails>}
           />
-          <Route
-            path="quiz/results/:quizId"
-            element={<ShowResult/>}
-          />
+          <Route path="quiz/results/:quizId" element={<ShowResult />} />
+          <Route path="quiz/cheaters/:quizId" element={<ShowCheaters />} />
+          <Route path="quiz/:quizId/:studentId/cheating-logs" element={<CheatingDetails />} />
 
           <Route path="/profile" element={<Profile />} />
           <Route path="/update-password" element={<UpdatePassword />} />
