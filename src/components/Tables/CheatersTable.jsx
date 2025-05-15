@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Search } from "lucide-react";
+import { Eye, Search } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -8,9 +8,12 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/Table";
+import { useNavigate } from "react-router";
 
 const CheatersTable = ({ results }) => {
   const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
+  const quizId = results?.quiz_id;
 
   // Debug: log the results prop
   console.log("CheatersTable results:", results);
@@ -20,6 +23,11 @@ const CheatersTable = ({ results }) => {
   const filteredResults = students.filter((student) =>
     student.student_name?.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  if (!quizId) {
+    console.error("quizId is undefined in CheatersTable props:", results);
+    return <p className="text-center text-red-500">Error: Quiz ID is missing.</p>;
+  }
 
   return (
     <div>
@@ -46,6 +54,7 @@ const CheatersTable = ({ results }) => {
                 <TableHead className="w-2/12">Student Name</TableHead>
                 <TableHead className="w-2/12">Student Email</TableHead>
                 <TableHead className="w-2/12">Cheating Score</TableHead>
+                <TableHead className="w-2/12">Details</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -55,6 +64,14 @@ const CheatersTable = ({ results }) => {
                   <TableCell>{student.student_name || "N/A"}</TableCell>
                   <TableCell>{student.student_email ?? "N/A"}</TableCell>
                   <TableCell>{student.cheating_score ?? "N/A"}</TableCell>
+                  <TableCell>
+                    <button
+                      onClick={() => navigate(`/professor/quiz/${quizId}/${student.student_id}/cheating-logs`)}
+                      className="text-indigo-600 hover:text-indigo-800"
+                    >
+                      <Eye size={20} />
+                    </button>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
