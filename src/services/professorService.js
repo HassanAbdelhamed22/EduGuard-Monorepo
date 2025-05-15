@@ -243,3 +243,16 @@ export const getCheatersInQuiz = async (quizId) => {
     toast.error(error?.response?.data?.message);
   }
 };
+
+export const getCheatingLogs = async (quizId, studentId) => {
+  try {
+    const response = await api.get(
+      `${BASE_URL}professors/quizzes/${quizId}/${studentId}/cheating-logs`
+    );
+    console.log(`getCheatingLogs response for quizId ${quizId}, studentId ${studentId}:`, response.data);
+    return response.data || { logs: [] }; // Default to empty logs array if data is missing
+  } catch (error) {
+    console.error(error);
+    toast.error(error?.response?.data?.message);
+  }
+}
