@@ -20,6 +20,7 @@ import ViewResults from "../pages/professor/QuizResult";
 import ShowResult from "../pages/professor/ShowResult";
 import ShowCheaters from "../pages/professor/ShowCheaters";
 import CheatingDetails from "../pages/professor/CheatingDetails";
+import NotificationsPage from './../pages/student/NotificationsPage';
 
 const ProfessorRoutes = () => {
   return (
@@ -49,6 +50,8 @@ const ProfessorRoutes = () => {
           <Route path="quiz/results/:quizId" element={<ShowResult />} />
           <Route path="quiz/cheaters/:quizId" element={<ShowCheaters />} />
           <Route path="quiz/:quizId/:studentId/cheating-logs" element={<CheatingDetails />} />
+
+          <Route path="notifications" element={<NotificationsPage />} />
 
           <Route path="/profile" element={<Profile />} />
           <Route path="/update-password" element={<UpdatePassword />} />
