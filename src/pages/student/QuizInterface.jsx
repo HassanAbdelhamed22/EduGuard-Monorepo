@@ -44,6 +44,7 @@ const QuizInterface = () => {
   const [isVideoReady, setIsVideoReady] = useState(false);
   const [authToken, setAuthToken] = useState(null);
   const [showCheatingWarning, setShowCheatingWarning] = useState(false);
+  const [showInstructions, setShowInstructions] = useState(true);
   const intervalRef = useRef(null);
 
   // Load the token after login
@@ -151,13 +152,13 @@ const QuizInterface = () => {
       }
     };
 
-    // document.addEventListener("contextmenu", handleContextMenu);
+    document.addEventListener("contextmenu", handleContextMenu);
     document.addEventListener("copy", handleCopy);
     document.addEventListener("cut", handleCopy);
     document.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      // document.removeEventListener("contextmenu", handleContextMenu);
+      document.removeEventListener("contextmenu", handleContextMenu);
       document.removeEventListener("copy", handleCopy);
       document.removeEventListener("cut", handleCopy);
       document.removeEventListener("keydown", handleKeyDown);
