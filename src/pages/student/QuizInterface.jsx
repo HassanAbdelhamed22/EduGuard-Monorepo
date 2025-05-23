@@ -17,6 +17,7 @@ import FloatingTimer from "../../components/quiz interface/FloatingTimer";
 import FloatingNavigation from "../../components/quiz interface/FloatingNavigation";
 import QuestionCard from "../../components/quiz interface/QuestionCard";
 import VerifyFace from "../../components/VerifyFace";
+import QuizInstructions from "./QuizInstructions";
 
 const QuizInterface = () => {
   const { quizId } = useParams();
@@ -567,7 +568,9 @@ const QuizInterface = () => {
   return (
     <div className="min-h-screen">
       <div className="max-w-5xl mx-auto p-6 space-y-6">
-        {!quizStarted ? (
+        {showInstructions ? (
+          <QuizInstructions onAcknowledge={() => setShowInstructions(false)} />
+        ) : !quizStarted ? (
           <VerifyFace onCapture={handleVerifyFace} />
         ) : (
           <>
@@ -668,7 +671,7 @@ const QuizInterface = () => {
           isOpen={showCheatingWarning}
           title="Cheating Detected"
           description="Your cheating score has reached 100. The quiz has been automatically submitted due to detected cheating behavior. You will now be redirected to the results page."
-          closeModal={() => setShowCheatingWarning(false)} 
+          closeModal={() => setShowCheatingWarning(false)}
         >
           <div className="flex justify-center mt-5">
             <Button
