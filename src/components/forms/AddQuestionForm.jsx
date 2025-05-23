@@ -35,10 +35,29 @@ const AddQuestionForm = ({
     }
   }, [hideQuizSelect]);
 
-  const quizOptions = quizzes.map((quiz) => ({
-    value: quiz.QuizID,
-    label: `${quiz.CourseName} - ${quiz.Title}`,
-  }));
+  // Only include upcoming quizzes (quiz.Date > now)
+  const quizOptions = quizzes
+    .filter((quiz) => {
+      if (!quiz.QuizDate) {
+        console.warn(`Quiz ${quiz.QuizID} has no QuizDate`);
+        return true; // Include quizzes with no date
+      }
+      const quizDate = new Date(quiz.QuizDate);
+      if (isNaN(quizDate)) {
+        console.warn(
+          `Invalid QuizDate for Quiz ${quiz.QuizID}: ${quiz.QuizDate}`
+        );
+        return true; // Include invalid dates
+      }
+      // Compare dates without time
+      const today = new Date().setHours(0, 0, 0, 0);
+      const quizDay = new Date(quiz.QuizDate).setHours(0, 0, 0, 0);
+      return quizDay >= today;
+    })
+    .map((quiz) => ({
+      value: quiz.QuizID,
+      label: `${quiz.CourseName} - ${quiz.Title}`,
+    }));
 
   const questionTypeOptions = [
     { value: "mcq", label: "Multiple Choice Question" },
@@ -61,12 +80,18 @@ const AddQuestionForm = ({
               >
                 Quiz
               </label>
+              {quizOptions.length === 0 ? (
+                <div className="text-red-500 text-sm mb-2">
+                  No upcoming quizzes
+                </div>
+              ) : null}
               <CustomSelect
                 options={quizOptions}
                 value={values.quiz_id}
                 onChange={(value) => setFieldValue("quiz_id", value)}
                 isLoading={loading}
                 placeholder="Select a quiz"
+                isDisabled={quizOptions.length === 0}
               />
               <ErrorMessage
                 name="quiz_id"
