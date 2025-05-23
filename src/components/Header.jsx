@@ -31,7 +31,7 @@ const Header = ({ toggleSidebar, isSidebarOpen }) => {
   useEffect(() => {
     const fetchUnreadNotifications = async () => {
       try {
-        if (userRole === "user") {
+        if (userRole === "user" || userRole === "professor") {
           const response = await getUnreadNotifications();
           dispatch(setUnreadCount(response.notifications.length));
         }
@@ -61,11 +61,17 @@ const Header = ({ toggleSidebar, isSidebarOpen }) => {
 
       {/* User Info*/}
       <div className="flex items-center gap-5">
-        {profile?.role === "user" && (
+        {(profile?.role === "user" || profile?.role === "professor") && (
           <div className="relative">
             <Bell
               className="w-6 h-6 cursor-pointer text-darkGray"
-              onClick={() => navigate("/student/notifications")}
+              onClick={() =>
+                profile?.role === "user"
+                  ? navigate("/student/notifications")
+                  : profile?.role === "professor"
+                  ? navigate("/professor/notifications")
+                  : null
+              }
             />
             {unreadCount > 0 && (
               <div className="absolute -top-2 -right-2 bg-primary text-white text-xs rounded-full px-1.5 py-0.5">
