@@ -402,7 +402,7 @@ const QuizInterface = () => {
         console.error("Error processing image:", err);
         toast.error("Error in cheating detection.");
       }
-    }, 5000);
+    }, 10000);
 
     return () => {
       clearInterval(interval);
