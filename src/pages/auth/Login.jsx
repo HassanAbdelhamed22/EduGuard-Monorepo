@@ -56,15 +56,18 @@ const Login = () => {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Header */}
-      <header className="p-4 flex justify-between items-center max-w-7xl mx-auto w-full">
-        <Logo />
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => navigate("/register")}
-        >
-          Sign Up
-        </Button>
+      <header className="bg-white shadow-sm border-b border-gray-100">
+        <div className="p-4 flex justify-between items-center max-w-7xl mx-auto w-full">
+          <Logo />
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => navigate("/register")}
+            className="hover:bg-indigo-50 hover:border-indigo-300 hover:text-indigo-700 transition-all duration-200"
+          >
+            Sign up
+          </Button>
+        </div>
       </header>
 
       {/* Main Content */}
