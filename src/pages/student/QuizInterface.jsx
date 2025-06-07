@@ -252,7 +252,6 @@ const QuizInterface = () => {
         const data = JSON.parse(event.data);
         console.log("Received WebSocket message:", data);
         if (data.type === "alert") {
-          // Show each alert as a toast
           data.message.forEach((alert) => {
             toast.custom(
               (t) => (
@@ -279,13 +278,9 @@ const QuizInterface = () => {
                   </div>
                 </div>
               ),
-              {
-                duration: 5000,
-                position: "top-right",
-              }
+              { duration: 5000, position: "top-right" }
             );
           });
-          // Update cheating score
           const newScore = Math.min(
             data.new_score || cheatingScore + data.score_increment,
             100
@@ -294,20 +289,29 @@ const QuizInterface = () => {
 
           if (data.auto_submitted || newScore >= 100) {
             console.log("Cheating score reached 100, handling auto-submission");
+            console.log(
+              "Selected answers before auto-submission:",
+              selectedAnswers
+            );
+            if (Object.keys(selectedAnswers).length === 0) {
+              console.warn("No answers selected for auto-submission");
+              toast.error(
+                "No answers selected. Quiz will be submitted without answers."
+              );
+            }
+
             stopWebcamStream();
             if (wsRef.current) wsRef.current.close();
             if (intervalRef.current) clearInterval(intervalRef.current);
 
-            // Show the cheating warning modal immediately
             setShowCheatingWarning(true);
 
-            // Send selected answers to FastAPI for automatic submission
             const payload = {
               student_id: studentId,
               quiz_id: quizId,
               answers: Object.entries(selectedAnswers).map(
                 ([questionId, answer]) => ({
-                  question_id: questionId.toString(),
+                  question_id: parseInt(questionId), // Match Laravel's expected format
                   answer: answer,
                 })
               ),
@@ -320,27 +324,37 @@ const QuizInterface = () => {
               body: JSON.stringify(payload),
             })
               .then((response) => response.json())
-              .then((result) => {
+              .then(async (result) => {
                 console.log("Response from /submit_due_to_cheating:", result);
-                // Navigate to results page after a delay if modal isn't interacted with
+                if (result.status === 200) {
+                  // Finalize the quiz session
+                  const endResult = await endQuizService(quizId);
+                  console.log("Response from endQuizService:", endResult);
+                  setCheatingScore(endResult.cheating_score || newScore);
+                } else {
+                  console.error("Auto-submission failed:", result);
+                  toast.error(
+                    "Failed to submit quiz due to cheating detection."
+                  );
+                  return; // Prevent navigation on failure
+                }
                 setTimeout(() => {
                   if (showCheatingWarning) {
                     console.log(
                       "Modal not interacted with, auto-navigating to results"
                     );
                     setShowCheatingWarning(false);
-                    setQuizStarted(false); // Now safe to set quizStarted to false
+                    setQuizStarted(false);
                     exitFullscreen();
                     navigate("/student/quiz-results", {
                       state: { cheatingScore: newScore },
                     });
                   }
-                }, 5000); // 5 seconds delay
+                }, 5000);
               })
               .catch((err) => {
                 console.error("Error submitting due to cheating:", err);
                 toast.error("Error submitting quiz due to cheating detection.");
-                // Navigate even if fetch fails
                 setTimeout(() => {
                   if (showCheatingWarning) {
                     console.log(
@@ -381,6 +395,12 @@ const QuizInterface = () => {
         quiz_id: quizId,
         image_b64: imageData,
         auth_token: authToken,
+        answers: Object.entries(selectedAnswers).map(
+          ([questionId, answer]) => ({
+            question_id: parseInt(questionId),
+            answer: answer,
+          })
+        ),
       };
       console.log("Sending to /process_periodic:", payload);
       try {
@@ -402,7 +422,7 @@ const QuizInterface = () => {
         console.error("Error processing image:", err);
         toast.error("Error in cheating detection.");
       }
-    }, 30000);
+    }, 10000);
 
     return () => {
       clearInterval(interval);
