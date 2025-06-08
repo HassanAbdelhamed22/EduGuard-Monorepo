@@ -7,6 +7,7 @@ export default function Modal({
   title,
   description,
   children,
+  className = "", 
 }) {
   return (
     <Transition appear show={isOpen} as={Fragment}>
@@ -29,7 +30,9 @@ export default function Modal({
         >
           <div className="fixed inset-0 z-10 overflow-y-auto">
             <div className="flex min-h-full items-center justify-center p-4">
-              <Dialog.Panel className="relative w-full max-w-md rounded-xl shadow-lg bg-white p-6">
+              <Dialog.Panel
+                className={`relative w-full max-w-md rounded-xl shadow-lg bg-white p-6 ${className}`}
+              >
                 {/* Title */}
                 {title && (
                   <DialogTitle
@@ -43,9 +46,7 @@ export default function Modal({
                 {/* Description */}
                 {description && (
                   <div className="mt-2">
-                    <p className="text-sm text-mediumGray ">
-                      {description}
-                    </p>
+                    <p className="text-sm text-mediumGray ">{description}</p>
                   </div>
                 )}
 
