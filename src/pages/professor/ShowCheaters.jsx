@@ -27,13 +27,24 @@ const ShowCheaters = () => {
     }
   }, [quizId]);
 
+  const updateCheater = (studentId, newCheatingScore) => {
+    setCheaters((prev) => ({
+      ...prev,
+      students: prev.students.map((student) =>
+        student.student_id === studentId
+          ? { ...student, cheating_score: newCheatingScore }
+          : student
+      ),
+    }));
+  };
+
   if (isLoading) {
     return <Loading />;
   }
   return (
     <div className="  p-4">
       <h1 className=" text-3xl font-bold text-gray-800 mb-8">Quiz cheaters</h1>
-      <CheatersTable results={cheaters} />
+      <CheatersTable results={cheaters} updateCheater={updateCheater} />
     </div>
   );
 };
