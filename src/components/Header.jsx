@@ -6,7 +6,7 @@ import { getInitials } from "../utils/functions";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProfile } from "../redux/slices/profileSlice";
 import { useNavigate } from "react-router-dom";
-import { getUnreadNotifications } from "../services/notificationService";
+import { getUnreadNotificationCount, getUnreadNotifications } from "../services/notificationService";
 import { setUnreadCount } from "../redux/slices/notificationsSlice";
 import toast from "react-hot-toast";
 
@@ -32,8 +32,8 @@ const Header = ({ toggleSidebar, isSidebarOpen }) => {
     const fetchUnreadNotifications = async () => {
       try {
         if (userRole === "user" || userRole === "professor") {
-          const response = await getUnreadNotifications();
-          dispatch(setUnreadCount(response.notifications.length));
+          const response = await getUnreadNotificationCount();
+          dispatch(setUnreadCount(response));
         }
       } catch (error) {
         console.error(error);
