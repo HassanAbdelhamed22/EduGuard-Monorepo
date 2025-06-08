@@ -249,10 +249,70 @@ export const getCheatingLogs = async (quizId, studentId) => {
     const response = await api.get(
       `${BASE_URL}professors/quizzes/${quizId}/${studentId}/cheating-logs`
     );
-    console.log(`getCheatingLogs response for quizId ${quizId}, studentId ${studentId}:`, response.data);
+    console.log(
+      `getCheatingLogs response for quizId ${quizId}, studentId ${studentId}:`,
+      response.data
+    );
     return response.data || { logs: [] }; // Default to empty logs array if data is missing
   } catch (error) {
     console.error(error);
     toast.error(error?.response?.data?.message);
   }
-}
+};
+
+export const resetCheatingScore = async (quizId, studentId) => {
+  try {
+    const response = await api.post(
+      `/professors/quizzes/${quizId}/results/${studentId}/edit`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error resetting cheating score:", error);
+    toast.error(
+      error?.response?.data?.message || "Failed to reset cheating score"
+    );
+    throw error;
+  }
+};
+
+export const getStudentAnswers = async (quizId, page = 1, studentId) => {
+  try {
+    const response = await api.get(
+      `/professors/quizzes/${quizId}/results/${studentId}`,
+      {
+        params: { page, per_page: 5 },
+      }
+    );
+    console.log(
+      "professorService getStudentAnswers raw response:",
+      response.data
+    );
+    const { quiz, correct_answers = [], pagination = {} } = response.data;
+
+    return {
+      quiz: quiz || null,
+      questions: correct_answers || [],
+      pagination: {
+        current_page: pagination.current_page || page,
+        total_pages: pagination.total_pages || 1,
+        total_items: pagination.total_items || correct_answers.length,
+        per_page: pagination.per_page || 5,
+      },
+    };
+  } catch (error) {
+    console.error("Failed to fetch student answers:", error);
+    const errorMessage =
+      error?.response?.data?.message || "Failed to fetch student answers";
+    toast.error(errorMessage);
+    return {
+      quiz: null,
+      questions: [],
+      pagination: {
+        current_page: page,
+        total_pages: 1,
+        total_items: 0,
+        per_page: 5,
+      },
+    };
+  }
+};

@@ -4,6 +4,7 @@ import {
   deleteAllNotifications,
   deleteNotification,
   getAllNotifications,
+  getUnreadNotificationCount,
   getUnreadNotifications,
   markAllAsRead,
   markAsRead,
@@ -27,7 +28,10 @@ import {
 } from "../../components/ui/QuizCard";
 import PaginationLogic from "../../components/PaginationLogic";
 import { useDispatch, useSelector } from "react-redux";
-import { decrementUnreadCount, setUnreadCount } from "../../redux/slices/notificationsSlice";
+import {
+  decrementUnreadCount,
+  setUnreadCount,
+} from "../../redux/slices/notificationsSlice";
 
 const NotificationsPage = () => {
   const dispatch = useDispatch();
@@ -46,9 +50,9 @@ const NotificationsPage = () => {
     setLoading(true);
     try {
       const allNotifications = await getAllNotifications(page);
-      const unreadNotifications = await getUnreadNotifications(page);
+      const unreadCount = await getUnreadNotificationCount();
       setNotifications(allNotifications.notifications);
-      dispatch(setUnreadCount(unreadNotifications.notifications.length));
+      dispatch(setUnreadCount(unreadCount));
       setPagination({ ...allNotifications.pagination, current_page: page });
     } catch (error) {
       console.error(error);
@@ -78,7 +82,7 @@ const NotificationsPage = () => {
       await markAsRead(notificationId);
       toast.success("Notification marked as read");
       dispatch(decrementUnreadCount());
-      fetchNotifications();
+      fetchNotifications(pagination.current_page);
     } catch (error) {
       console.error(error);
       toast.error("Failed to mark notification as read");
@@ -91,7 +95,7 @@ const NotificationsPage = () => {
       await markAllAsRead();
       toast.success("All notifications marked as read");
       dispatch(setUnreadCount(0));
-      fetchNotifications();
+      fetchNotifications(pagination.current_page);
     } catch (error) {
       console.error(error);
       toast.error("Failed to mark all notifications as read");
@@ -104,7 +108,7 @@ const NotificationsPage = () => {
       await deleteNotification(notificationId);
       toast.success("Notification deleted");
       dispatch(decrementUnreadCount());
-      fetchNotifications();
+      fetchNotifications(pagination.current_page);
     } catch (error) {
       console.error(error);
       toast.error("Failed to delete notification");
@@ -117,7 +121,7 @@ const NotificationsPage = () => {
       await deleteAllNotifications();
       toast.success("All notifications deleted");
       dispatch(setUnreadCount(0));
-      fetchNotifications();
+      fetchNotifications(pagination.current_page);
     } catch (error) {
       console.error(error);
       toast.error("Failed to delete all notifications");

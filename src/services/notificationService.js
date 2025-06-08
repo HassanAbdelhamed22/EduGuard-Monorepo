@@ -2,9 +2,9 @@ import toast from "react-hot-toast";
 import api from "../config/api";
 import { BASE_URL } from "../constants";
 
-export const getAllNotifications = async () => {
+export const getAllNotifications = async (page = 1) => {
   try {
-    const { data } = await api.get(`${BASE_URL}notifications`);
+    const { data } = await api.get(`${BASE_URL}notifications?page=${page}`);
     return data;
   } catch (error) {
     console.error(error);
@@ -12,9 +12,11 @@ export const getAllNotifications = async () => {
   }
 };
 
-export const getUnreadNotifications = async () => {
+export const getUnreadNotifications = async (page = 1) => {
   try {
-    const { data } = await api.get(`${BASE_URL}notifications/unread`);
+    const { data } = await api.get(
+      `${BASE_URL}notifications/unread?page=${page}`
+    );
     return data;
   } catch (error) {
     console.error(error);
@@ -60,6 +62,17 @@ export const deleteAllNotifications = async () => {
   try {
     const response = await api.delete(`${BASE_URL}notifications`);
     return response.data;
+  } catch (error) {
+    console.error(error);
+    toast.error(error?.response?.data?.message);
+  }
+};
+
+export const getUnreadNotificationCount = async () => {
+  try {
+    const { data } = await api.get(`${BASE_URL}notifications/unread-count`);
+    console.log("Unread notification count:", data.unread_count);
+    return data.unread_count;
   } catch (error) {
     console.error(error);
     toast.error(error?.response?.data?.message);
