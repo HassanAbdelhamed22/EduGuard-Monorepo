@@ -190,10 +190,24 @@ const QuizzesResults = () => {
                 {quizResult.cheating_score === 100 ? (
                   <>
                     <CircleAlert className="w-20 h-20 text-yellow-600" />
-                    <p className="text-lg font-semibold text-yellow-600">
-                      You have been flagged for cheating in this quiz. Please
-                      contact your professor.
-                    </p>
+                    <div className="flex flex-col items-center gap-2 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                      <p className="text-lg font-bold text-yellow-700 mb-1">
+                        Cheating Detected
+                      </p>
+                      <p className="text-base text-yellow-700">
+                        Your attempt for this quiz has been flagged for academic
+                        dishonesty.
+                        <br />
+                        If you believe this is a mistake or have any concerns,
+                        please contact your professor at:
+                      </p>
+                      <a
+                        href={`mailto:${quizResult.professor_email}`}
+                        className="mt-2 text-indigo-600 underline font-medium break-all"
+                      >
+                        {quizResult.professor_email}
+                      </a>
+                    </div>
                   </>
                 ) : quizResult.passed === 1 ? (
                   <>
@@ -209,7 +223,7 @@ const QuizzesResults = () => {
                       You did not pass the quiz. Better luck next time!
                     </p>
                   </>
-                )} 
+                )}
               </div>
 
               <div className="flex justify-between gap-4 p-4 bg-gray-50 rounded-lg">
