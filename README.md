@@ -13,9 +13,7 @@
 
 ## 📸 Demo
 
-<!-- Add your demo video link or GIFs/screenshots here -->
-
-![Demo GIF](https://your-demo-gif-link.com)
+[🎬 **Watch Demo Video**](https://drive.google.com/file/d/1EwZKf_VV6rn2qdm_OYfcB5s6CKc4S-bS/view?usp=sharing)
 
 ---
 
@@ -47,27 +45,19 @@
 
 ## 🛠️ Tech Stack
 
-| Layer      | Technology                                               |
-| ---------- | -------------------------------------------------------- |
-| Frontend   | React.js, Tailwind CSS                                   |
-| Backend    | Laravel (PHP)                                            |
-| AI Models  | Python, OpenCV, Dlib, TensorFlow                         |
-| ML Serving | FastAPI (Python)                 
-| Database   | MySQL                                                    |
-
+| Layer      | Technology                       |
+| ---------- | -------------------------------- |
+| Frontend   | React.js, Tailwind CSS           |
+| Backend    | Laravel (PHP)                    |
+| AI Models  | Python, OpenCV, Dlib, TensorFlow |
+| ML Serving | FastAPI (Python)                 |
+| Database   | MySQL                            |
 
 ---
 
 ## 🏗️ System Architecture
 
-```mermaid
-graph LR
-  A[User] --> B[React Frontend]
-  B --> C[Laravel Backend API]
-  C --> D[MySQL Database]
-  C --> E[AI Model APIs (Python)]
-  E --> F[Face Detection, Gaze, Pose, Object Detection]
-```
+[![System Architecture](https://drive.google.com/uc?id=10z5Cy2EvV-cyiGN44EdYkEEzevvxrabz)](https://drive.google.com/file/d/10z5Cy2EvV-cyiGN44EdYkEEzevvxrabz/view?usp=sharing)
 
 ---
 
@@ -88,7 +78,7 @@ graph LR
 ```bash
 git clone https://github.com/your-username/EduGuard.git
 cd EduGuard
-```
+````
 
 ### 2. Setup Frontend
 
