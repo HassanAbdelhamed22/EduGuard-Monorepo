@@ -166,6 +166,6 @@ Computer & AI Engineering, Helwan University
 **Omar Sayed**  
 Frontend  
 Computer & AI Engineering, Helwan University 
-[GitHub](https://github.com/Omar-Sayed-22) 
+[GitHub](https://github.com/omaesayed21) 
 
 ---
