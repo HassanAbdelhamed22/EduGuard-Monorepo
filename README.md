@@ -3,8 +3,8 @@
 **AI-Powered LMS with Real-Time Cheating Detection**
 
 [![MIT License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![GitHub stars](https://img.shields.io/github/stars/your-username/EduGuard?style=social)](https://github.com/your-username/EduGuard)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/your-username/EduGuard/pulls)
+[![GitHub stars](https://img.shields.io/github/stars/HassanAbdelhamed22/EduGuard-Monorepo?style=social)](https://github.com/HassanAbdelhamed22/EduGuard-Monorepo)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/HassanAbdelhamed22/EduGuard-Monorepo/pulls)
 
 > **EduGuard** is a smart, AI-driven Learning Management System (LMS) that ensures academic integrity during online assessments.  
 > Blending a modern LMS with real-time cheating detection using computer vision, EduGuard offers a seamless and secure experience for both students and instructors.
@@ -13,25 +13,47 @@
 
 ## 📸 Demo
 
-[🎬 **Watch Demo Video**](https://drive.google.com/file/d/1EwZKf_VV6rn2qdm_OYfcB5s6CKc4S-bS/view?usp=sharing)
+[🎬 **Watch Full Demo Video**](https://drive.google.com/file/d/1EwZKf_VV6rn2qdm_OYfcB5s6CKc4S-bS/view?usp=sharing)
 
 ---
 
 ## 🚀 Features
 
-### 🧑‍🏫 For Instructors
+### 👤 Admin
 
-- Upload lectures, notes, and resources
-- Create and manage quizzes
-- Monitor student activity with AI proctoring
-- Receive cheating alerts and logs
+- Create user accounts (Admin, Professor, Student)
+- Assign roles to users
+- View all users’ details
+- Assign courses to professors
 
-### 👨‍🎓 For Students
+### 👨‍🏫 Professor
 
-- Login with face recognition
-- Attend lectures and access materials
-- Take proctored quizzes securely
-- Real-time feedback and results
+- Create and manage courses
+- Upload course materials (PDFs, videos, notes)
+- Set quizzes (add questions, set duration, set quiz details)
+- Block students if necessary
+- View registered students
+- Access and review cheating reports
+- Receive cheating notifications
+- Receive and send notifications (e.g., quiz reminders, material uploads)
+
+### 👨‍🎓 Student
+
+- Register for courses
+- Access course materials
+- Identity verification (face recognition, open camera, capture images)
+- Start and take quizzes (with proctoring)
+- Receive suspicious behavior alerts in real-time
+- Submit answers
+- View quiz results
+- Edit profile (name, email, phone, address)
+- Password reset and logout
+
+### 🤖 AI & Notification System
+
+- Detect cheating and suspicious behavior using ML models
+- Send alerts and notifications (cheating alerts, quiz reminders, material updates)
+- Receive images for face recognition and convert to embeddings
 
 ### 🧠 AI-Powered Cheating Detection
 
@@ -45,13 +67,13 @@
 
 ## 🛠️ Tech Stack
 
-| Layer      | Technology                       |
-| ---------- | -------------------------------- |
-| Frontend   | React.js, Tailwind CSS           |
-| Backend    | Laravel (PHP)                    |
-| AI Models  | Python, OpenCV, Dlib, TensorFlow |
-| ML Serving | FastAPI (Python)                 |
-| Database   | MySQL                            |
+| Layer      | Technology                                 |
+| ---------- | ------------------------------------------ |
+| Frontend   | React.js, Tailwind CSS                     |
+| Backend    | Laravel (PHP)                              |
+| AI Models  | Python, OpenCV, Dlib, TensorFlow, and etc. |
+| ML Serving | FastAPI (Python)                           |
+| Database   | MySQL                                      |
 
 ---
 
@@ -78,7 +100,7 @@
 ```bash
 git clone https://github.com/your-username/EduGuard.git
 cd EduGuard
-````
+```
 
 ### 2. Setup Frontend
 
@@ -121,29 +143,48 @@ cd ml-server
 ## 👥 Team
 
 **Hassan Abdelhamed**  
-Frontend & ML Integration  
+Frontend & Backend & ML Integration  
 Computer & AI Engineering, Helwan University  
-[GitHub](https://github.com/your-username) | [LinkedIn](https://linkedin.com/in/your-linkedin)
+[GitHub](https://github.com/HassanAbdelhamed22) | [LinkedIn](https://www.linkedin.com/in/hassanabdelhamedh22/)
+
+**Youssef Ahmed**  
+Computer & AI Engineering, Helwan University  
+[GitHub](https://github.com/Youssef-Ahmed-k) | [LinkedIn](https://www.linkedin.com/in/youssef-ahmed-541471342/)
+
+**Omar Sayed**  
+Frontend  
+Computer & AI Engineering, Helwan University [GitHub](https://github.com/Youssef-Ahmed-k) | [LinkedIn](https://www.linkedin.com/in/youssef-ahmed-541471342/)
+[GitHub](https://github.com/omaesayed21)
+ed\*\*
 
 ---
 
-## 📄 License
+sity
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+## 📄 License[GitHub](https://github.com/omaesayed21)
 
----
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.---
+
+---## 📄 License
+
+## 💬 AcknowledgementsThis project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+- Thanks to open-source AI libraries and contributors---
+- Inspired by the need for secure and fair online learning during the pandemic and beyond
 
 ## 💬 Acknowledgements
 
-- Thanks to open-source AI libraries and contributors
-- Inspired by the need for secure and fair online learning during the pandemic and beyond
-
 ---
 
-<!--
+<!--- Inspired by the need for secure and fair online learning during the pandemic and beyond
 Would you like to:
-- Add a specific demo GIF or video section?
+- Add a specific demo GIF or video section?---
 - Include badges (e.g., GitHub stars, license)?
 - Write a short abstract or tagline for GitHub display?
 Let me know and I’ll tailor it even more.
 -->
+
+- Include badges (e.g., GitHub stars, license)?
+- Write a short abstract or tagline for GitHub display?
+  Let me know and I’ll tailor it even more.
+  -->
