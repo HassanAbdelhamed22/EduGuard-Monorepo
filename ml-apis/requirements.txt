@@ -1,0 +1,17 @@
+python-dotenv
+opencv-python
+torch
+numpy
+mysql-connector-python
+mtcnn
+ultralytics
+facenet-pytorch
+faiss-cpu
+tqdm
+fastapi
+uvicorn
+pydantic
+Pillow
+torchvision
+httpx
+mediapipe

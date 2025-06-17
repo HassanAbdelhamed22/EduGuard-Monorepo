@@ -123,11 +123,22 @@ php artisan serve
 
 ### 4. Setup AI Server
 
-```bash
-cd ml-server
-# Install dependencies
-# Run Flask or FastAPI server
-```
+1. **Install Python dependencies**  
+   Make sure you have Python 3.8+ and `pip` installed.  
+   Install required packages:
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+2. **Set environment variables**  
+   Create a `.env` file in the `ml-server` directory and add any required environment variables (such as database credentials, API keys, etc.).
+
+3. **Run the AI Server**  
+   In the `ml-server` directory, start the FastAPI server with:
+   ```bash
+   uvicorn ML_APIs:app --host 0.0.0.0 --port 8001
+   ```
 
 ---
 
