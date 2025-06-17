@@ -164,9 +164,8 @@ Computer & AI Engineering, Helwan University
 
 **Omar Sayed**  
 Frontend  
-Computer & AI Engineering, Helwan University [GitHub](https://github.com/Youssef-Ahmed-k) | [LinkedIn](https://www.linkedin.com/in/youssef-ahmed-541471342/)
-[GitHub](https://github.com/omaesayed21)
-ed\*\*
+Computer & AI Engineering, Helwan University 
+[GitHub](https://github.com/Youssef-Ahmed-k)
 
 ---
 
