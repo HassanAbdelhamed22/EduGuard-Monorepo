@@ -159,42 +159,13 @@ Computer & AI Engineering, Helwan University
 [GitHub](https://github.com/HassanAbdelhamed22) | [LinkedIn](https://www.linkedin.com/in/hassanabdelhamedh22/)
 
 **Youssef Ahmed**  
+Backend & ML Integration
 Computer & AI Engineering, Helwan University  
 [GitHub](https://github.com/Youssef-Ahmed-k) | [LinkedIn](https://www.linkedin.com/in/youssef-ahmed-541471342/)
 
 **Omar Sayed**  
 Frontend  
 Computer & AI Engineering, Helwan University 
-[GitHub](https://github.com/Youssef-Ahmed-k)
+[GitHub](https://github.com/Omar-Sayed-22) 
 
 ---
-
-sity
-
-## 📄 License[GitHub](https://github.com/omaesayed21)
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.---
-
----## 📄 License
-
-## 💬 AcknowledgementsThis project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
-- Thanks to open-source AI libraries and contributors---
-- Inspired by the need for secure and fair online learning during the pandemic and beyond
-
-## 💬 Acknowledgements
-
----
-
-<!--- Inspired by the need for secure and fair online learning during the pandemic and beyond
-Would you like to:
-- Add a specific demo GIF or video section?---
-- Include badges (e.g., GitHub stars, license)?
-- Write a short abstract or tagline for GitHub display?
-Let me know and I’ll tailor it even more.
--->
-
-- Include badges (e.g., GitHub stars, license)?
-- Write a short abstract or tagline for GitHub display?
-  Let me know and I’ll tailor it even more.
-  -->
